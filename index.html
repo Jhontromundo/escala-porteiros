@@ -473,7 +473,7 @@
             <h3>⚠️ Conflitos de Mesmo Dia Detectados</h3>
             <div id="listaConflitos" class="conflito-lista"></div>
             <p style="font-size: 12px; margin-top: 10px; color: #666;">
-                <strong>Dica:</strong> Clique duplo em qualquer nome para editar manualmente
+                <strong>💡 Dica:</strong> Para editar, use <strong>duplo clique</strong> ou <strong>botão direito</strong> em qualquer nome
             </p>
         </div>
         
@@ -1164,9 +1164,9 @@
                 const row = document.createElement('tr');
                 
                 if (item.mesclar) {
-                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td colspan="3" class="mesclar"><span class="editavel" onclick="destacarMembro(\'' + item.pedOracao + '\')" ondblclick="editarCampo(' + i + ', \'pedOracao\')">' + item.pedOracao + '</span></td>';
+                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td colspan="3" class="mesclar"><span class="editavel" onclick="destacarMembro(\'' + item.pedOracao + '\')" oncontextmenu="editarCampo(' + i + ', \'pedOracao\'); return false;" ondblclick="editarCampo(' + i + ', \'pedOracao\')" title="Clique duplo ou botão direito para editar">' + item.pedOracao + '</span></td>';
                 } else {
-                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.pedOracao + '\')" ondblclick="editarCampo(' + i + ', \'pedOracao\')">' + item.pedOracao + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.principal + '\')" ondblclick="editarCampo(' + i + ', \'principal\')">' + item.principal + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.lateral + '\')" ondblclick="editarCampo(' + i + ', \'lateral\')">' + item.lateral + '</span></td>';
+                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.pedOracao + '\')" oncontextmenu="editarCampo(' + i + ', \'pedOracao\'); return false;" ondblclick="editarCampo(' + i + ', \'pedOracao\')" title="Clique duplo ou botão direito para editar">' + item.pedOracao + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.principal + '\')" oncontextmenu="editarCampo(' + i + ', \'principal\'); return false;" ondblclick="editarCampo(' + i + ', \'principal\')" title="Clique duplo ou botão direito para editar">' + item.principal + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.lateral + '\')" oncontextmenu="editarCampo(' + i + ', \'lateral\'); return false;" ondblclick="editarCampo(' + i + ', \'lateral\')" title="Clique duplo ou botão direito para editar">' + item.lateral + '</span></td>';
                 }
                 
                 tbody.appendChild(row);
@@ -1288,7 +1288,10 @@
             
             // Restaurar elemento
             const elemento = editandoAtualmente.elementoOriginal;
-            elemento.innerHTML = '<span class="editavel" onclick="destacarMembro(\'' + novoValor + '\')" ondblclick="editarCampo(' + editandoAtualmente.indice + ', \'' + editandoAtualmente.campo + '\')">' + novoValor + '</span>';
+            const indice = editandoAtualmente.indice;
+            const campo = editandoAtualmente.campo;
+            
+            elemento.innerHTML = '<span class="editavel" onclick="destacarMembro(\'' + novoValor + '\')" oncontextmenu="editarCampo(' + indice + ', \'' + campo + '\'); return false;" ondblclick="editarCampo(' + indice + ', \'' + campo + '\')" title="Clique duplo ou botão direito para editar">' + novoValor + '</span>';
             elemento.classList.remove('editando');
             
             // Limpar estado
