@@ -4,783 +4,620 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escala de Porteiros - CCB Santa Amélia</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .lucide {
-            width: 1em;
-            height: 1em;
-            display: inline-block;
-            vertical-align: middle;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #1976d2;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .controls input, .controls button {
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .controls input:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+        
+        .btn-gerar {
+            background: #1976d2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-gerar:hover {
+            background: #1565c0;
+        }
+        
+        .btn-pdf {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-pdf:hover {
+            background: #c62828;
+        }
+        
+        .tabela-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #f5f5f5;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        tr:hover {
+            background: #e3f2fd;
+        }
+        
+        .servico-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .oficial { background: #e3f2fd; color: #1976d2; }
+        .rjm { background: #e8f5e8; color: #388e3c; }
+        .rsetor { background: #fff3e0; color: #f57c00; }
+        .rlocal { background: #f3e5f5; color: #7b1fa2; }
+        .ensaio { background: #e8eaf6; color: #3f51b5; }
+        
+        .mesclar {
+            text-align: center;
+            font-weight: bold;
+            background: #f0f0f0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .controls input, .controls button {
+                width: 100%;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Gerador de Escalas de Serviço</h1>
+            <p>Congregação Cristã no Brasil - Santa Amélia - Curitiba PR</p>
+        </div>
+        
+        <div class="controls">
+            <label for="mesAno">📅 Selecionar Mês:</label>
+            <input type="month" id="mesAno" onchange="gerarEscala()">
+            <button class="btn-gerar" onclick="gerarEscala()">🔄 Gerar Escala</button>
+            <button class="btn-pdf" onclick="gerarPDF()">📄 Gerar PDF</button>
+        </div>
+        
+        <div class="tabela-container">
+            <table id="tabelaEscala">
+                <thead>
+                    <tr>
+                        <th>Dia</th>
+                        <th>Dia da Semana</th>
+                        <th>Serviço</th>
+                        <th>Ped Oração</th>
+                        <th>Principal</th>
+                        <th>Lateral</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabela">
+                    <!-- Dados serão inseridos aqui -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>✅ Sistema de Escalas Implementado</p>
+            <p>🎯 Distribuição Justa e Inteligente</p>
+        </div>
+    </div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-
-        // Ícones Lucide simplificados
-        const Download = () => (
-            <svg className="lucide" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4m7-10l-4 4m0 0l4 4m-4-4h12" />
-            </svg>
-        );
-
-        const Calendar = () => (
-            <svg className="lucide" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-                <line x1="16" x2="16" y1="2" y2="6"/>
-                <line x1="8" x2="8" y1="2" y2="6"/>
-                <line x1="3" x2="21" y1="10" y2="10"/>
-            </svg>
-        );
-
-        const Users = () => (
-            <svg className="lucide" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M22 21v-2a4 4 0 00-3-3.87"/>
-                <path d="M16 3.13a4 4 0 010 7.75"/>
-            </svg>
-        );
-
-        const FileText = () => (
-            <svg className="lucide" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                <polyline points="14,2 14,8 20,8"/>
-                <line x1="16" x2="8" y1="13" y2="13"/>
-                <line x1="16" x2="8" y1="17" y2="17"/>
-                <polyline points="10,9 9,9 8,9"/>
-            </svg>
-        );
-
-        const AlertTriangle = () => (
-            <svg className="lucide" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                <line x1="12" x2="12" y1="9" y2="13"/>
-                <line x1="12" x2="12.01" y1="17" y2="17"/>
-            </svg>
-        );
-
-        const EscalaServicoApp = () => {
-            const [mesAno, setMesAno] = useState(() => {
-                const hoje = new Date();
-                return `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-            });
-
-            // Grupos específicos por dia da semana
-            const gruposPorDia = {
-                terca: ['AFONSO', 'ALGACIR', 'JONAS', 'ZANIN'],
-                quinta: ['EDI', 'MARCOS', 'SAULO'],
-                sabado: ['JOSÉ CARLOS', 'RODINEI', 'VANDERLEI', 'ELIZEU'],
-                domingoOficial: ['JOSÉ CARDOSO', 'ODEMIR', 'SAMUEL', 'EDIVAN']
-            };
-
-            // Sequências dos serviços especiais
-            const sequencias = {
-                rjm: ['MARCOS', 'JOSÉ CARDOSO', 'EDI', 'EDIVAN', 'JOSÉ CARLOS', 'VANDERLEI', 'ELIZEU', 'ZANIN', 'ALGACIR', 'SAULO', 'RODINEI', 'SAMUEL', 'CÉLIO', 'JONAS', 'AFONSO'],
-                rSetor: ['ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'JONAS', 'CÉLIO', 'EDI', 'SAMUEL', 'JOSÉ CARLOS', 'MARCOS', 'EDIVAN', 'SAULO'],
-                rLocal: ['EDI', 'SAMUEL', 'EDIVAN', 'JONAS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'CÉLIO', 'SAULO', 'MARCOS'],
-                ensaio: ['RODINEI', 'ALGACIR', 'VANDERLEI', 'SAULO', 'CÉLIO', 'EDI', 'SAMUEL', 'EDIVAN', 'MARCOS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'JONAS']
-            };
-
-            // Estado para controlar a rotação de cada grupo
-            const [rotacaoGrupos, setRotacaoGrupos] = useState({
-                terca: { indiceInicial: 0, ultimoMes: null },
-                quinta: { indiceInicial: 0, ultimoMes: null },
-                sabado: { indiceInicial: 0, ultimoMes: null },
-                domingoOficial: { indiceInicial: 0, ultimoMes: null },
-                rjm: { indiceInicial: 0, ultimoMes: null },
-                rSetor: { indiceInicial: 0, ultimoMes: null },
-                rLocal: { indiceInicial: 0, ultimoMes: null },
-                ensaio: { indiceInicial: 0, ultimoMes: null }
-            });
-
-            const [escalaEditavel, setEscalaEditavel] = useState([]);
-            const [membroDestacado, setMembroDestacado] = useState(null);
-            const [conflitosDetectados, setConflitosDetectados] = useState([]);
-
-            const diasSemana = ['DOMINGO', '2ª FEIRA', '3ª FEIRA', '4ª FEIRA', '5ª FEIRA', '6ª FEIRA', 'SÁBADO'];
-
-            const getDiasNoMes = (ano, mes) => {
-                return new Date(ano, mes, 0).getDate();
-            };
-
-            const getDiaSemana = (ano, mes, dia) => {
-                return new Date(ano, mes - 1, dia).getDay();
-            };
-
-            const encontrarNesimoDay = (ano, mes, diaSemana, nesimo) => {
-                let contador = 0;
-                const diasNoMes = getDiasNoMes(ano, mes);
-                
-                for (let dia = 1; dia <= diasNoMes; dia++) {
-                    if (getDiaSemana(ano, mes, dia) === diaSemana) {
-                        contador++;
-                        if (contador === nesimo) {
-                            return dia;
-                        }
-                    }
-                }
-                return null;
-            };
-
-            const temRLocal = (mes) => {
-                return [1, 4, 7, 10].includes(mes);
-            };
-
-            const distribuirGrupoComFolga = (grupo, indiceInicial, totalOcorrencias) => {
-                const escalacao = [];
-                let indiceAtual = indiceInicial;
-                
-                for (let i = 0; i < totalOcorrencias; i++) {
-                    const posicoes = [];
-                    const indiceFolga = (indiceAtual + 3) % grupo.length;
-                    
-                    for (let j = 0; j < 3; j++) {
-                        const indiceAtualPessoa = (indiceAtual + j) % grupo.length;
-                        if (indiceAtualPessoa !== indiceFolga) {
-                            posicoes.push(grupo[indiceAtualPessoa]);
-                        }
-                    }
-                    
-                    while (posicoes.length < 3) {
-                        for (let k = 0; k < grupo.length; k++) {
-                            const indiceK = (indiceAtual + k) % grupo.length;
-                            if (indiceK !== indiceFolga && !posicoes.includes(grupo[indiceK])) {
-                                posicoes.push(grupo[indiceK]);
-                                break;
-                            }
-                        }
-                    }
-                    
-                    escalacao.push({
-                        pedOracao: posicoes[0],
-                        principal: posicoes[1],
-                        lateral: posicoes[2]
-                    });
-                    
-                    indiceAtual = indiceFolga;
-                }
-                
-                return escalacao;
-            };
-
-            const distribuirGrupoSemFolga = (grupo, indiceInicial, totalOcorrencias) => {
-                const escalacao = [];
-                
-                for (let i = 0; i < totalOcorrencias; i++) {
-                    const posicaoBase = (indiceInicial + i) % grupo.length;
-                    
-                    escalacao.push({
-                        pedOracao: grupo[posicaoBase],
-                        principal: grupo[(posicaoBase + 1) % grupo.length],
-                        lateral: grupo[(posicaoBase + 2) % grupo.length]
-                    });
-                }
-                
-                return escalacao;
-            };
-
-            const distribuirSequenciaEspecial = (sequencia, indiceInicial, totalOcorrencias, duasPessoas = false) => {
-                const escalacao = [];
-                
-                for (let i = 0; i < totalOcorrencias; i++) {
-                    const indiceBase = (indiceInicial + (i * (duasPessoas ? 2 : 1))) % sequencia.length;
-                    
-                    if (duasPessoas) {
-                        escalacao.push({
-                            pedOracao: sequencia[indiceBase],
-                            lateral: sequencia[(indiceBase + 1) % sequencia.length]
-                        });
-                    } else {
-                        escalacao.push({
-                            pessoa: sequencia[indiceBase]
-                        });
-                    }
-                }
-                
-                return escalacao;
-            };
-
-            const detectarConflitos = (escala) => {
-                const conflitos = [];
-                const diasComServicos = {};
-                
-                escala.forEach(item => {
-                    if (!diasComServicos[item.dia]) {
-                        diasComServicos[item.dia] = [];
-                    }
-                    diasComServicos[item.dia].push(item);
-                });
-                
-                Object.keys(diasComServicos).forEach(dia => {
-                    const servicosDoDia = diasComServicos[dia];
-                    if (servicosDoDia.length > 1) {
-                        servicosDoDia.forEach(servico1 => {
-                            servicosDoDia.forEach(servico2 => {
-                                if (servico1.id !== servico2.id) {
-                                    const pessoasServico1 = [servico1.pedOracao, servico1.principal, servico1.lateral].filter(p => p && p !== '-' && p !== 'MESCLAR');
-                                    const pessoasServico2 = [servico2.pedOracao, servico2.principal, servico2.lateral].filter(p => p && p !== '-' && p !== 'MESCLAR');
-                                    
-                                    pessoasServico1.forEach(pessoa => {
-                                        if (pessoasServico2.includes(pessoa)) {
-                                            const conflitoDuplicado = conflitos.find(c => 
-                                                c.dia === parseInt(dia) && 
-                                                c.pessoa === pessoa && 
-                                                JSON.stringify(c.servicos.sort()) === JSON.stringify([servico1.servico, servico2.servico].sort())
-                                            );
-                                            
-                                            if (!conflitoDuplicado) {
-                                                conflitos.push({
-                                                    dia: parseInt(dia),
-                                                    pessoa,
-                                                    servicos: [servico1.servico, servico2.servico]
-                                                });
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        });
-                    }
-                });
-                
-                return conflitos;
-            };
-
-            const gerarEscala = () => {
-                const [ano, mes] = mesAno.split('-').map(Number);
-                const diasNoMes = getDiasNoMes(ano, mes);
-                const escala = [];
-                
-                const contadores = { terca: 0, quinta: 0, sabado: 0, domingo: 0 };
-                const diasPorTipo = { terca: [], quinta: [], sabado: [], domingo: [] };
-                
-                for (let dia = 1; dia <= diasNoMes; dia++) {
-                    const diaSemana = getDiaSemana(ano, mes, dia);
-                    
-                    if (diaSemana === 2) {
-                        contadores.terca++;
-                        diasPorTipo.terca.push(dia);
-                    } else if (diaSemana === 4) {
-                        contadores.quinta++;
-                        diasPorTipo.quinta.push(dia);
-                    } else if (diaSemana === 6) {
-                        contadores.sabado++;
-                        diasPorTipo.sabado.push(dia);
-                    } else if (diaSemana === 0) {
-                        contadores.domingo++;
-                        diasPorTipo.domingo.push(dia);
-                    }
-                }
-
-                const escalacaoTerca = distribuirGrupoComFolga(gruposPorDia.terca, rotacaoGrupos.terca.indiceInicial, contadores.terca);
-                const escalacaoQuinta = distribuirGrupoSemFolga(gruposPorDia.quinta, rotacaoGrupos.quinta.indiceInicial, contadores.quinta);
-                const escalacaoSabado = distribuirGrupoComFolga(gruposPorDia.sabado, rotacaoGrupos.sabado.indiceInicial, contadores.sabado);
-                const escalacaoDomingo = distribuirGrupoComFolga(gruposPorDia.domingoOficial, rotacaoGrupos.domingoOficial.indiceInicial, contadores.domingo);
-                const escalacaoRJM = distribuirSequenciaEspecial(sequencias.rjm, rotacaoGrupos.rjm.indiceInicial, contadores.domingo, true);
-
-                // 3ª feiras
-                diasPorTipo.terca.forEach((dia, index) => {
-                    const escalacaoDia = escalacaoTerca[index];
-                    escala.push({
-                        id: `${dia}-OFICIAL-TERCA`,
-                        dia,
-                        diaSemana: '3ª FEIRA',
-                        servico: 'OFICIAL',
-                        pedOracao: escalacaoDia.pedOracao,
-                        principal: escalacaoDia.principal,
-                        lateral: escalacaoDia.lateral
-                    });
-                });
-
-                // 5ª feiras
-                diasPorTipo.quinta.forEach((dia, index) => {
-                    const escalacaoDia = escalacaoQuinta[index];
-                    escala.push({
-                        id: `${dia}-OFICIAL-QUINTA`,
-                        dia,
-                        diaSemana: '5ª FEIRA',
-                        servico: 'OFICIAL',
-                        pedOracao: escalacaoDia.pedOracao,
-                        principal: escalacaoDia.principal,
-                        lateral: escalacaoDia.lateral
-                    });
-                });
-
-                // Sábados
-                diasPorTipo.sabado.forEach((dia, index) => {
-                    const escalacaoDia = escalacaoSabado[index];
-                    escala.push({
-                        id: `${dia}-OFICIAL-SABADO`,
-                        dia,
-                        diaSemana: 'SÁBADO',
-                        servico: 'OFICIAL',
-                        pedOracao: escalacaoDia.pedOracao,
-                        principal: escalacaoDia.principal,
-                        lateral: escalacaoDia.lateral
-                    });
-                });
-
-                // Domingos - RJM primeiro, depois OFICIAL
-                diasPorTipo.domingo.forEach((dia, index) => {
-                    // RJM
-                    const escalacaoRJMDia = escalacaoRJM[index];
-                    escala.push({
-                        id: `${dia}-RJM`,
-                        dia,
-                        diaSemana: 'DOMINGO',
-                        servico: 'RJM',
-                        pedOracao: escalacaoRJMDia.pedOracao,
-                        principal: '-',
-                        lateral: escalacaoRJMDia.lateral
-                    });
-
-                    // OFICIAL
-                    const escalacaoDia = escalacaoDomingo[index];
-                    escala.push({
-                        id: `${dia}-OFICIAL-DOMINGO`,
-                        dia,
-                        diaSemana: 'DOMINGO',
-                        servico: 'OFICIAL',
-                        pedOracao: escalacaoDia.pedOracao,
-                        principal: escalacaoDia.principal,
-                        lateral: escalacaoDia.lateral
-                    });
-                });
-
-                // R. SETOR
-                const terceiraSegunda = encontrarNesimoDay(ano, mes, 1, 3);
-                if (terceiraSegunda) {
-                    const escalacaoRSetor = distribuirSequenciaEspecial(sequencias.rSetor, rotacaoGrupos.rSetor.indiceInicial, 1, false);
-                    
-                    escala.push({
-                        id: `${terceiraSegunda}-RSETOR`,
-                        dia: terceiraSegunda,
-                        diaSemana: '2ª FEIRA',
-                        servico: 'R. SETOR',
-                        pedOracao: escalacaoRSetor[0].pessoa,
-                        principal: 'MESCLAR',
-                        lateral: 'MESCLAR',
-                        mesclarColunas: true
-                    });
-                }
-
-                // R. LOCAL
-                if (temRLocal(mes)) {
-                    const quartaSegunda = encontrarNesimoDay(ano, mes, 1, 4);
-                    if (quartaSegunda) {
-                        const escalacaoRLocal = distribuirSequenciaEspecial(sequencias.rLocal, rotacaoGrupos.rLocal.indiceInicial, 1, false);
-                        
-                        escala.push({
-                            id: `${quartaSegunda}-RLOCAL`,
-                            dia: quartaSegunda,
-                            diaSemana: '2ª FEIRA',
-                            servico: 'R. LOCAL',
-                            pedOracao: escalacaoRLocal[0].pessoa,
-                            principal: 'MESCLAR',
-                            lateral: 'MESCLAR',
-                            mesclarColunas: true
-                        });
-                    }
-                }
-
-                // ENSAIO
-                const quartaSexta = encontrarNesimoDay(ano, mes, 5, 4);
-                if (quartaSexta) {
-                    const escalacaoEnsaio = distribuirSequenciaEspecial(sequencias.ensaio, rotacaoGrupos.ensaio.indiceInicial, 1, true);
-                    
-                    escala.push({
-                        id: `${quartaSexta}-ENSAIO`,
-                        dia: quartaSexta,
-                        diaSemana: '6ª FEIRA',
-                        servico: 'ENSAIO',
-                        pedOracao: escalacaoEnsaio[0].pedOracao,
-                        principal: '-',
-                        lateral: escalacaoEnsaio[0].lateral
-                    });
-                }
-
-                escala.sort((a, b) => a.dia - b.dia);
-                
-                const conflitos = detectarConflitos(escala);
-                setConflitosDetectados(conflitos);
-                
-                return escala;
-            };
-
-            useEffect(() => {
-                setEscalaEditavel(gerarEscala());
-                setMembroDestacado(null);
-            }, [mesAno]);
-
-            const editarCampo = (id, campo, novoValor) => {
-                setEscalaEditavel(prev => 
-                    prev.map(item => 
-                        item.id === id ? { ...item, [campo]: novoValor } : item
-                    )
-                );
-            };
-
-            const destacarMembro = (nome) => {
-                if (nome === '-' || nome === 'MESCLAR' || nome === membroDestacado) {
-                    setMembroDestacado(null);
-                } else {
-                    setMembroDestacado(nome);
-                }
-            };
-
-            const deveDestacar = (nome) => {
-                return membroDestacado && nome === membroDestacado;
-            };
-
-            const exportarPDF = () => {
-                const [ano, mes] = mesAno.split('-');
-                const meses = [
-                    'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
-                    'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
-                ];
-                const mesNome = meses[parseInt(mes) - 1];
-                
-                const novaJanela = window.open('', '_blank');
-                
-                let linhasTabela = '';
-                escalaEditavel.forEach(item => {
-                    if (item.mesclarColunas) {
-                        linhasTabela += `
-                            <tr>
-                                <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.dia}</td>
-                                <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.diaSemana}</td>
-                                <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.servico}</td>
-                                <td colspan="3" style="border: 1px solid #333; padding: 8px; text-align: center; background-color: #f5f5f5; font-weight: bold;">${item.pedOracao}</td>
-                            </tr>
-                        `;
-                    } else {
-                        linhasTabela += `
-                            <tr>
-                                <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.dia}</td>
-                                <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.diaSemana}</td>
-                                <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.servico}</td>
-                                <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.pedOracao}</td>
-                                <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.principal}</td>
-                                <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.lateral}</td>
-                            </tr>
-                        `;
-                    }
-                });
-                
-                const htmlContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>Escala de Porteiros - ${mesNome} ${ano}</title>
-                        <style>
-                            @page { margin: 2cm; size: A4; }
-                            body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; }
-                            .cabecalho { text-align: center; margin-bottom: 30px; page-break-inside: avoid; }
-                            .cabecalho h1 { font-size: 16px; font-weight: bold; margin: 5px 0; text-transform: uppercase; }
-                            .cabecalho h2 { font-size: 14px; font-weight: bold; margin: 5px 0; text-transform: uppercase; }
-                            .cabecalho h3 { font-size: 14px; font-weight: bold; margin: 5px 0; text-transform: uppercase; }
-                            table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
-                            th { background-color: #f0f0f0; font-weight: bold; text-align: center; padding: 10px 8px; border: 1px solid #333; text-transform: uppercase; font-size: 11px; }
-                            td { text-align: center; padding: 8px; border: 1px solid #333; }
-                            tr:nth-child(even) { background-color: #f9f9f9; }
-                            @media print { body { print-color-adjust: exact; } }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="cabecalho">
-                            <h1>CONGREGAÇÃO CRISTÃ NO BRASIL – SANTA AMÉLIA – CURITIBA PR</h1>
-                            <h2>ESCALA DE PORTEIROS</h2>
-                            <h3>${mesNome} DE ${ano}</h3>
-                        </div>
-                        
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="width: 8%;">DIA</th>
-                                    <th style="width: 15%;">DIA DA SEMANA</th>
-                                    <th style="width: 12%;">SERVIÇO</th>
-                                    <th style="width: 21%;">PED ORAÇÃO</th>
-                                    <th style="width: 22%;">PRINCIPAL</th>
-                                    <th style="width: 22%;">LATERAL</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${linhasTabela}
-                            </tbody>
-                        </table>
-                        
-                        <script>
-                            window.onload = function() {
-                                window.print();
-                            }
-                        </script>
-                    </body>
-                    </html>
-                `;
-                
-                novaJanela.document.write(htmlContent);
-                novaJanela.document.close();
-            };
-
-            const todosMembros = [
-                ...new Set([
-                    ...gruposPorDia.terca,
-                    ...gruposPorDia.quinta,
-                    ...gruposPorDia.sabado,
-                    ...gruposPorDia.domingoOficial,
-                    ...sequencias.rjm
-                ])
-            ];
-
-            const CampoEditavel = ({ valor, onMudar, destacado, mesclarColunas = false }) => {
-                const [editando, setEditando] = useState(false);
-                const [valorLocal, setValorLocal] = useState(valor);
-
-                const salvar = () => {
-                    onMudar(valorLocal);
-                    setEditando(false);
-                };
-
-                const cancelar = () => {
-                    setValorLocal(valor);
-                    setEditando(false);
-                };
-
-                if (valor === 'MESCLAR') {
-                    return null;
-                }
-
-                if (editando) {
-                    return React.createElement('div', { className: "flex items-center gap-1" },
-                        React.createElement('select', {
-                            value: valorLocal,
-                            onChange: (e) => setValorLocal(e.target.value),
-                            className: "text-xs border border-gray-300 rounded px-1 py-0.5 bg-white",
-                            autoFocus: true
-                        },
-                            React.createElement('option', { value: "-" }, "-"),
-                            todosMembros.map(membro => 
-                                React.createElement('option', { key: membro, value: membro }, membro)
-                            )
-                        ),
-                        React.createElement('button', { 
-                            onClick: salvar, 
-                            className: "text-green-600 hover:text-green-800 text-xs" 
-                        }, "✓"),
-                        React.createElement('button', { 
-                            onClick: cancelar, 
-                            className: "text-red-600 hover:text-red-800 text-xs" 
-                        }, "✕")
-                    );
-                }
-
-                return React.createElement('span', {
-                    onClick: () => {
-                        if (valor !== '-') destacarMembro(valor);
-                    },
-                    onDoubleClick: () => setEditando(true),
-                    className: `cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded transition-colors ${
-                        destacado ? 'bg-yellow-200 font-bold text-yellow-800' : ''
-                    } ${valor !== '-' ? 'hover:bg-blue-50' : ''} ${mesclarColunas ? 'text-center font-medium' : ''}`,
-                    title: valor !== '-' ? "Clique para destacar | Duplo clique para editar" : "Duplo clique para editar"
-                }, valor);
-            };
-
-            const formatarMesAno = (mesAno) => {
-                const [ano, mes] = mesAno.split('-');
-                const meses = [
-                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-                ];
-                return `${meses[parseInt(mes) - 1]} de ${ano}`;
-            };
-
-            return React.createElement('div', { className: "min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4" },
-                React.createElement('div', { className: "max-w-6xl mx-auto" },
-                    // Cabeçalho
-                    React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-6 mb-6" },
-                        React.createElement('div', { className: "flex items-center justify-between flex-wrap gap-4" },
-                            React.createElement('div', { className: "flex items-center gap-3" },
-                                React.createElement(Users, { className: "h-8 w-8 text-blue-600" }),
-                                React.createElement('div', null,
-                                    React.createElement('h1', { className: "text-2xl font-bold text-gray-800" }, "Gerador de Escalas de Serviço"),
-                                    React.createElement('p', { className: "text-gray-600" }, "Sistema completo com detecção inteligente de conflitos")
-                                )
-                            ),
-                            React.createElement('div', { className: "flex items-center gap-4" },
-                                React.createElement('div', { className: "flex items-center gap-2" },
-                                    React.createElement(Calendar, { className: "h-5 w-5 text-gray-600" }),
-                                    React.createElement('input', {
-                                        type: "month",
-                                        value: mesAno,
-                                        onChange: (e) => setMesAno(e.target.value),
-                                        className: "px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    })
-                                ),
-                                membroDestacado && React.createElement('div', { className: "flex items-center gap-2 bg-yellow-100 px-3 py-2 rounded-lg" },
-                                    React.createElement('span', { className: "text-sm font-medium text-yellow-800" }, `Destacando: ${membroDestacado}`),
-                                    React.createElement('button', {
-                                        onClick: () => setMembroDestacado(null),
-                                        className: "text-yellow-600 hover:text-yellow-800"
-                                    }, "✕")
-                                ),
-                                React.createElement('button', {
-                                    onClick: exportarPDF,
-                                    className: "flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
-                                },
-                                    React.createElement(Download, { className: "h-4 w-4" }),
-                                    "Gerar PDF"
-                                )
-                            )
-                        )
-                    ),
-
-                    // Alertas de conflitos
-                    conflitosDetectados.length > 0 && React.createElement('div', { className: "bg-red-50 border border-red-200 rounded-xl p-4 mb-6" },
-                        React.createElement('div', { className: "flex items-center gap-2 mb-2" },
-                            React.createElement(AlertTriangle, { className: "h-5 w-5 text-red-600" }),
-                            React.createElement('h3', { className: "font-semibold text-red-800" }, "Conflitos de Mesmo Dia Detectados")
-                        ),
-                        React.createElement('div', { className: "text-sm text-red-700" },
-                            conflitosDetectados.map((conflito, index) =>
-                                React.createElement('p', { key: index },
-                                    `Dia ${conflito.dia}: `,
-                                    React.createElement('strong', null, conflito.pessoa),
-                                    ` escalado em ${conflito.servicos.join(' e ')}`
-                                )
-                            )
-                        ),
-                        React.createElement('p', { className: "text-xs text-red-600 mt-2" },
-                            "Edite manualmente para resolver os conflitos. Prioridade: evitar mesmo dia sempre!"
-                        )
-                    ),
-
-                    // Informações dos grupos
-                    React.createElement('div', { className: "bg-white rounded-xl shadow-lg p-6 mb-6" },
-                        React.createElement('div', { className: "flex items-center gap-3 mb-4" },
-                            React.createElement(FileText, { className: "h-6 w-6 text-blue-600" }),
-                            React.createElement('h2', { className: "text-xl font-semibold text-gray-800" },
-                                `Sistema Completo - ${formatarMesAno(mesAno)}`
-                            )
-                        ),
-                        React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm" },
-                            React.createElement('div', { className: "bg-blue-50 p-3 rounded-lg" },
-                                React.createElement('p', { className: "font-semibold text-blue-800" }, "Serviços Semanais"),
-                                React.createElement('p', { className: "text-gray-600 text-xs" }, "Grupos fixos por dia"),
-                                React.createElement('p', { className: "text-gray-500 text-xs mt-1" }, "Regras intocáveis")
-                            ),
-                            React.createElement('div', { className: "bg-green-50 p-3 rounded-lg" },
-                                React.createElement('p', { className: "font-semibold text-green-800" }, "RJM (15 pessoas)"),
-                                React.createElement('p', { className: "text-gray-600 text-xs" }, "2 por domingo"),
-                                React.createElement('p', { className: "text-gray-500 text-xs mt-1" }, "CÉLIO: 2x/mês")
-                            ),
-                            React.createElement('div', { className: "bg-orange-50 p-3 rounded-lg" },
-                                React.createElement('p', { className: "font-semibold text-orange-800" }, "R. SETOR/LOCAL"),
-                                React.createElement('p', { className: "text-gray-600 text-xs" }, "1 pessoa (centralizado)"),
-                                React.createElement('p', { className: "text-gray-500 text-xs mt-1" }, "Sequências específicas")
-                            ),
-                            React.createElement('div', { className: "bg-purple-50 p-3 rounded-lg" },
-                                React.createElement('p', { className: "font-semibold text-purple-800" }, "ENSAIO (15 pessoas)"),
-                                React.createElement('p', { className: "text-gray-600 text-xs" }, "2 por mês"),
-                                React.createElement('p', { className: "text-gray-500 text-xs mt-1" }, "4ª sexta-feira")
-                            )
-                        )
-                    ),
-
-                    // Tabela da escala
-                    React.createElement('div', { className: "bg-white rounded-xl shadow-lg overflow-hidden" },
-                        React.createElement('div', { className: "overflow-x-auto" },
-                            React.createElement('table', { className: "w-full" },
-                                React.createElement('thead', { className: "bg-gray-50" },
-                                    React.createElement('tr', null,
-                                        React.createElement('th', { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "Dia"),
-                                        React.createElement('th', { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "Dia da Semana"),
-                                        React.createElement('th', { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "Serviço"),
-                                        React.createElement('th', { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "Ped Oração"),
-                                        React.createElement('th', { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "Principal"),
-                                        React.createElement('th', { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "Lateral")
-                                    )
-                                ),
-                                React.createElement('tbody', { className: "bg-white divide-y divide-gray-200" },
-                                    escalaEditavel.map((item, index) =>
-                                        React.createElement('tr', { 
-                                            key: item.id, 
-                                            className: index % 2 === 0 ? 'bg-white' : 'bg-gray-50' 
-                                        },
-                                            React.createElement('td', { className: "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" }, item.dia),
-                                            React.createElement('td', { className: "px-6 py-4 whitespace-nowrap text-sm text-gray-500" }, item.diaSemana),
-                                            React.createElement('td', { className: "px-6 py-4 whitespace-nowrap" },
-                                                React.createElement('span', {
-                                                    className: `inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                        item.servico === 'OFICIAL' ? 'bg-blue-100 text-blue-800' :
-                                                        item.servico === 'RJM' ? 'bg-green-100 text-green-800' :
-                                                        item.servico === 'R. SETOR' ? 'bg-yellow-100 text-yellow-800' :
-                                                        item.servico === 'R. LOCAL' ? 'bg-purple-100 text-purple-800' :
-                                                        'bg-indigo-100 text-indigo-800'
-                                                    }`
-                                                }, item.servico)
-                                            ),
-                                            item.mesclarColunas ? 
-                                                React.createElement('td', { 
-                                                    colSpan: "3", 
-                                                    className: "px-6 py-4 text-sm text-gray-900 text-center bg-gray-50" 
-                                                },
-                                                    React.createElement(CampoEditavel, {
-                                                        valor: item.pedOracao,
-                                                        onMudar: (novoValor) => editarCampo(item.id, 'pedOracao', novoValor),
-                                                        destacado: deveDestacar(item.pedOracao),
-                                                        mesclarColunas: true
-                                                    })
-                                                ) :
-                                                React.createElement(React.Fragment, null,
-                                                    React.createElement('td', { className: "px-6 py-4 text-sm text-gray-900" },
-                                                        React.createElement(CampoEditavel, {
-                                                            valor: item.pedOracao,
-                                                            onMudar: (novoValor) => editarCampo(item.id, 'pedOracao', novoValor),
-                                                            destacado: deveDestacar(item.pedOracao)
-                                                        })
-                                                    ),
-                                                    React.createElement('td', { className: "px-6 py-4 text-sm text-gray-900" },
-                                                        React.createElement(CampoEditavel, {
-                                                            valor: item.principal,
-                                                            onMudar: (novoValor) => editarCampo(item.id, 'principal', novoValor),
-                                                            destacado: deveDestacar(item.principal)
-                                                        })
-                                                    ),
-                                                    React.createElement('td', { className: "px-6 py-4 text-sm text-gray-900" },
-                                                        React.createElement(CampoEditavel, {
-                                                            valor: item.lateral,
-                                                            onMudar: (novoValor) => editarCampo(item.id, 'lateral', novoValor),
-                                                            destacado: deveDestacar(item.lateral)
-                                                        })
-                                                    )
-                                                )
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    ),
-
-                    // Rodapé
-                    React.createElement('div', { className: "mt-6 text-center text-sm text-gray-600" },
-                        React.createElement('p', null, "Sistema completo implementado com detecção automática de conflitos"),
-                        React.createElement('p', null, "Grupos semanais fixos + Sequências especiais flexíveis"),
-                        conflitosDetectados.length === 0 && React.createElement('p', { className: "text-green-600 font-medium" }, "✓ Nenhum conflito de mesmo dia detectado!")
-                    )
-                )
-            );
+    <script>
+        // Grupos por dia da semana
+        const gruposPorDia = {
+            terca: ['AFONSO', 'ALGACIR', 'JONAS', 'ZANIN'],
+            quinta: ['EDI', 'MARCOS', 'SAULO'],
+            sabado: ['JOSÉ CARLOS', 'RODINEI', 'VANDERLEI', 'ELIZEU'],
+            domingoOficial: ['JOSÉ CARDOSO', 'ODEMIR', 'SAMUEL', 'EDIVAN']
         };
 
-        ReactDOM.render(React.createElement(EscalaServicoApp), document.getElementById('root'));
+        // Sequências dos serviços especiais
+        const sequencias = {
+            rjm: ['MARCOS', 'JOSÉ CARDOSO', 'EDI', 'EDIVAN', 'JOSÉ CARLOS', 'VANDERLEI', 'ELIZEU', 'ZANIN', 'ALGACIR', 'SAULO', 'RODINEI', 'SAMUEL', 'CÉLIO', 'JONAS', 'AFONSO'],
+            rSetor: ['ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'JONAS', 'CÉLIO', 'EDI', 'SAMUEL', 'JOSÉ CARLOS', 'MARCOS', 'EDIVAN', 'SAULO'],
+            rLocal: ['EDI', 'SAMUEL', 'EDIVAN', 'JONAS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'CÉLIO', 'SAULO', 'MARCOS'],
+            ensaio: ['RODINEI', 'ALGACIR', 'VANDERLEI', 'SAULO', 'CÉLIO', 'EDI', 'SAMUEL', 'EDIVAN', 'MARCOS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'JONAS']
+        };
+
+        const diasSemana = ['DOMINGO', '2ª FEIRA', '3ª FEIRA', '4ª FEIRA', '5ª FEIRA', '6ª FEIRA', 'SÁBADO'];
+
+        // Inicializar com mês atual
+        window.onload = function() {
+            const hoje = new Date();
+            const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+            document.getElementById('mesAno').value = mesAtual;
+            gerarEscala();
+        };
+
+        function getDiasNoMes(ano, mes) {
+            return new Date(ano, mes, 0).getDate();
+        }
+
+        function getDiaSemana(ano, mes, dia) {
+            return new Date(ano, mes - 1, dia).getDay();
+        }
+
+        function encontrarNesimoDay(ano, mes, diaSemana, nesimo) {
+            let contador = 0;
+            const diasNoMes = getDiasNoMes(ano, mes);
+            
+            for (let dia = 1; dia <= diasNoMes; dia++) {
+                if (getDiaSemana(ano, mes, dia) === diaSemana) {
+                    contador++;
+                    if (contador === nesimo) {
+                        return dia;
+                    }
+                }
+            }
+            return null;
+        }
+
+        function temRLocal(mes) {
+            return [1, 4, 7, 10].includes(mes);
+        }
+
+        function distribuirGrupoComFolga(grupo, totalOcorrencias, indiceInicial = 0) {
+            const escalacao = [];
+            let indiceAtual = indiceInicial;
+            
+            for (let i = 0; i < totalOcorrencias; i++) {
+                const posicoes = [];
+                const indiceFolga = (indiceAtual + 3) % grupo.length;
+                
+                for (let j = 0; j < 3; j++) {
+                    const indiceAtualPessoa = (indiceAtual + j) % grupo.length;
+                    if (indiceAtualPessoa !== indiceFolga) {
+                        posicoes.push(grupo[indiceAtualPessoa]);
+                    }
+                }
+                
+                while (posicoes.length < 3) {
+                    for (let k = 0; k < grupo.length; k++) {
+                        const indiceK = (indiceAtual + k) % grupo.length;
+                        if (indiceK !== indiceFolga && !posicoes.includes(grupo[indiceK])) {
+                            posicoes.push(grupo[indiceK]);
+                            break;
+                        }
+                    }
+                }
+                
+                escalacao.push({
+                    pedOracao: posicoes[0],
+                    principal: posicoes[1],
+                    lateral: posicoes[2]
+                });
+                
+                indiceAtual = indiceFolga;
+            }
+            
+            return escalacao;
+        }
+
+        function distribuirGrupoSemFolga(grupo, totalOcorrencias, indiceInicial = 0) {
+            const escalacao = [];
+            
+            for (let i = 0; i < totalOcorrencias; i++) {
+                const posicaoBase = (indiceInicial + i) % grupo.length;
+                
+                escalacao.push({
+                    pedOracao: grupo[posicaoBase],
+                    principal: grupo[(posicaoBase + 1) % grupo.length],
+                    lateral: grupo[(posicaoBase + 2) % grupo.length]
+                });
+            }
+            
+            return escalacao;
+        }
+
+        function gerarEscala() {
+            const mesAnoValue = document.getElementById('mesAno').value;
+            if (!mesAnoValue) return;
+
+            const [ano, mes] = mesAnoValue.split('-').map(Number);
+            const diasNoMes = getDiasNoMes(ano, mes);
+            const escala = [];
+            
+            // Contar ocorrências
+            const contadores = { terca: 0, quinta: 0, sabado: 0, domingo: 0 };
+            const diasPorTipo = { terca: [], quinta: [], sabado: [], domingo: [] };
+            
+            for (let dia = 1; dia <= diasNoMes; dia++) {
+                const diaSemana = getDiaSemana(ano, mes, dia);
+                
+                if (diaSemana === 2) {
+                    contadores.terca++;
+                    diasPorTipo.terca.push(dia);
+                } else if (diaSemana === 4) {
+                    contadores.quinta++;
+                    diasPorTipo.quinta.push(dia);
+                } else if (diaSemana === 6) {
+                    contadores.sabado++;
+                    diasPorTipo.sabado.push(dia);
+                } else if (diaSemana === 0) {
+                    contadores.domingo++;
+                    diasPorTipo.domingo.push(dia);
+                }
+            }
+
+            // Gerar escalações
+            const escalacaoTerca = distribuirGrupoComFolga(gruposPorDia.terca, contadores.terca);
+            const escalacaoQuinta = distribuirGrupoSemFolga(gruposPorDia.quinta, contadores.quinta);
+            const escalacaoSabado = distribuirGrupoComFolga(gruposPorDia.sabado, contadores.sabado);
+            const escalacaoDomingo = distribuirGrupoComFolga(gruposPorDia.domingoOficial, contadores.domingo);
+
+            // Sequências especiais
+            let indiceRJM = 0;
+            let indiceRSetor = 0;
+            let indiceRLocal = 0;
+            let indiceEnsaio = 0;
+
+            // 3ª feiras
+            diasPorTipo.terca.forEach((dia, index) => {
+                const escalacaoDia = escalacaoTerca[index];
+                escala.push({
+                    dia,
+                    diaSemana: '3ª FEIRA',
+                    servico: 'OFICIAL',
+                    pedOracao: escalacaoDia.pedOracao,
+                    principal: escalacaoDia.principal,
+                    lateral: escalacaoDia.lateral,
+                    classe: 'oficial'
+                });
+            });
+
+            // 5ª feiras
+            diasPorTipo.quinta.forEach((dia, index) => {
+                const escalacaoDia = escalacaoQuinta[index];
+                escala.push({
+                    dia,
+                    diaSemana: '5ª FEIRA',
+                    servico: 'OFICIAL',
+                    pedOracao: escalacaoDia.pedOracao,
+                    principal: escalacaoDia.principal,
+                    lateral: escalacaoDia.lateral,
+                    classe: 'oficial'
+                });
+            });
+
+            // Sábados
+            diasPorTipo.sabado.forEach((dia, index) => {
+                const escalacaoDia = escalacaoSabado[index];
+                escala.push({
+                    dia,
+                    diaSemana: 'SÁBADO',
+                    servico: 'OFICIAL',
+                    pedOracao: escalacaoDia.pedOracao,
+                    principal: escalacaoDia.principal,
+                    lateral: escalacaoDia.lateral,
+                    classe: 'oficial'
+                });
+            });
+
+            // Domingos
+            diasPorTipo.domingo.forEach((dia, index) => {
+                // RJM primeiro
+                const membroRJM1 = sequencias.rjm[indiceRJM % sequencias.rjm.length];
+                const membroRJM2 = sequencias.rjm[(indiceRJM + 1) % sequencias.rjm.length];
+                indiceRJM += 2;
+
+                escala.push({
+                    dia,
+                    diaSemana: 'DOMINGO',
+                    servico: 'RJM',
+                    pedOracao: membroRJM1,
+                    principal: '-',
+                    lateral: membroRJM2,
+                    classe: 'rjm'
+                });
+
+                // OFICIAL depois
+                const escalacaoDia = escalacaoDomingo[index];
+                escala.push({
+                    dia,
+                    diaSemana: 'DOMINGO',
+                    servico: 'OFICIAL',
+                    pedOracao: escalacaoDia.pedOracao,
+                    principal: escalacaoDia.principal,
+                    lateral: escalacaoDia.lateral,
+                    classe: 'oficial'
+                });
+            });
+
+            // R. SETOR
+            const terceiraSegunda = encontrarNesimoDay(ano, mes, 1, 3);
+            if (terceiraSegunda) {
+                escala.push({
+                    dia: terceiraSegunda,
+                    diaSemana: '2ª FEIRA',
+                    servico: 'R. SETOR',
+                    pedOracao: sequencias.rSetor[indiceRSetor % sequencias.rSetor.length],
+                    principal: 'MESCLAR',
+                    lateral: 'MESCLAR',
+                    classe: 'rsetor',
+                    mesclar: true
+                });
+                indiceRSetor++;
+            }
+
+            // R. LOCAL
+            if (temRLocal(mes)) {
+                const quartaSegunda = encontrarNesimoDay(ano, mes, 1, 4);
+                if (quartaSegunda) {
+                    escala.push({
+                        dia: quartaSegunda,
+                        diaSemana: '2ª FEIRA',
+                        servico: 'R. LOCAL',
+                        pedOracao: sequencias.rLocal[indiceRLocal % sequencias.rLocal.length],
+                        principal: 'MESCLAR',
+                        lateral: 'MESCLAR',
+                        classe: 'rlocal',
+                        mesclar: true
+                    });
+                    indiceRLocal++;
+                }
+            }
+
+            // ENSAIO
+            const quartaSexta = encontrarNesimoDay(ano, mes, 5, 4);
+            if (quartaSexta) {
+                const membroEnsaio1 = sequencias.ensaio[indiceEnsaio % sequencias.ensaio.length];
+                const membroEnsaio2 = sequencias.ensaio[(indiceEnsaio + 1) % sequencias.ensaio.length];
+                
+                escala.push({
+                    dia: quartaSexta,
+                    diaSemana: '6ª FEIRA',
+                    servico: 'ENSAIO',
+                    pedOracao: membroEnsaio1,
+                    principal: '-',
+                    lateral: membroEnsaio2,
+                    classe: 'ensaio'
+                });
+                indiceEnsaio += 2;
+            }
+
+            // Ordenar e exibir
+            escala.sort((a, b) => a.dia - b.dia);
+            exibirEscala(escala);
+        }
+
+        function exibirEscala(escala) {
+            const tbody = document.getElementById('corpoTabela');
+            tbody.innerHTML = '';
+
+            escala.forEach(item => {
+                const row = document.createElement('tr');
+                
+                if (item.mesclar) {
+                    row.innerHTML = `
+                        <td>${item.dia}</td>
+                        <td>${item.diaSemana}</td>
+                        <td><span class="servico-badge ${item.classe}">${item.servico}</span></td>
+                        <td colspan="3" class="mesclar">${item.pedOracao}</td>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <td>${item.dia}</td>
+                        <td>${item.diaSemana}</td>
+                        <td><span class="servico-badge ${item.classe}">${item.servico}</span></td>
+                        <td>${item.pedOracao}</td>
+                        <td>${item.principal}</td>
+                        <td>${item.lateral}</td>
+                    `;
+                }
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function gerarPDF() {
+            const mesAnoValue = document.getElementById('mesAno').value;
+            if (!mesAnoValue) {
+                alert('Selecione um mês primeiro!');
+                return;
+            }
+
+            const [ano, mes] = mesAnoValue.split('-');
+            const meses = [
+                'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
+                'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
+            ];
+            const mesNome = meses[parseInt(mes) - 1];
+            
+            const tabela = document.getElementById('tabelaEscala');
+            const linhas = Array.from(tabela.querySelectorAll('tbody tr'));
+            
+            let linhasHTML = '';
+            linhas.forEach(linha => {
+                const colunas = Array.from(linha.children);
+                if (colunas.length === 4) { // Linha mesclada
+                    linhasHTML += `
+                        <tr>
+                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[0].textContent}</td>
+                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[1].textContent}</td>
+                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[2].textContent}</td>
+                            <td colspan="3" style="border: 1px solid #333; padding: 8px; text-align: center; background-color: #f5f5f5; font-weight: bold;">${colunas[3].textContent}</td>
+                        </tr>
+                    `;
+                } else {
+                    linhasHTML += `
+                        <tr>
+                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[0].textContent}</td>
+                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[1].textContent}</td>
+                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[2].textContent}</td>
+                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[3].textContent}</td>
+                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[4].textContent}</td>
+                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[5].textContent}</td>
+                        </tr>
+                    `;
+                }
+            });
+            
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Escala de Porteiros - ${mesNome} ${ano}</title>
+                    <style>
+                        @page { margin: 2cm; size: A4; }
+                        body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; }
+                        .cabecalho { text-align: center; margin-bottom: 30px; }
+                        .cabecalho h1 { font-size: 16px; font-weight: bold; margin: 5px 0; }
+                        .cabecalho h2 { font-size: 14px; font-weight: bold; margin: 5px 0; }
+                        .cabecalho h3 { font-size: 14px; font-weight: bold; margin: 5px 0; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+                        th { background-color: #f0f0f0; font-weight: bold; text-align: center; padding: 10px 8px; border: 1px solid #333; }
+                        td { text-align: center; padding: 8px; border: 1px solid #333; }
+                        tr:nth-child(even) { background-color: #f9f9f9; }
+                    </style>
+                </head>
+                <body>
+                    <div class="cabecalho">
+                        <h1>CONGREGAÇÃO CRISTÃ NO BRASIL – SANTA AMÉLIA – CURITIBA PR</h1>
+                        <h2>ESCALA DE PORTEIROS</h2>
+                        <h3>${mesNome} DE ${ano}</h3>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>DIA</th>
+                                <th>DIA DA SEMANA</th>
+                                <th>SERVIÇO</th>
+                                <th>PED ORAÇÃO</th>
+                                <th>PRINCIPAL</th>
+                                <th>LATERAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${linhasHTML}
+                        </tbody>
+                    </table>
+                    
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                        }
+                    </script>
+                </body>
+                </html>
+            `;
+            
+            const novaJanela = window.open('', '_blank');
+            novaJanela.document.write(htmlContent);
+            novaJanela.document.close();
+        }
     </script>
 </body>
 </html>
