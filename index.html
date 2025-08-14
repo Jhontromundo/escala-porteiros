@@ -593,6 +593,7 @@
             <div class="modal-footer">
                 <button class="btn-modal btn-salvar" onclick="salvarAlteracoes()">💾 Salvar e Regenerar</button>
                 <button class="btn-modal btn-restaurar" onclick="restaurarPadrao()">🔄 Restaurar Padrão</button>
+                <button class="btn-modal" onclick="reiniciarSequencias()" style="background: #9c27b0; color: white;">🎯 Reiniciar Sequências</button>
                 <button class="btn-modal btn-cancelar-modal" onclick="fecharGerenciador()">❌ Cancelar</button>
             </div>
         </div>
@@ -647,6 +648,35 @@
             } catch (e) {
                 console.log('Não foi possível carregar do localStorage');
                 return null;
+            }
+        }
+
+        // Funções para persistir índices das sequências
+        function salvarIndices(indices) {
+            try {
+                localStorage.setItem('escalas_indices', JSON.stringify(indices));
+            } catch (e) {
+                console.log('Não foi possível salvar índices');
+            }
+        }
+
+        function carregarIndices() {
+            try {
+                const dados = localStorage.getItem('escalas_indices');
+                return dados ? JSON.parse(dados) : {
+                    rjm: 0,
+                    rSetor: 0,
+                    rLocal: 0,
+                    ensaio: 0
+                };
+            } catch (e) {
+                console.log('Não foi possível carregar índices');
+                return {
+                    rjm: 0,
+                    rSetor: 0,
+                    rLocal: 0,
+                    ensaio: 0
+                };
             }
         }
 
@@ -793,10 +823,13 @@
             sequencias.rLocal = [...sequenciasPadraoOriginal.rLocal];
             sequencias.ensaio = [...sequenciasPadraoOriginal.ensaio];
 
+            // Limpar índices salvos (restart das sequências)
+            localStorage.removeItem('escalas_indices');
+
             // Atualizar interface
             atualizarInterfaceGerenciador();
 
-            alert('✅ Configurações padrão restauradas!');
+            alert('✅ Configurações padrão restauradas! Sequências reiniciadas.');
         }
 
         // Fechar modal ao clicar fora
@@ -806,6 +839,14 @@
                 fecharGerenciador();
             }
         };
+
+        // Função para reiniciar apenas as sequências
+        function reiniciarSequencias() {
+            if (!confirm('Reiniciar todas as sequências do início? Isso vai resetar a continuidade entre meses.')) return;
+            
+            localStorage.removeItem('escalas_indices');
+            alert('✅ Sequências reiniciadas! Próxima escala começará do início de cada sequência.');
+        }
 
         // Inicializar com mês atual
         window.onload = function() {
@@ -906,6 +947,13 @@
             const diasNoMes = getDiasNoMes(ano, mes);
             const escala = [];
             
+            // Carregar índices salvos das sequências (continuidade entre meses)
+            const indices = carregarIndices();
+            let indiceRJM = indices.rjm;
+            let indiceRSetor = indices.rSetor;
+            let indiceRLocal = indices.rLocal;
+            let indiceEnsaio = indices.ensaio;
+            
             // Contar ocorrências
             const contadores = { terca: 0, quinta: 0, sabado: 0, domingo: 0 };
             const diasPorTipo = { terca: [], quinta: [], sabado: [], domingo: [] };
@@ -933,12 +981,6 @@
             const escalacaoQuinta = distribuirGrupoSemFolga(gruposPorDia.quinta, contadores.quinta, 0);
             const escalacaoSabado = distribuirGrupoComFolga(gruposPorDia.sabado, contadores.sabado, 0);
             const escalacaoDomingo = distribuirGrupoComFolga(gruposPorDia.domingoOficial, contadores.domingo, 0);
-
-            // Sequências especiais
-            let indiceRJM = 0;
-            let indiceRSetor = 0;
-            let indiceRLocal = 0;
-            let indiceEnsaio = 0;
 
             // 3ª feiras
             for (let i = 0; i < diasPorTipo.terca.length; i++) {
@@ -989,7 +1031,7 @@
             for (let i = 0; i < diasPorTipo.domingo.length; i++) {
                 const dia = diasPorTipo.domingo[i];
                 
-                // RJM primeiro
+                // RJM primeiro - usando índice contínuo
                 const membroRJM1 = sequencias.rjm[indiceRJM % sequencias.rjm.length];
                 const membroRJM2 = sequencias.rjm[(indiceRJM + 1) % sequencias.rjm.length];
                 indiceRJM += 2;
@@ -1017,7 +1059,7 @@
                 });
             }
 
-            // R. SETOR
+            // R. SETOR - usando índice contínuo
             const terceiraSegunda = encontrarNesimoDay(ano, mes, 1, 3);
             if (terceiraSegunda) {
                 escala.push({
@@ -1030,10 +1072,10 @@
                     classe: 'rsetor',
                     mesclar: true
                 });
-                indiceRSetor++;
+                indiceRSetor++; // Avança para o próximo membro
             }
 
-            // R. LOCAL
+            // R. LOCAL - usando índice contínuo
             if (temRLocal(mes)) {
                 const quartaSegunda = encontrarNesimoDay(ano, mes, 1, 4);
                 if (quartaSegunda) {
@@ -1047,11 +1089,11 @@
                         classe: 'rlocal',
                         mesclar: true
                     });
-                    indiceRLocal++;
+                    indiceRLocal++; // Avança para o próximo membro
                 }
             }
 
-            // ENSAIO
+            // ENSAIO - usando índice contínuo
             const quartaSexta = encontrarNesimoDay(ano, mes, 5, 4);
             if (quartaSexta) {
                 const membroEnsaio1 = sequencias.ensaio[indiceEnsaio % sequencias.ensaio.length];
@@ -1066,8 +1108,16 @@
                     lateral: membroEnsaio2,
                     classe: 'ensaio'
                 });
-                indiceEnsaio += 2;
+                indiceEnsaio += 2; // Avança 2 posições
             }
+
+            // Salvar os novos índices para continuidade
+            salvarIndices({
+                rjm: indiceRJM,
+                rSetor: indiceRSetor,
+                rLocal: indiceRLocal,
+                ensaio: indiceEnsaio
+            });
 
             // Ordenar e exibir
             escala.sort(function(a, b) { return a.dia - b.dia; });
