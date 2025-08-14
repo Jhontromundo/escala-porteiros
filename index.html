@@ -144,79 +144,8 @@
         
         .mesclar {
             text-align: center;
-            background: #f0f0f0;
-            font-weight: normal;
-        }
-        
-        .conflito-alerta {
-            background: #ffebee;
-            border: 2px solid #f44336;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .conflito-alerta h3 {
-            color: #d32f2f;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .conflito-lista {
-            color: #d32f2f;
-            font-size: 14px;
-        }
-        
-        .editavel {
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
-            min-height: 20px;
-            display: inline-block;
-            min-width: 60px;
-        }
-        
-        .editavel:hover {
-            background-color: #e3f2fd;
-            border: 1px dashed #1976d2;
-        }
-        
-        .editando {
-            background-color: #fff3e0;
-            border: 2px solid #ff9800;
-        }
-        
-        .destaque {
-            background-color: #ffeb3b !important;
             font-weight: bold;
-            color: #f57f17;
-        }
-        
-        .dropdown-edicao {
-            background: white;
-            border: 2px solid #1976d2;
-            border-radius: 4px;
-            padding: 4px;
-            font-size: 12px;
-            min-width: 120px;
-        }
-        
-        .btn-edicao {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 2px 6px;
-            margin: 0 2px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 11px;
-        }
-        
-        .btn-cancelar {
-            background: #f44336;
+            background: #f0f0f0;
         }
         
         .footer {
@@ -258,18 +187,6 @@
             <input type="month" id="mesAno" onchange="gerarEscala()">
             <button class="btn-gerar" onclick="gerarEscala()">🔄 Gerar Escala</button>
             <button class="btn-pdf" onclick="gerarPDF()">📄 Gerar PDF</button>
-            <div id="membroDestacado" style="display: none;" class="btn-gerar">
-                Destacando: <span id="nomeDestacado"></span>
-                <button onclick="limparDestaque()" style="background: transparent; border: none; color: white; margin-left: 10px;">✕</button>
-            </div>
-        </div>
-        
-        <div id="alertaConflitos" class="conflito-alerta" style="display: none;">
-            <h3>⚠️ Conflitos de Mesmo Dia Detectados</h3>
-            <div id="listaConflitos" class="conflito-lista"></div>
-            <p style="font-size: 12px; margin-top: 10px; color: #666;">
-                <strong>Dica:</strong> Clique duplo em qualquer nome para editar manualmente
-            </p>
         </div>
         
         <div class="tabela-container">
@@ -315,15 +232,6 @@
 
         const diasSemana = ['DOMINGO', '2ª FEIRA', '3ª FEIRA', '4ª FEIRA', '5ª FEIRA', '6ª FEIRA', 'SÁBADO'];
         let escalaAtual = [];
-        let membroDestacadoAtual = null;
-        let editandoAtualmente = null;
-
-        // Lista de todos os membros para edição
-        const todosMembros = [
-            'AFONSO', 'ALGACIR', 'JONAS', 'ZANIN', 'EDI', 'MARCOS', 'SAULO',
-            'JOSÉ CARLOS', 'RODINEI', 'VANDERLEI', 'ELIZEU', 'JOSÉ CARDOSO',
-            'ODEMIR', 'SAMUEL', 'EDIVAN', 'CÉLIO'
-        ];
 
         // Inicializar com mês atual
         window.onload = function() {
@@ -591,86 +499,6 @@
             escala.sort(function(a, b) { return a.dia - b.dia; });
             escalaAtual = escala;
             exibirEscala(escala);
-            detectarConflitos(escala);
-        }
-
-        function detectarConflitos(escala) {
-            const conflitos = [];
-            const diasComServicos = {};
-            
-            // Agrupar serviços por dia
-            for (let i = 0; i < escala.length; i++) {
-                const item = escala[i];
-                if (!diasComServicos[item.dia]) {
-                    diasComServicos[item.dia] = [];
-                }
-                diasComServicos[item.dia].push(item);
-            }
-            
-            // Verificar conflitos no mesmo dia
-            const dias = Object.keys(diasComServicos);
-            for (let d = 0; d < dias.length; d++) {
-                const dia = dias[d];
-                const servicosDoDia = diasComServicos[dia];
-                
-                if (servicosDoDia.length > 1) {
-                    for (let i = 0; i < servicosDoDia.length; i++) {
-                        const servico1 = servicosDoDia[i];
-                        for (let j = i + 1; j < servicosDoDia.length; j++) {
-                            const servico2 = servicosDoDia[j];
-                            
-                            const pessoas1 = [servico1.pedOracao, servico1.principal, servico1.lateral].filter(function(p) {
-                                return p && p !== '-' && p !== 'MESCLAR';
-                            });
-                            
-                            const pessoas2 = [servico2.pedOracao, servico2.principal, servico2.lateral].filter(function(p) {
-                                return p && p !== '-' && p !== 'MESCLAR';
-                            });
-                            
-                            for (let p1 = 0; p1 < pessoas1.length; p1++) {
-                                const pessoa = pessoas1[p1];
-                                if (pessoas2.indexOf(pessoa) !== -1) {
-                                    // Verificar se conflito já existe
-                                    let conflitoDuplicado = false;
-                                    for (let c = 0; c < conflitos.length; c++) {
-                                        if (conflitos[c].dia === parseInt(dia) && conflitos[c].pessoa === pessoa) {
-                                            conflitoDuplicado = true;
-                                            break;
-                                        }
-                                    }
-                                    
-                                    if (!conflitoDuplicado) {
-                                        conflitos.push({
-                                            dia: parseInt(dia),
-                                            pessoa: pessoa,
-                                            servicos: [servico1.servico, servico2.servico]
-                                        });
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            exibirConflitos(conflitos);
-        }
-
-        function exibirConflitos(conflitos) {
-            const alertaDiv = document.getElementById('alertaConflitos');
-            const listaDiv = document.getElementById('listaConflitos');
-            
-            if (conflitos.length === 0) {
-                alertaDiv.style.display = 'none';
-            } else {
-                alertaDiv.style.display = 'block';
-                let html = '';
-                for (let i = 0; i < conflitos.length; i++) {
-                    const conflito = conflitos[i];
-                    html += '<p>Dia ' + conflito.dia + ': <strong>' + conflito.pessoa + '</strong> escalado em ' + conflito.servicos.join(' e ') + '</p>';
-                }
-                listaDiv.innerHTML = html;
-            }
         }
 
         function exibirEscala(escala) {
@@ -682,155 +510,13 @@
                 const row = document.createElement('tr');
                 
                 if (item.mesclar) {
-                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td colspan="3" class="mesclar"><span class="editavel" onclick="destacarMembro(\'' + item.pedOracao + '\')" ondblclick="editarCampo(' + i + ', \'pedOracao\')">' + item.pedOracao + '</span></td>';
+                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td colspan="3" class="mesclar">' + item.pedOracao + '</td>';
                 } else {
-                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.pedOracao + '\')" ondblclick="editarCampo(' + i + ', \'pedOracao\')">' + item.pedOracao + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.principal + '\')" ondblclick="editarCampo(' + i + ', \'principal\')">' + item.principal + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.lateral + '\')" ondblclick="editarCampo(' + i + ', \'lateral\')">' + item.lateral + '</span></td>';
+                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td>' + item.pedOracao + '</td><td>' + item.principal + '</td><td>' + item.lateral + '</td>';
                 }
                 
                 tbody.appendChild(row);
             }
-            
-            // Aplicar destaques se houver membro selecionado
-            if (membroDestacadoAtual) {
-                aplicarDestaques();
-            }
-        }
-
-        function destacarMembro(nome) {
-            if (nome === '-' || nome === 'MESCLAR') return;
-            
-            if (membroDestacadoAtual === nome) {
-                limparDestaque();
-            } else {
-                membroDestacadoAtual = nome;
-                document.getElementById('nomeDestacado').textContent = nome;
-                document.getElementById('membroDestacado').style.display = 'block';
-                aplicarDestaques();
-            }
-        }
-
-        function limparDestaque() {
-            membroDestacadoAtual = null;
-            document.getElementById('membroDestacado').style.display = 'none';
-            
-            const editaveis = document.querySelectorAll('.editavel');
-            for (let i = 0; i < editaveis.length; i++) {
-                editaveis[i].classList.remove('destaque');
-            }
-        }
-
-        function aplicarDestaques() {
-            const editaveis = document.querySelectorAll('.editavel');
-            for (let i = 0; i < editaveis.length; i++) {
-                const elemento = editaveis[i];
-                if (elemento.textContent === membroDestacadoAtual) {
-                    elemento.classList.add('destaque');
-                } else {
-                    elemento.classList.remove('destaque');
-                }
-            }
-        }
-
-        function editarCampo(indiceEscala, campo) {
-            if (editandoAtualmente) return; // Já está editando algo
-            
-            editandoAtualmente = { indice: indiceEscala, campo: campo };
-            
-            const valorAtual = escalaAtual[indiceEscala][campo];
-            
-            // Encontrar o elemento na tela
-            const tbody = document.getElementById('corpoTabela');
-            const rows = tbody.children;
-            const targetRow = rows[indiceEscala];
-            
-            let targetCell;
-            if (escalaAtual[indiceEscala].mesclar) {
-                targetCell = targetRow.children[3].querySelector('.editavel');
-            } else {
-                const colIndex = campo === 'pedOracao' ? 3 : campo === 'principal' ? 4 : 5;
-                targetCell = targetRow.children[colIndex].querySelector('.editavel');
-            }
-            
-            // Criar dropdown
-            const dropdown = document.createElement('select');
-            dropdown.className = 'dropdown-edicao';
-            
-            // Adicionar opções
-            const opcaoVazia = document.createElement('option');
-            opcaoVazia.value = '-';
-            opcaoVazia.textContent = '-';
-            dropdown.appendChild(opcaoVazia);
-            
-            for (let i = 0; i < todosMembros.length; i++) {
-                const opcao = document.createElement('option');
-                opcao.value = todosMembros[i];
-                opcao.textContent = todosMembros[i];
-                if (todosMembros[i] === valorAtual) {
-                    opcao.selected = true;
-                }
-                dropdown.appendChild(opcao);
-            }
-            
-            // Criar botões
-            const btnSalvar = document.createElement('button');
-            btnSalvar.textContent = '✓';
-            btnSalvar.className = 'btn-edicao';
-            btnSalvar.onclick = function() { salvarEdicao(dropdown.value); };
-            
-            const btnCancelar = document.createElement('button');
-            btnCancelar.textContent = '✕';
-            btnCancelar.className = 'btn-edicao btn-cancelar';
-            btnCancelar.onclick = cancelarEdicao;
-            
-            // Substituir conteúdo
-            const conteudoOriginal = targetCell.innerHTML;
-            targetCell.innerHTML = '';
-            targetCell.appendChild(dropdown);
-            targetCell.appendChild(btnSalvar);
-            targetCell.appendChild(btnCancelar);
-            targetCell.classList.add('editando');
-            
-            // Focar no dropdown
-            dropdown.focus();
-            
-            // Salvar referência para cancelar
-            editandoAtualmente.elementoOriginal = targetCell;
-            editandoAtualmente.conteudoOriginal = conteudoOriginal;
-        }
-
-        function salvarEdicao(novoValor) {
-            if (!editandoAtualmente) return;
-            
-            // Atualizar dados
-            escalaAtual[editandoAtualmente.indice][editandoAtualmente.campo] = novoValor;
-            
-            // Restaurar elemento
-            const elemento = editandoAtualmente.elementoOriginal;
-            elemento.innerHTML = '<span class="editavel" onclick="destacarMembro(\'' + novoValor + '\')" ondblclick="editarCampo(' + editandoAtualmente.indice + ', \'' + editandoAtualmente.campo + '\')">' + novoValor + '</span>';
-            elemento.classList.remove('editando');
-            
-            // Limpar estado
-            editandoAtualmente = null;
-            
-            // Redetectar conflitos
-            detectarConflitos(escalaAtual);
-            
-            // Reaplicar destaques
-            if (membroDestacadoAtual) {
-                aplicarDestaques();
-            }
-        }
-
-        function cancelarEdicao() {
-            if (!editandoAtualmente) return;
-            
-            // Restaurar conteúdo original
-            const elemento = editandoAtualmente.elementoOriginal;
-            elemento.innerHTML = editandoAtualmente.conteudoOriginal;
-            elemento.classList.remove('editando');
-            
-            // Limpar estado
-            editandoAtualmente = null;
         }
 
         function gerarPDF() {
@@ -848,27 +534,139 @@
             ];
             const mesNome = meses[parseInt(mes) - 1];
             
-            const tabela = document.getElementById('tabelaEscala');
-            const linhas = Array.from(tabela.querySelectorAll('tbody tr'));
-            
+            // Construir linhas HTML com cores baseadas na escala atual
             let linhasHTML = '';
-            for (let i = 0; i < linhas.length; i++) {
-                const linha = linhas[i];
-                const colunas = Array.from(linha.children);
-                if (colunas.length === 4) {
-                    // Extrair texto do span editável
-                    const textoColuna3 = colunas[3].querySelector('.editavel') ? colunas[3].querySelector('.editavel').textContent : colunas[3].textContent;
-                    linhasHTML += '<tr><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[0].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[1].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[2].textContent + '</td><td colspan="3" style="border: 1px solid #333; padding: 8px; text-align: center; background-color: #f5f5f5; font-weight: bold;">' + textoColuna3 + '</td></tr>';
+            for (let i = 0; i < escalaAtual.length; i++) {
+                const item = escalaAtual[i];
+                
+                // Determinar cor de fundo baseada no serviço
+                let corFundo = '';
+                switch(item.servico) {
+                    case 'OFICIAL':
+                        corFundo = '#e3f2fd';
+                        break;
+                    case 'RJM':
+                        corFundo = '#e8f5e8';
+                        break;
+                    case 'R. SETOR':
+                        corFundo = '#fff3e0';
+                        break;
+                    case 'R. LOCAL':
+                        corFundo = '#f3e5f5';
+                        break;
+                    case 'ENSAIO':
+                        corFundo = '#e8eaf6';
+                        break;
+                    default:
+                        corFundo = '#ffffff';
+                }
+                
+                if (item.mesclar) {
+                    linhasHTML += `<tr style="background-color: ${corFundo};">
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.dia}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.diaSemana}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.servico}</td>
+                        <td colspan="3" style="border: 1px solid #333; padding: 8px; text-align: center; font-weight: bold;">${item.pedOracao}</td>
+                    </tr>`;
                 } else {
-                    // Extrair texto dos spans editáveis
-                    const textoCol3 = colunas[3].querySelector('.editavel') ? colunas[3].querySelector('.editavel').textContent : colunas[3].textContent;
-                    const textoCol4 = colunas[4].querySelector('.editavel') ? colunas[4].querySelector('.editavel').textContent : colunas[4].textContent;
-                    const textoCol5 = colunas[5].querySelector('.editavel') ? colunas[5].querySelector('.editavel').textContent : colunas[5].textContent;
-                    linhasHTML += '<tr><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[0].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[1].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[2].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + textoCol3 + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + textoCol4 + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + textoCol5 + '</td></tr>';
+                    linhasHTML += `<tr style="background-color: ${corFundo};">
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.dia}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.diaSemana}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.servico}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.pedOracao}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.principal}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.lateral}</td>
+                    </tr>`;
                 }
             }
             
-            const htmlContent = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Escala de Porteiros - ' + mesNome + ' ' + ano + '</title><style>@page { margin: 2cm; size: A4; }body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; }.cabecalho { text-align: center; margin-bottom: 30px; }.cabecalho h1 { font-size: 16px; font-weight: bold; margin: 5px 0; }.cabecalho h2 { font-size: 14px; font-weight: bold; margin: 5px 0; }.cabecalho h3 { font-size: 14px; font-weight: bold; margin: 5px 0; }table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }th { background-color: #f0f0f0; font-weight: bold; text-align: center; padding: 10px 8px; border: 1px solid #333; }td { text-align: center; padding: 8px; border: 1px solid #333; }tr:nth-child(even) { background-color: #f9f9f9; }</style></head><body><div class="cabecalho"><h1>CONGREGAÇÃO CRISTÃ NO BRASIL – SANTA AMÉLIA – CURITIBA PR</h1><h2>ESCALA DE PORTEIROS</h2><h3>' + mesNome + ' DE ' + ano + '</h3></div><table><thead><tr><th>DIA</th><th>DIA DA SEMANA</th><th>SERVIÇO</th><th>PED ORAÇÃO</th><th>PRINCIPAL</th><th>LATERAL</th></tr></thead><tbody>' + linhasHTML + '</tbody></table></body></html>';
+            const htmlContent = `<!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Escala de Porteiros - ${mesNome} ${ano}</title>
+                <style>
+                    @page { 
+                        margin: 2cm; 
+                        size: A4; 
+                    }
+                    body { 
+                        font-family: Arial, sans-serif; 
+                        margin: 0; 
+                        padding: 0; 
+                        color: #333; 
+                    }
+                    .cabecalho { 
+                        text-align: center; 
+                        margin-bottom: 30px; 
+                    }
+                    .cabecalho h1 { 
+                        font-size: 16px; 
+                        font-weight: bold; 
+                        margin: 5px 0; 
+                    }
+                    .cabecalho h2 { 
+                        font-size: 14px; 
+                        font-weight: bold; 
+                        margin: 5px 0; 
+                    }
+                    .cabecalho h3 { 
+                        font-size: 14px; 
+                        font-weight: bold; 
+                        margin: 5px 0; 
+                    }
+                    table { 
+                        width: 100%; 
+                        border-collapse: collapse; 
+                        margin-top: 20px; 
+                        font-size: 12px; 
+                    }
+                    th { 
+                        background-color: #f0f0f0; 
+                        font-weight: bold; 
+                        text-align: center; 
+                        padding: 10px 8px; 
+                        border: 1px solid #333; 
+                    }
+                    td { 
+                        text-align: center; 
+                        padding: 8px; 
+                        border: 1px solid #333; 
+                    }
+                    
+                    /* Configurações para impressão colorida */
+                    @media print {
+                        * {
+                            -webkit-print-color-adjust: exact !important;
+                            color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="cabecalho">
+                    <h1>CONGREGAÇÃO CRISTÃ NO BRASIL – SANTA AMÉLIA – CURITIBA PR</h1>
+                    <h2>ESCALA DE PORTEIROS</h2>
+                    <h3>${mesNome} DE ${ano}</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DIA</th>
+                            <th>DIA DA SEMANA</th>
+                            <th>SERVIÇO</th>
+                            <th>PED ORAÇÃO</th>
+                            <th>PRINCIPAL</th>
+                            <th>LATERAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${linhasHTML}
+                    </tbody>
+                </table>
+            </body>
+            </html>`;
             
             const novaJanela = window.open('', '_blank');
             novaJanela.document.write(htmlContent);
