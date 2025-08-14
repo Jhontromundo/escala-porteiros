@@ -231,198 +231,6 @@
             font-size: 14px;
         }
         
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-        
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: -10px;
-        }
-        
-        .close:hover {
-            color: #000;
-        }
-        
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid #ddd;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        
-        .tab {
-            padding: 12px 20px;
-            cursor: pointer;
-            border: none;
-            background: #f5f5f5;
-            border-radius: 8px 8px 0 0;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        
-        .tab.active {
-            background: #1976d2;
-            color: white;
-        }
-        
-        .tab:hover:not(.active) {
-            background: #e3f2fd;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .grupo-editor {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .grupo-titulo {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1976d2;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .membros-lista {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .membro-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 12px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-        
-        .membro-nome {
-            flex: 1;
-            font-weight: bold;
-        }
-        
-        .btn-mover, .btn-remover {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        .btn-mover {
-            background: #2196f3;
-        }
-        
-        .btn-adicionar-membro {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-top: 10px;
-        }
-        
-        .select-membro {
-            padding: 8px 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            flex: 1;
-        }
-        
-        .btn-add {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .modal-footer {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-        }
-        
-        .btn-modal {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        
-        .btn-salvar {
-            background: #4caf50;
-            color: white;
-        }
-        
-        .btn-salvar:hover {
-            background: #45a049;
-        }
-        
-        .btn-restaurar {
-            background: #ff9800;
-            color: white;
-        }
-        
-        .btn-restaurar:hover {
-            background: #f57c00;
-        }
-        
-        .btn-cancelar-modal {
-            background: #f44336;
-            color: white;
-        }
-        
-        .btn-cancelar-modal:hover {
-            background: #d32f2f;
-        }
-        
         .footer {
             text-align: center;
             margin-top: 30px;
@@ -462,7 +270,7 @@
             <input type="month" id="mesAno" onchange="gerarEscala()">
             <button class="btn-gerar" onclick="gerarEscala()">🔄 Gerar Escala</button>
             <button class="btn-pdf" onclick="gerarPDF()">📄 Gerar PDF</button>
-            <button class="btn-gerenciar" onclick="abrirGerenciador()">⚙️ Gerenciar Grupos</button>
+            <button class="btn-gerenciar" onclick="alert('Funcionalidade em desenvolvimento!')">⚙️ Gerenciar Grupos</button>
             <div id="membroDestacado" style="display: none;" class="btn-gerar">
                 Destacando: <span id="nomeDestacado"></span>
                 <button onclick="limparDestaque()" style="background: transparent; border: none; color: white; margin-left: 10px;">✕</button>
@@ -501,123 +309,22 @@
         </div>
     </div>
 
-    <!-- Modal de Gerenciamento de Grupos -->
-    <div id="modalGerenciador" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="fecharGerenciador()">&times;</span>
-            <h2 style="text-align: center; color: #1976d2; margin-bottom: 30px;">⚙️ Gerenciar Grupos e Sequências</h2>
-            
-            <div class="tabs">
-                <button class="tab active" onclick="mostrarTab('grupos')">👥 Grupos Semanais</button>
-                <button class="tab" onclick="mostrarTab('sequencias')">🔄 Sequências Especiais</button>
-            </div>
-            
-            <!-- Tab Grupos Semanais -->
-            <div id="tab-grupos" class="tab-content active">
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🗓️ 3ª Feira (4 pessoas - 1 folga rotativa)</div>
-                    <div id="grupo-terca" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-terca" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('terca')">+ Adicionar</button>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🗓️ 5ª Feira (3 pessoas - sem folga)</div>
-                    <div id="grupo-quinta" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-quinta" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('quinta')">+ Adicionar</button>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🗓️ Sábado (4 pessoas - 1 folga rotativa)</div>
-                    <div id="grupo-sabado" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-sabado" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('sabado')">+ Adicionar</button>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🗓️ Domingo Oficial (4 pessoas - 1 folga rotativa)</div>
-                    <div id="grupo-domingoOficial" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-domingoOficial" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('domingoOficial')">+ Adicionar</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Tab Sequências Especiais -->
-            <div id="tab-sequencias" class="tab-content">
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">📿 RJM (2 por domingo)</div>
-                    <div id="sequencia-rjm" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-rjm" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('rjm')">+ Adicionar</button>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🏢 R. SETOR (1 por mês)</div>
-                    <div id="sequencia-rSetor" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-rSetor" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('rSetor')">+ Adicionar</button>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🌍 R. LOCAL (trimestral)</div>
-                    <div id="sequencia-rLocal" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-rLocal" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('rLocal')">+ Adicionar</button>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🎵 ENSAIO (2 por mês)</div>
-                    <div id="sequencia-ensaio" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-ensaio" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('ensaio')">+ Adicionar</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="modal-footer">
-                <button class="btn-modal btn-salvar" onclick="salvarAlteracoes()">💾 Salvar e Regenerar</button>
-                <button class="btn-modal btn-restaurar" onclick="restaurarPadrao()">🔄 Restaurar Padrão</button>
-                <button class="btn-modal btn-cancelar-modal" onclick="fecharGerenciador()">❌ Cancelar</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Grupos por dia da semana (configuração padrão)
-        const gruposPadraoOriginal = {
+        // Grupos por dia da semana
+        const gruposPorDia = {
             terca: ['AFONSO', 'ALGACIR', 'JONAS', 'ZANIN'],
             quinta: ['EDI', 'MARCOS', 'SAULO'],
             sabado: ['JOSÉ CARLOS', 'RODINEI', 'VANDERLEI', 'ELIZEU'],
             domingoOficial: ['JOSÉ CARDOSO', 'ODEMIR', 'SAMUEL', 'EDIVAN']
         };
 
-        // Sequências dos serviços especiais (configuração padrão)
-        const sequenciasPadraoOriginal = {
+        // Sequências dos serviços especiais
+        const sequencias = {
             rjm: ['MARCOS', 'JOSÉ CARDOSO', 'EDI', 'EDIVAN', 'JOSÉ CARLOS', 'VANDERLEI', 'ELIZEU', 'ZANIN', 'ALGACIR', 'SAULO', 'RODINEI', 'SAMUEL', 'CÉLIO', 'JONAS', 'AFONSO'],
             rSetor: ['ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'JONAS', 'CÉLIO', 'EDI', 'SAMUEL', 'JOSÉ CARLOS', 'MARCOS', 'EDIVAN', 'SAULO'],
             rLocal: ['EDI', 'SAMUEL', 'EDIVAN', 'JONAS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'CÉLIO', 'SAULO', 'MARCOS'],
             ensaio: ['RODINEI', 'ALGACIR', 'VANDERLEI', 'SAULO', 'CÉLIO', 'EDI', 'SAMUEL', 'EDIVAN', 'MARCOS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'JONAS']
         };
-
-        // Grupos e sequências atuais (carregados do localStorage ou padrão)
-        let gruposPorDia = carregarConfiguracoes('grupos') || JSON.parse(JSON.stringify(gruposPadraoOriginal));
-        let sequencias = carregarConfiguracoes('sequencias') || JSON.parse(JSON.stringify(sequenciasPadraoOriginal));
 
         const diasSemana = ['DOMINGO', '2ª FEIRA', '3ª FEIRA', '4ª FEIRA', '5ª FEIRA', '6ª FEIRA', 'SÁBADO'];
         let escalaAtual = [];
@@ -631,156 +338,670 @@
             'ODEMIR', 'SAMUEL', 'EDIVAN', 'CÉLIO'
         ];
 
-        // Funções de persistência
-        function salvarConfiguracoes(tipo, dados) {
-            try {
-                localStorage.setItem('escalas_' + tipo, JSON.stringify(dados));
-            } catch (e) {
-                console.log('Não foi possível salvar no localStorage');
-            }
-        }
-
-        function carregarConfiguracoes(tipo) {
-            try {
-                const dados = localStorage.getItem('escalas_' + tipo);
-                return dados ? JSON.parse(dados) : null;
-            } catch (e) {
-                console.log('Não foi possível carregar do localStorage');
-                return null;
-            }
-        }
-
-        // Funções do gerenciador de grupos
-        function abrirGerenciador() {
-            const modal = document.getElementById('modalGerenciador');
-            modal.style.display = 'block';
-            atualizarInterfaceGerenciador();
-        }
-
-        function fecharGerenciador() {
-            const modal = document.getElementById('modalGerenciador');
-            modal.style.display = 'none';
-        }
-
-        function mostrarTab(tabNome) {
-            // Esconder todas as tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Mostrar tab selecionada
-            document.getElementById('tab-' + tabNome).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        function atualizarInterfaceGerenciador() {
-            // Atualizar grupos semanais
-            const gruposSemanais = ['terca', 'quinta', 'sabado', 'domingoOficial'];
-            gruposSemanais.forEach(grupo => {
-                atualizarListaMembros(grupo, gruposPorDia[grupo], 'grupo');
-                atualizarSelectMembros(grupo);
-            });
-
-            // Atualizar sequências especiais
-            const sequenciasEspeciais = ['rjm', 'rSetor', 'rLocal', 'ensaio'];
-            sequenciasEspeciais.forEach(seq => {
-                atualizarListaMembros(seq, sequencias[seq], 'sequencia');
-                atualizarSelectMembros(seq);
-            });
-        }
-
-        function atualizarListaMembros(nomeGrupo, membros, tipo) {
-            const container = document.getElementById((tipo === 'grupo' ? 'grupo-' : 'sequencia-') + nomeGrupo);
-            container.innerHTML = '';
-
-            membros.forEach((membro, index) => {
-                const item = document.createElement('div');
-                item.className = 'membro-item';
-                item.innerHTML = `
-                    <span class="membro-nome">${membro}</span>
-                    <button class="btn-mover" onclick="moverMembro('${nomeGrupo}', ${index}, -1, '${tipo}')">↑</button>
-                    <button class="btn-mover" onclick="moverMembro('${nomeGrupo}', ${index}, 1, '${tipo}')">↓</button>
-                    <button class="btn-remover" onclick="removerMembro('${nomeGrupo}', ${index}, '${tipo}')">🗑️</button>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function atualizarSelectMembros(nomeGrupo) {
-            const select = document.getElementById('select-' + nomeGrupo);
-            select.innerHTML = '<option value="">Selecione um membro...</option>';
-
-            todosMembros.forEach(membro => {
-                const option = document.createElement('option');
-                option.value = membro;
-                option.textContent = membro;
-                select.appendChild(option);
-            });
-        }
-
-        function adicionarMembro(nomeGrupo) {
-            const select = document.getElementById('select-' + nomeGrupo);
-            const novoMembro = select.value;
-
-            if (!novoMembro) {
-                alert('Selecione um membro primeiro!');
-                return;
-            }
-
-            // Verificar se é grupo ou sequência
-            let isGrupo = ['terca', 'quinta', 'sabado', 'domingoOficial'].includes(nomeGrupo);
-            let lista = isGrupo ? gruposPorDia[nomeGrupo] : sequencias[nomeGrupo];
-
-            if (lista.includes(novoMembro)) {
-                alert('Este membro já está neste grupo/sequência!');
-                return;
-            }
-
-            lista.push(novoMembro);
-            atualizarListaMembros(nomeGrupo, lista, isGrupo ? 'grupo' : 'sequencia');
-            select.value = '';
-        }
-
-        function removerMembro(nomeGrupo, index, tipo) {
-            if (!confirm('Tem certeza que deseja remover este membro?')) return;
-
-            let lista = tipo === 'grupo' ? gruposPorDia[nomeGrupo] : sequencias[nomeGrupo];
-            lista.splice(index, 1);
-            atualizarListaMembros(nomeGrupo, lista, tipo);
-        }
-
-        function moverMembro(nomeGrupo, index, direcao, tipo) {
-            let lista = tipo === 'grupo' ? gruposPorDia[nomeGrupo] : sequencias[nomeGrupo];
-            const novoIndex = index + direcao;
-
-            if (novoIndex < 0 || novoIndex >= lista.length) return;
-
-            // Trocar posições
-            [lista[index], lista[novoIndex]] = [lista[novoIndex], lista[index]];
-            atualizarListaMembros(nomeGrupo, lista, tipo);
-        }
-
-        function salvarAlteracoes() {
-            if (!confirm('Salvar alterações e regenerar escala?')) return;
-
-            // Salvar no localStorage
-            salvarConfiguracoes('grupos', gruposPorDia);
-            salvarConfiguracoes('sequencias', sequencias);
-
-            // Fechar modal
-            fecharGerenciador();
-
-            // Regenerar escala
+        // Inicializar com mês atual
+        window.onload = function() {
+            const hoje = new Date();
+            const mesAtual = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
+            document.getElementById('mesAno').value = mesAtual;
             gerarEscala();
+        };
 
-            alert('✅ Alterações salvas com sucesso!');
+        function getDiasNoMes(ano, mes) {
+            return new Date(ano, mes, 0).getDate();
         }
 
-        function restaurarPadrao() {
-            if (!confirm('Restaurar configurações padrão? Todas as alterações serão perdidas!')) return;
+        function getDiaSemana(ano, mes, dia) {
+            return new Date(ano, mes - 1, dia).getDay();
+        }
 
-            // Restaurar grupos padrão
-            gruposPorDia = JSON.parse(JSON.stringify(gruposPadraoOriginal));
+        function encontrarNesimoDay(ano, mes, diaSemana, nesimo) {
+            let contador = 0;
+            const diasNoMes = getDiasNoMes(ano, mes);
+            
+            for (let dia = 1; dia <= diasNoMes; dia++) {
+                if (getDiaSemana(ano, mes, dia) === diaSemana) {
+                    contador++;
+                    if (contador === nesimo) {
+                        return dia;
+                    }
+                }
+            }
+            return null;
+        }
+
+        function temRLocal(mes) {
+            return [1, 4, 7, 10].includes(mes);
+        }
+
+        function distribuirGrupoComFolga(grupo, totalOcorrencias, indiceInicial) {
+            if (indiceInicial === undefined) indiceInicial = 0;
+            const escalacao = [];
+            let indiceAtual = indiceInicial;
+            
+            for (let i = 0; i < totalOcorrencias; i++) {
+                const posicoes = [];
+                const indiceFolga = (indiceAtual + 3) % grupo.length;
+                
+                for (let j = 0; j < 3; j++) {
+                    const indiceAtualPessoa = (indiceAtual + j) % grupo.length;
+                    if (indiceAtualPessoa !== indiceFolga) {
+                        posicoes.push(grupo[indiceAtualPessoa]);
+                    }
+                }
+                
+                while (posicoes.length < 3) {
+                    for (let k = 0; k < grupo.length; k++) {
+                        const indiceK = (indiceAtual + k) % grupo.length;
+                        if (indiceK !== indiceFolga && !posicoes.includes(grupo[indiceK])) {
+                            posicoes.push(grupo[indiceK]);
+                            break;
+                        }
+                    }
+                }
+                
+                escalacao.push({
+                    pedOracao: posicoes[0],
+                    principal: posicoes[1],
+                    lateral: posicoes[2]
+                });
+                
+                indiceAtual = indiceFolga;
+            }
+            
+            return escalacao;
+        }
+
+        function distribuirGrupoSemFolga(grupo, totalOcorrencias, indiceInicial) {
+            if (indiceInicial === undefined) indiceInicial = 0;
+            const escalacao = [];
+            
+            for (let i = 0; i < totalOcorrencias; i++) {
+                const posicaoBase = (indiceInicial + i) % grupo.length;
+                
+                escalacao.push({
+                    pedOracao: grupo[posicaoBase],
+                    principal: grupo[(posicaoBase + 1) % grupo.length],
+                    lateral: grupo[(posicaoBase + 2) % grupo.length]
+                });
+            }
+            
+            return escalacao;
+        }
+
+        function gerarEscala() {
+            const mesAnoValue = document.getElementById('mesAno').value;
+            if (!mesAnoValue) return;
+
+            const ano = parseInt(mesAnoValue.split('-')[0]);
+            const mes = parseInt(mesAnoValue.split('-')[1]);
+            const diasNoMes = getDiasNoMes(ano, mes);
+            const escala = [];
+            
+            // Contar ocorrências
+            const contadores = { terca: 0, quinta: 0, sabado: 0, domingo: 0 };
+            const diasPorTipo = { terca: [], quinta: [], sabado: [], domingo: [] };
+            
+            for (let dia = 1; dia <= diasNoMes; dia++) {
+                const diaSemana = getDiaSemana(ano, mes, dia);
+                
+                if (diaSemana === 2) {
+                    contadores.terca++;
+                    diasPorTipo.terca.push(dia);
+                } else if (diaSemana === 4) {
+                    contadores.quinta++;
+                    diasPorTipo.quinta.push(dia);
+                } else if (diaSemana === 6) {
+                    contadores.sabado++;
+                    diasPorTipo.sabado.push(dia);
+                } else if (diaSemana === 0) {
+                    contadores.domingo++;
+                    diasPorTipo.domingo.push(dia);
+                }
+            }
+
+            // Gerar escalações
+            const escalacaoTerca = distribuirGrupoComFolga(gruposPorDia.terca, contadores.terca, 0);
+            const escalacaoQuinta = distribuirGrupoSemFolga(gruposPorDia.quinta, contadores.quinta, 0);
+            const escalacaoSabado = distribuirGrupoComFolga(gruposPorDia.sabado, contadores.sabado, 0);
+            const escalacaoDomingo = distribuirGrupoComFolga(gruposPorDia.domingoOficial, contadores.domingo, 0);
+
+            // Sequências especiais
+            let indiceRJM = 0;
+            let indiceRSetor = 0;
+            let indiceRLocal = 0;
+            let indiceEnsaio = 0;
+
+            // 3ª feiras
+            for (let i = 0; i < diasPorTipo.terca.length; i++) {
+                const dia = diasPorTipo.terca[i];
+                const escalacaoDia = escalacaoTerca[i];
+                escala.push({
+                    dia: dia,
+                    diaSemana: '3ª FEIRA',
+                    servico: 'OFICIAL',
+                    pedOracao: escalacaoDia.pedOracao,
+                    principal: escalacaoDia.principal,
+                    lateral: escalacaoDia.lateral,
+                    classe: 'oficial'
+                });
+            }
+
+            // 5ª feiras
+            for (let i = 0; i < diasPorTipo.quinta.length; i++) {
+                const dia = diasPorTipo.quinta[i];
+                const escalacaoDia = escalacaoQuinta[i];
+                escala.push({
+                    dia: dia,
+                    diaSemana: '5ª FEIRA',
+                    servico: 'OFICIAL',
+                    pedOracao: escalacaoDia.pedOracao,
+                    principal: escalacaoDia.principal,
+                    lateral: escalacaoDia.lateral,
+                    classe: 'oficial'
+                });
+            }
+
+            // Sábados
+            for (let i = 0; i < diasPorTipo.sabado.length; i++) {
+                const dia = diasPorTipo.sabado[i];
+                const escalacaoDia = escalacaoSabado[i];
+                escala.push({
+                    dia: dia,
+                    diaSemana: 'SÁBADO',
+                    servico: 'OFICIAL',
+                    pedOracao: escalacaoDia.pedOracao,
+                    principal: escalacaoDia.principal,
+                    lateral: escalacaoDia.lateral,
+                    classe: 'oficial'
+                });
+            }
+
+            // Domingos
+            for (let i = 0; i < diasPorTipo.domingo.length; i++) {
+                const dia = diasPorTipo.domingo[i];
+                
+                // RJM primeiro
+                const membroRJM1 = sequencias.rjm[indiceRJM % sequencias.rjm.length];
+                const membroRJM2 = sequencias.rjm[(indiceRJM + 1) % sequencias.rjm.length];
+                indiceRJM += 2;
+
+                escala.push({
+                    dia: dia,
+                    diaSemana: 'DOMINGO',
+                    servico: 'RJM',
+                    pedOracao: membroRJM1,
+                    principal: '-',
+                    lateral: membroRJM2,
+                    classe: 'rjm'
+                });
+
+                // OFICIAL depois
+                const escalacaoDia = escalacaoDomingo[i];
+                escala.push({
+                    dia: dia,
+                    diaSemana: 'DOMINGO',
+                    servico: 'OFICIAL',
+                    pedOracao: escalacaoDia.pedOracao,
+                    principal: escalacaoDia.principal,
+                    lateral: escalacaoDia.lateral,
+                    classe: 'oficial'
+                });
+            }
+
+            // R. SETOR
+            const terceiraSegunda = encontrarNesimoDay(ano, mes, 1, 3);
+            if (terceiraSegunda) {
+                escala.push({
+                    dia: terceiraSegunda,
+                    diaSemana: '2ª FEIRA',
+                    servico: 'R. SETOR',
+                    pedOracao: sequencias.rSetor[indiceRSetor % sequencias.rSetor.length],
+                    principal: 'MESCLAR',
+                    lateral: 'MESCLAR',
+                    classe: 'rsetor',
+                    mesclar: true
+                });
+                indiceRSetor++;
+            }
+
+            // R. LOCAL
+            if (temRLocal(mes)) {
+                const quartaSegunda = encontrarNesimoDay(ano, mes, 1, 4);
+                if (quartaSegunda) {
+                    escala.push({
+                        dia: quartaSegunda,
+                        diaSemana: '2ª FEIRA',
+                        servico: 'R. LOCAL',
+                        pedOracao: sequencias.rLocal[indiceRLocal % sequencias.rLocal.length],
+                        principal: 'MESCLAR',
+                        lateral: 'MESCLAR',
+                        classe: 'rlocal',
+                        mesclar: true
+                    });
+                    indiceRLocal++;
+                }
+            }
+
+            // ENSAIO
+            const quartaSexta = encontrarNesimoDay(ano, mes, 5, 4);
+            if (quartaSexta) {
+                const membroEnsaio1 = sequencias.ensaio[indiceEnsaio % sequencias.ensaio.length];
+                const membroEnsaio2 = sequencias.ensaio[(indiceEnsaio + 1) % sequencias.ensaio.length];
+                
+                escala.push({
+                    dia: quartaSexta,
+                    diaSemana: '6ª FEIRA',
+                    servico: 'ENSAIO',
+                    pedOracao: membroEnsaio1,
+                    principal: '-',
+                    lateral: membroEnsaio2,
+                    classe: 'ensaio'
+                });
+                indiceEnsaio += 2;
+            }
+
+            // Ordenar e exibir
+            escala.sort(function(a, b) { return a.dia - b.dia; });
+            escalaAtual = escala;
+            exibirEscala(escala);
+            detectarConflitos(escala);
+        }
+
+        function detectarConflitos(escala) {
+            const conflitos = [];
+            const diasComServicos = {};
+            
+            // Agrupar serviços por dia
+            for (let i = 0; i < escala.length; i++) {
+                const item = escala[i];
+                if (!diasComServicos[item.dia]) {
+                    diasComServicos[item.dia] = [];
+                }
+                diasComServicos[item.dia].push(item);
+            }
+            
+            // Verificar conflitos no mesmo dia
+            const dias = Object.keys(diasComServicos);
+            for (let d = 0; d < dias.length; d++) {
+                const dia = dias[d];
+                const servicosDoDia = diasComServicos[dia];
+                
+                if (servicosDoDia.length > 1) {
+                    for (let i = 0; i < servicosDoDia.length; i++) {
+                        const servico1 = servicosDoDia[i];
+                        for (let j = i + 1; j < servicosDoDia.length; j++) {
+                            const servico2 = servicosDoDia[j];
+                            
+                            const pessoas1 = [servico1.pedOracao, servico1.principal, servico1.lateral].filter(function(p) {
+                                return p && p !== '-' && p !== 'MESCLAR';
+                            });
+                            
+                            const pessoas2 = [servico2.pedOracao, servico2.principal, servico2.lateral].filter(function(p) {
+                                return p && p !== '-' && p !== 'MESCLAR';
+                            });
+                            
+                            for (let p1 = 0; p1 < pessoas1.length; p1++) {
+                                const pessoa = pessoas1[p1];
+                                if (pessoas2.indexOf(pessoa) !== -1) {
+                                    // Verificar se conflito já existe
+                                    let conflitoDuplicado = false;
+                                    for (let c = 0; c < conflitos.length; c++) {
+                                        if (conflitos[c].dia === parseInt(dia) && conflitos[c].pessoa === pessoa) {
+                                            conflitoDuplicado = true;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (!conflitoDuplicado) {
+                                        conflitos.push({
+                                            dia: parseInt(dia),
+                                            pessoa: pessoa,
+                                            servicos: [servico1.servico, servico2.servico]
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            exibirConflitos(conflitos);
+        }
+
+        function exibirConflitos(conflitos) {
+            const alertaDiv = document.getElementById('alertaConflitos');
+            const listaDiv = document.getElementById('listaConflitos');
+            
+            if (conflitos.length === 0) {
+                alertaDiv.style.display = 'none';
+            } else {
+                alertaDiv.style.display = 'block';
+                let html = '';
+                for (let i = 0; i < conflitos.length; i++) {
+                    const conflito = conflitos[i];
+                    html += '<p>Dia ' + conflito.dia + ': <strong>' + conflito.pessoa + '</strong> escalado em ' + conflito.servicos.join(' e ') + '</p>';
+                }
+                listaDiv.innerHTML = html;
+            }
+        }
+
+        function exibirEscala(escala) {
+            const tbody = document.getElementById('corpoTabela');
+            tbody.innerHTML = '';
+
+            for (let i = 0; i < escala.length; i++) {
+                const item = escala[i];
+                const row = document.createElement('tr');
+                
+                if (item.mesclar) {
+                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td colspan="3" class="mesclar"><span class="editavel" onclick="destacarMembro(\'' + item.pedOracao + '\')" ondblclick="editarCampo(' + i + ', \'pedOracao\')">' + item.pedOracao + '</span></td>';
+                } else {
+                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.pedOracao + '\')" ondblclick="editarCampo(' + i + ', \'pedOracao\')">' + item.pedOracao + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.principal + '\')" ondblclick="editarCampo(' + i + ', \'principal\')">' + item.principal + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.lateral + '\')" ondblclick="editarCampo(' + i + ', \'lateral\')">' + item.lateral + '</span></td>';
+                }
+                
+                tbody.appendChild(row);
+            }
+            
+            // Aplicar destaques se houver membro selecionado
+            if (membroDestacadoAtual) {
+                aplicarDestaques();
+            }
+        }
+
+        function destacarMembro(nome) {
+            if (nome === '-' || nome === 'MESCLAR') return;
+            
+            if (membroDestacadoAtual === nome) {
+                limparDestaque();
+            } else {
+                membroDestacadoAtual = nome;
+                document.getElementById('nomeDestacado').textContent = nome;
+                document.getElementById('membroDestacado').style.display = 'block';
+                aplicarDestaques();
+            }
+        }
+
+        function limparDestaque() {
+            membroDestacadoAtual = null;
+            document.getElementById('membroDestacado').style.display = 'none';
+            
+            const editaveis = document.querySelectorAll('.editavel');
+            for (let i = 0; i < editaveis.length; i++) {
+                editaveis[i].classList.remove('destaque');
+            }
+        }
+
+        function aplicarDestaques() {
+            const editaveis = document.querySelectorAll('.editavel');
+            for (let i = 0; i < editaveis.length; i++) {
+                const elemento = editaveis[i];
+                if (elemento.textContent === membroDestacadoAtual) {
+                    elemento.classList.add('destaque');
+                } else {
+                    elemento.classList.remove('destaque');
+                }
+            }
+        }
+
+        function editarCampo(indiceEscala, campo) {
+            if (editandoAtualmente) return; // Já está editando algo
+            
+            editandoAtualmente = { indice: indiceEscala, campo: campo };
+            
+            const valorAtual = escalaAtual[indiceEscala][campo];
+            
+            // Encontrar o elemento na tela
+            const tbody = document.getElementById('corpoTabela');
+            const rows = tbody.children;
+            const targetRow = rows[indiceEscala];
+            
+            let targetCell;
+            if (escalaAtual[indiceEscala].mesclar) {
+                targetCell = targetRow.children[3].querySelector('.editavel');
+            } else {
+                const colIndex = campo === 'pedOracao' ? 3 : campo === 'principal' ? 4 : 5;
+                targetCell = targetRow.children[colIndex].querySelector('.editavel');
+            }
+            
+            // Criar dropdown
+            const dropdown = document.createElement('select');
+            dropdown.className = 'dropdown-edicao';
+            
+            // Adicionar opções
+            const opcaoVazia = document.createElement('option');
+            opcaoVazia.value = '-';
+            opcaoVazia.textContent = '-';
+            dropdown.appendChild(opcaoVazia);
+            
+            for (let i = 0; i < todosMembros.length; i++) {
+                const opcao = document.createElement('option');
+                opcao.value = todosMembros[i];
+                opcao.textContent = todosMembros[i];
+                if (todosMembros[i] === valorAtual) {
+                    opcao.selected = true;
+                }
+                dropdown.appendChild(opcao);
+            }
+            
+            // Criar botões
+            const btnSalvar = document.createElement('button');
+            btnSalvar.textContent = '✓';
+            btnSalvar.className = 'btn-edicao';
+            btnSalvar.onclick = function() { salvarEdicao(dropdown.value); };
+            
+            const btnCancelar = document.createElement('button');
+            btnCancelar.textContent = '✕';
+            btnCancelar.className = 'btn-edicao btn-cancelar';
+            btnCancelar.onclick = cancelarEdicao;
+            
+            // Substituir conteúdo
+            const conteudoOriginal = targetCell.innerHTML;
+            targetCell.innerHTML = '';
+            targetCell.appendChild(dropdown);
+            targetCell.appendChild(btnSalvar);
+            targetCell.appendChild(btnCancelar);
+            targetCell.classList.add('editando');
+            
+            // Focar no dropdown
+            dropdown.focus();
+            
+            // Salvar referência para cancelar
+            editandoAtualmente.elementoOriginal = targetCell;
+            editandoAtualmente.conteudoOriginal = conteudoOriginal;
+        }
+
+        function salvarEdicao(novoValor) {
+            if (!editandoAtualmente) return;
+            
+            // Atualizar dados
+            escalaAtual[editandoAtualmente.indice][editandoAtualmente.campo] = novoValor;
+            
+            // Restaurar elemento
+            const elemento = editandoAtualmente.elementoOriginal;
+            elemento.innerHTML = '<span class="editavel" onclick="destacarMembro(\'' + novoValor + '\')" ondblclick="editarCampo(' + editandoAtualmente.indice + ', \'' + editandoAtualmente.campo + '\')">' + novoValor + '</span>';
+            elemento.classList.remove('editando');
+            
+            // Limpar estado
+            editandoAtualmente = null;
+            
+            // Redetectar conflitos
+            detectarConflitos(escalaAtual);
+            
+            // Reaplicar destaques
+            if (membroDestacadoAtual) {
+                aplicarDestaques();
+            }
+        }
+
+        function cancelarEdicao() {
+            if (!editandoAtualmente) return;
+            
+            // Restaurar conteúdo original
+            const elemento = editandoAtualmente.elementoOriginal;
+            elemento.innerHTML = editandoAtualmente.conteudoOriginal;
+            elemento.classList.remove('editando');
+            
+            // Limpar estado
+            editandoAtualmente = null;
+        }
+
+        function gerarPDF() {
+            const mesAnoValue = document.getElementById('mesAno').value;
+            if (!mesAnoValue) {
+                alert('Selecione um mês primeiro!');
+                return;
+            }
+
+            const ano = mesAnoValue.split('-')[0];
+            const mes = mesAnoValue.split('-')[1];
+            const meses = [
+                'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
+                'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
+            ];
+            const mesNome = meses[parseInt(mes) - 1];
+            
+            // Construir linhas HTML com cores baseadas na escala atual
+            let linhasHTML = '';
+            for (let i = 0; i < escalaAtual.length; i++) {
+                const item = escalaAtual[i];
+                
+                // Determinar cor de fundo baseada no serviço
+                let corFundo = '';
+                switch(item.servico) {
+                    case 'OFICIAL':
+                        corFundo = '#e3f2fd';
+                        break;
+                    case 'RJM':
+                        corFundo = '#e8f5e8';
+                        break;
+                    case 'R. SETOR':
+                        corFundo = '#fff3e0';
+                        break;
+                    case 'R. LOCAL':
+                        corFundo = '#f3e5f5';
+                        break;
+                    case 'ENSAIO':
+                        corFundo = '#e8eaf6';
+                        break;
+                    default:
+                        corFundo = '#ffffff';
+                }
+                
+                if (item.mesclar) {
+                    linhasHTML += `<tr style="background-color: ${corFundo};">
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.dia}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.diaSemana}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.servico}</td>
+                        <td colspan="3" style="border: 1px solid #333; padding: 8px; text-align: center;">${item.pedOracao}</td>
+                    </tr>`;
+                } else {
+                    linhasHTML += `<tr style="background-color: ${corFundo};">
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.dia}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.diaSemana}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.servico}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.pedOracao}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.principal}</td>
+                        <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.lateral}</td>
+                    </tr>`;
+                }
+            }
+            
+            const htmlContent = `<!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Escala de Porteiros - ${mesNome} ${ano}</title>
+                <style>
+                    @page { 
+                        margin: 2cm; 
+                        size: A4; 
+                    }
+                    body { 
+                        font-family: Arial, sans-serif; 
+                        margin: 0; 
+                        padding: 0; 
+                        color: #333; 
+                    }
+                    .cabecalho { 
+                        text-align: center; 
+                        margin-bottom: 30px; 
+                    }
+                    .cabecalho h1 { 
+                        font-size: 16px; 
+                        font-weight: bold; 
+                        margin: 5px 0; 
+                    }
+                    .cabecalho h2 { 
+                        font-size: 14px; 
+                        font-weight: bold; 
+                        margin: 5px 0; 
+                    }
+                    .cabecalho h3 { 
+                        font-size: 14px; 
+                        font-weight: bold; 
+                        margin: 5px 0; 
+                    }
+                    table { 
+                        width: 100%; 
+                        border-collapse: collapse; 
+                        margin-top: 20px; 
+                        font-size: 12px; 
+                    }
+                    th { 
+                        background-color: #f0f0f0; 
+                        font-weight: bold; 
+                        text-align: center; 
+                        padding: 10px 8px; 
+                        border: 1px solid #333; 
+                    }
+                    td { 
+                        text-align: center; 
+                        padding: 8px; 
+                        border: 1px solid #333; 
+                    }
+                    
+                    /* Configurações para impressão colorida */
+                    @media print {
+                        * {
+                            -webkit-print-color-adjust: exact !important;
+                            color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="cabecalho">
+                    <h1>CONGREGAÇÃO CRISTÃ NO BRASIL – SANTA AMÉLIA – CURITIBA PR</h1>
+                    <h2>ESCALA DE PORTEIROS</h2>
+                    <h3>${mesNome} DE ${ano}</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DIA</th>
+                            <th>DIA DA SEMANA</th>
+                            <th>SERVIÇO</th>
+                            <th>PED ORAÇÃO</th>
+                            <th>PRINCIPAL</th>
+                            <th>LATERAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${linhasHTML}
+                    </tbody>
+                </table>
+            </body>
+            </html>`;
+            
+            const novaJanela = window.open('', '_blank');
+            novaJanela.document.write(htmlContent);
+            novaJanela.document.close();
+            setTimeout(function() { 
+                novaJanela.print(); 
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
