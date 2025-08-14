@@ -235,7 +235,7 @@
         // Inicializar com mês atual
         window.onload = function() {
             const hoje = new Date();
-            const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+            const mesAtual = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
             document.getElementById('mesAno').value = mesAtual;
             gerarEscala();
         };
@@ -267,7 +267,8 @@
             return [1, 4, 7, 10].includes(mes);
         }
 
-        function distribuirGrupoComFolga(grupo, totalOcorrencias, indiceInicial = 0) {
+        function distribuirGrupoComFolga(grupo, totalOcorrencias, indiceInicial) {
+            if (indiceInicial === undefined) indiceInicial = 0;
             const escalacao = [];
             let indiceAtual = indiceInicial;
             
@@ -304,7 +305,8 @@
             return escalacao;
         }
 
-        function distribuirGrupoSemFolga(grupo, totalOcorrencias, indiceInicial = 0) {
+        function distribuirGrupoSemFolga(grupo, totalOcorrencias, indiceInicial) {
+            if (indiceInicial === undefined) indiceInicial = 0;
             const escalacao = [];
             
             for (let i = 0; i < totalOcorrencias; i++) {
@@ -324,7 +326,8 @@
             const mesAnoValue = document.getElementById('mesAno').value;
             if (!mesAnoValue) return;
 
-            const [ano, mes] = mesAnoValue.split('-').map(Number);
+            const ano = parseInt(mesAnoValue.split('-')[0]);
+            const mes = parseInt(mesAnoValue.split('-')[1]);
             const diasNoMes = getDiasNoMes(ano, mes);
             const escala = [];
             
@@ -351,10 +354,10 @@
             }
 
             // Gerar escalações
-            const escalacaoTerca = distribuirGrupoComFolga(gruposPorDia.terca, contadores.terca);
-            const escalacaoQuinta = distribuirGrupoSemFolga(gruposPorDia.quinta, contadores.quinta);
-            const escalacaoSabado = distribuirGrupoComFolga(gruposPorDia.sabado, contadores.sabado);
-            const escalacaoDomingo = distribuirGrupoComFolga(gruposPorDia.domingoOficial, contadores.domingo);
+            const escalacaoTerca = distribuirGrupoComFolga(gruposPorDia.terca, contadores.terca, 0);
+            const escalacaoQuinta = distribuirGrupoSemFolga(gruposPorDia.quinta, contadores.quinta, 0);
+            const escalacaoSabado = distribuirGrupoComFolga(gruposPorDia.sabado, contadores.sabado, 0);
+            const escalacaoDomingo = distribuirGrupoComFolga(gruposPorDia.domingoOficial, contadores.domingo, 0);
 
             // Sequências especiais
             let indiceRJM = 0;
@@ -363,10 +366,11 @@
             let indiceEnsaio = 0;
 
             // 3ª feiras
-            diasPorTipo.terca.forEach((dia, index) => {
-                const escalacaoDia = escalacaoTerca[index];
+            for (let i = 0; i < diasPorTipo.terca.length; i++) {
+                const dia = diasPorTipo.terca[i];
+                const escalacaoDia = escalacaoTerca[i];
                 escala.push({
-                    dia,
+                    dia: dia,
                     diaSemana: '3ª FEIRA',
                     servico: 'OFICIAL',
                     pedOracao: escalacaoDia.pedOracao,
@@ -374,13 +378,14 @@
                     lateral: escalacaoDia.lateral,
                     classe: 'oficial'
                 });
-            });
+            }
 
             // 5ª feiras
-            diasPorTipo.quinta.forEach((dia, index) => {
-                const escalacaoDia = escalacaoQuinta[index];
+            for (let i = 0; i < diasPorTipo.quinta.length; i++) {
+                const dia = diasPorTipo.quinta[i];
+                const escalacaoDia = escalacaoQuinta[i];
                 escala.push({
-                    dia,
+                    dia: dia,
                     diaSemana: '5ª FEIRA',
                     servico: 'OFICIAL',
                     pedOracao: escalacaoDia.pedOracao,
@@ -388,13 +393,14 @@
                     lateral: escalacaoDia.lateral,
                     classe: 'oficial'
                 });
-            });
+            }
 
             // Sábados
-            diasPorTipo.sabado.forEach((dia, index) => {
-                const escalacaoDia = escalacaoSabado[index];
+            for (let i = 0; i < diasPorTipo.sabado.length; i++) {
+                const dia = diasPorTipo.sabado[i];
+                const escalacaoDia = escalacaoSabado[i];
                 escala.push({
-                    dia,
+                    dia: dia,
                     diaSemana: 'SÁBADO',
                     servico: 'OFICIAL',
                     pedOracao: escalacaoDia.pedOracao,
@@ -402,17 +408,19 @@
                     lateral: escalacaoDia.lateral,
                     classe: 'oficial'
                 });
-            });
+            }
 
             // Domingos
-            diasPorTipo.domingo.forEach((dia, index) => {
+            for (let i = 0; i < diasPorTipo.domingo.length; i++) {
+                const dia = diasPorTipo.domingo[i];
+                
                 // RJM primeiro
                 const membroRJM1 = sequencias.rjm[indiceRJM % sequencias.rjm.length];
                 const membroRJM2 = sequencias.rjm[(indiceRJM + 1) % sequencias.rjm.length];
                 indiceRJM += 2;
 
                 escala.push({
-                    dia,
+                    dia: dia,
                     diaSemana: 'DOMINGO',
                     servico: 'RJM',
                     pedOracao: membroRJM1,
@@ -422,9 +430,9 @@
                 });
 
                 // OFICIAL depois
-                const escalacaoDia = escalacaoDomingo[index];
+                const escalacaoDia = escalacaoDomingo[i];
                 escala.push({
-                    dia,
+                    dia: dia,
                     diaSemana: 'DOMINGO',
                     servico: 'OFICIAL',
                     pedOracao: escalacaoDia.pedOracao,
@@ -432,7 +440,7 @@
                     lateral: escalacaoDia.lateral,
                     classe: 'oficial'
                 });
-            });
+            }
 
             // R. SETOR
             const terceiraSegunda = encontrarNesimoDay(ano, mes, 1, 3);
@@ -487,7 +495,7 @@
             }
 
             // Ordenar e exibir
-            escala.sort((a, b) => a.dia - b.dia);
+            escala.sort(function(a, b) { return a.dia - b.dia; });
             exibirEscala(escala);
         }
 
@@ -495,29 +503,18 @@
             const tbody = document.getElementById('corpoTabela');
             tbody.innerHTML = '';
 
-            escala.forEach(item => {
+            for (let i = 0; i < escala.length; i++) {
+                const item = escala[i];
                 const row = document.createElement('tr');
                 
                 if (item.mesclar) {
-                    row.innerHTML = `
-                        <td>${item.dia}</td>
-                        <td>${item.diaSemana}</td>
-                        <td><span class="servico-badge ${item.classe}">${item.servico}</span></td>
-                        <td colspan="3" class="mesclar">${item.pedOracao}</td>
-                    `;
+                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td colspan="3" class="mesclar">' + item.pedOracao + '</td>';
                 } else {
-                    row.innerHTML = `
-                        <td>${item.dia}</td>
-                        <td>${item.diaSemana}</td>
-                        <td><span class="servico-badge ${item.classe}">${item.servico}</span></td>
-                        <td>${item.pedOracao}</td>
-                        <td>${item.principal}</td>
-                        <td>${item.lateral}</td>
-                    `;
+                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td>' + item.pedOracao + '</td><td>' + item.principal + '</td><td>' + item.lateral + '</td>';
                 }
                 
                 tbody.appendChild(row);
-            });
+            }
         }
 
         function gerarPDF() {
@@ -527,7 +524,8 @@
                 return;
             }
 
-            const [ano, mes] = mesAnoValue.split('-');
+            const ano = mesAnoValue.split('-')[0];
+            const mes = mesAnoValue.split('-')[1];
             const meses = [
                 'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
                 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
@@ -538,85 +536,24 @@
             const linhas = Array.from(tabela.querySelectorAll('tbody tr'));
             
             let linhasHTML = '';
-            linhas.forEach(linha => {
+            for (let i = 0; i < linhas.length; i++) {
+                const linha = linhas[i];
                 const colunas = Array.from(linha.children);
-                if (colunas.length === 4) { // Linha mesclada
-                    linhasHTML += `
-                        <tr>
-                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[0].textContent}</td>
-                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[1].textContent}</td>
-                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[2].textContent}</td>
-                            <td colspan="3" style="border: 1px solid #333; padding: 8px; text-align: center; background-color: #f5f5f5; font-weight: bold;">${colunas[3].textContent}</td>
-                        </tr>
-                    `;
+                if (colunas.length === 4) {
+                    linhasHTML += '<tr><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[0].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[1].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[2].textContent + '</td><td colspan="3" style="border: 1px solid #333; padding: 8px; text-align: center; background-color: #f5f5f5; font-weight: bold;">' + colunas[3].textContent + '</td></tr>';
                 } else {
-                    linhasHTML += `
-                        <tr>
-                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[0].textContent}</td>
-                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[1].textContent}</td>
-                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[2].textContent}</td>
-                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[3].textContent}</td>
-                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[4].textContent}</td>
-                            <td style="border: 1px solid #333; padding: 8px; text-align: center;">${colunas[5].textContent}</td>
-                        </tr>
-                    `;
+                    linhasHTML += '<tr><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[0].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[1].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[2].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[3].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[4].textContent + '</td><td style="border: 1px solid #333; padding: 8px; text-align: center;">' + colunas[5].textContent + '</td></tr>';
                 }
-            });
+            }
             
-            const htmlContent = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Escala de Porteiros - ${mesNome} ${ano}</title>
-                    <style>
-                        @page { margin: 2cm; size: A4; }
-                        body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; }
-                        .cabecalho { text-align: center; margin-bottom: 30px; }
-                        .cabecalho h1 { font-size: 16px; font-weight: bold; margin: 5px 0; }
-                        .cabecalho h2 { font-size: 14px; font-weight: bold; margin: 5px 0; }
-                        .cabecalho h3 { font-size: 14px; font-weight: bold; margin: 5px 0; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
-                        th { background-color: #f0f0f0; font-weight: bold; text-align: center; padding: 10px 8px; border: 1px solid #333; }
-                        td { text-align: center; padding: 8px; border: 1px solid #333; }
-                        tr:nth-child(even) { background-color: #f9f9f9; }
-                    </style>
-                </head>
-                <body>
-                    <div class="cabecalho">
-                        <h1>CONGREGAÇÃO CRISTÃ NO BRASIL – SANTA AMÉLIA – CURITIBA PR</h1>
-                        <h2>ESCALA DE PORTEIROS</h2>
-                        <h3>${mesNome} DE ${ano}</h3>
-                    </div>
-                    
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>DIA</th>
-                                <th>DIA DA SEMANA</th>
-                                <th>SERVIÇO</th>
-                                <th>PED ORAÇÃO</th>
-                                <th>PRINCIPAL</th>
-                                <th>LATERAL</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${linhasHTML}
-                        </tbody>
-                    </table>
-                    
-                    <script>
-                        window.onload = function() {
-                            window.print();
-                        }
-                    </script>
-                </body>
-                </html>
-            `;
+            const htmlContent = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Escala de Porteiros - ' + mesNome + ' ' + ano + '</title><style>@page { margin: 2cm; size: A4; }body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; }.cabecalho { text-align: center; margin-bottom: 30px; }.cabecalho h1 { font-size: 16px; font-weight: bold; margin: 5px 0; }.cabecalho h2 { font-size: 14px; font-weight: bold; margin: 5px 0; }.cabecalho h3 { font-size: 14px; font-weight: bold; margin: 5px 0; }table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }th { background-color: #f0f0f0; font-weight: bold; text-align: center; padding: 10px 8px; border: 1px solid #333; }td { text-align: center; padding: 8px; border: 1px solid #333; }tr:nth-child(even) { background-color: #f9f9f9; }</style></head><body><div class="cabecalho"><h1>CONGREGAÇÃO CRISTÃ NO BRASIL – SANTA AMÉLIA – CURITIBA PR</h1><h2>ESCALA DE PORTEIROS</h2><h3>' + mesNome + ' DE ' + ano + '</h3></div><table><thead><tr><th>DIA</th><th>DIA DA SEMANA</th><th>SERVIÇO</th><th>PED ORAÇÃO</th><th>PRINCIPAL</th><th>LATERAL</th></tr></thead><tbody>' + linhasHTML + '</tbody></table></body></html>';
             
             const novaJanela = window.open('', '_blank');
             novaJanela.document.write(htmlContent);
             novaJanela.document.close();
+            setTimeout(function() { 
+                novaJanela.print(); 
+            }, 1000);
         }
     </script>
 </body>
