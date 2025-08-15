@@ -472,8 +472,11 @@
         <div id="alertaConflitos" class="conflito-alerta">
             <h3>⚠️ Conflitos de Mesmo Dia Detectados</h3>
             <div id="listaConflitos" class="conflito-lista"></div>
-            <p style="font-size: 12px; margin-top: 10px; color: #666;">
-                <strong>💡 Dica:</strong> Para editar, use <strong>duplo clique</strong> ou <strong>botão direito</strong> em qualquer nome
+            <p style="font-size: 12px; margin-top: 15px; color: #666; border-top: 1px solid #ddd; padding-top: 10px;">
+                <strong>💡 Como resolver:</strong><br>
+                • <strong>Aplicar sugestão:</strong> Clique no botão "✨ Aplicar" nas sugestões automáticas<br>
+                • <strong>Edição manual:</strong> Use <strong>duplo clique</strong> ou <strong>botão direito</strong> em qualquer nome<br>
+                • <strong>Dica:</strong> Sugestões 🥇 são as mais recomendadas
             </p>
         </div>
         
@@ -1378,11 +1381,167 @@
             } else {
                 alertaDiv.style.display = 'block';
                 let html = '';
+                
                 for (let i = 0; i < conflitos.length; i++) {
                     const conflito = conflitos[i];
-                    html += '<p>Dia ' + conflito.dia + ': <strong>' + conflito.pessoa + '</strong> escalado em ' + conflito.servicos.join(' e ') + '</p>';
+                    const sugestoes = gerarSugestoesConflito(conflito);
+                    
+                    html += `<div style="margin-bottom: 15px; padding: 10px; background: #fff; border-radius: 8px; border-left: 4px solid #f44336;">
+                        <p><strong>📅 Dia ${conflito.dia}:</strong> <span style="color: #d32f2f; font-weight: bold;">${conflito.pessoa}</span> escalado em ${conflito.servicos.join(' e ')}</p>`;
+                    
+                    if (sugestoes.length > 0) {
+                        html += `<div style="margin-top: 8px;">
+                            <p style="font-size: 12px; color: #1976d2; font-weight: bold;">💡 Sugestões de resolução:</p>`;
+                        
+                        sugestoes.forEach((sugestao, index) => {
+                            const corBotao = index === 0 ? '#4caf50' : '#2196f3'; // Primeira sugestão em verde
+                            html += `<div style="margin: 5px 0; padding: 6px 10px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid ${corBotao};">
+                                <span style="font-size: 12px;">${sugestao.descricao}</span>
+                                <button onclick="aplicarSugestao(${conflito.dia}, '${sugestao.campo}', '${sugestao.valorAtual}', '${sugestao.novoValor}', '${sugestao.servico}')" 
+                                        style="background: ${corBotao}; color: white; border: none; padding: 3px 8px; border-radius: 3px; margin-left: 8px; cursor: pointer; font-size: 11px;">
+                                    ✨ Aplicar
+                                </button>
+                            </div>`;
+                        });
+                        
+                        html += '</div>';
+                    }
+                    
+                    html += '</div>';
                 }
+                
                 listaDiv.innerHTML = html;
+            }
+        }
+
+        // NOVA FUNÇÃO: Gerar sugestões inteligentes para resolver conflitos
+        function gerarSugestoesConflito(conflito) {
+            const sugestoes = [];
+            const dia = conflito.dia;
+            const pessoaConflito = conflito.pessoa;
+            
+            // Encontrar os serviços em conflito neste dia
+            const servicosDoDia = escalaAtual.filter(item => item.dia === dia);
+            const servicosComPessoa = servicosDoDia.filter(item => 
+                [item.pedOracao, item.principal, item.lateral].includes(pessoaConflito)
+            );
+            
+            if (servicosComPessoa.length >= 2) {
+                // Analisar cada serviço e sugerir substituições
+                servicosComPessoa.forEach((servico, index) => {
+                    if (index > 0) { // Manter o primeiro, sugerir mudanças nos outros
+                        const campo = encontrarCampoPessoa(servico, pessoaConflito);
+                        if (campo) {
+                            const substituicoesSugeridas = encontrarSubstitutosPossiveis(servico, campo, dia);
+                            
+                            substituicoesSugeridas.forEach((substituto, subIndex) => {
+                                const prioridade = subIndex === 0 ? '🥇' : subIndex === 1 ? '🥈' : '🥉';
+                                sugestoes.push({
+                                    descricao: `${prioridade} Substituir "${pessoaConflito}" por "${substituto}" no ${servico.servico} (${campo})`,
+                                    campo: campo,
+                                    valorAtual: pessoaConflito,
+                                    novoValor: substituto,
+                                    servico: servico.servico,
+                                    prioridade: subIndex
+                                });
+                            });
+                        }
+                    }
+                });
+            }
+            
+            // Ordenar por prioridade (melhor sugestão primeiro)
+            return sugestoes.sort((a, b) => a.prioridade - b.prioridade).slice(0, 3); // Máximo 3 sugestões
+        }
+
+        function encontrarCampoPessoa(servico, pessoa) {
+            if (servico.pedOracao === pessoa) return 'pedOracao';
+            if (servico.principal === pessoa) return 'principal';
+            if (servico.lateral === pessoa) return 'lateral';
+            return null;
+        }
+
+        function encontrarSubstitutosPossiveis(servico, campo, dia) {
+            const substitutos = [];
+            
+            // Pessoas já escaladas neste dia (evitar)
+            const pessoasJaEscaladas = [];
+            escalaAtual.filter(item => item.dia === dia).forEach(item => {
+                if (item.pedOracao && item.pedOracao !== '-' && item.pedOracao !== 'MESCLAR') {
+                    pessoasJaEscaladas.push(item.pedOracao);
+                }
+                if (item.principal && item.principal !== '-' && item.principal !== 'MESCLAR') {
+                    pessoasJaEscaladas.push(item.principal);
+                }
+                if (item.lateral && item.lateral !== '-' && item.lateral !== 'MESCLAR') {
+                    pessoasJaEscaladas.push(item.lateral);
+                }
+            });
+            
+            // Determinar grupo relevante baseado no serviço
+            let grupoRelevante = [];
+            const diaSemana = getDiaSemana(parseInt(document.getElementById('mesAno').value.split('-')[0]), 
+                                         parseInt(document.getElementById('mesAno').value.split('-')[1]), dia);
+            
+            if (servico.servico === 'OFICIAL') {
+                if (diaSemana === 2) grupoRelevante = gruposPorDia.terca;
+                else if (diaSemana === 4) grupoRelevante = gruposPorDia.quinta;
+                else if (diaSemana === 6) grupoRelevante = gruposPorDia.sabado;
+                else if (diaSemana === 0) grupoRelevante = gruposPorDia.domingoOficial;
+            } else {
+                // Para serviços especiais, usar toda a sequência
+                if (servico.servico === 'RJM') grupoRelevante = sequencias.rjm;
+                else if (servico.servico === 'R. SETOR') grupoRelevante = sequencias.rSetor;
+                else if (servico.servico === 'R. LOCAL') grupoRelevante = sequencias.rLocal;
+                else if (servico.servico === 'ENSAIO') grupoRelevante = sequencias.ensaio;
+            }
+            
+            // Sugerir pessoas do grupo relevante que não estão escaladas no dia
+            grupoRelevante.forEach(pessoa => {
+                if (!pessoasJaEscaladas.includes(pessoa)) {
+                    substitutos.push(pessoa);
+                }
+            });
+            
+            // Se não há ninguém do grupo relevante disponível, sugerir outros membros
+            if (substitutos.length === 0) {
+                todosMembros.forEach(pessoa => {
+                    if (!pessoasJaEscaladas.includes(pessoa)) {
+                        substitutos.push(pessoa);
+                    }
+                });
+            }
+            
+            return substitutos.slice(0, 3); // Máximo 3 substitutos
+        }
+
+        // NOVA FUNÇÃO: Aplicar sugestão automaticamente
+        function aplicarSugestao(dia, campo, valorAtual, novoValor, servico) {
+            if (!confirm(`Aplicar sugestão?\n\nSubstituir "${valorAtual}" por "${novoValor}" no ${servico} do dia ${dia}?`)) {
+                return;
+            }
+            
+            // Encontrar o item na escala atual
+            const indiceItem = escalaAtual.findIndex(item => 
+                item.dia === dia && 
+                item.servico === servico && 
+                item[campo] === valorAtual
+            );
+            
+            if (indiceItem !== -1) {
+                // Aplicar a mudança
+                escalaAtual[indiceItem][campo] = novoValor;
+                
+                // Atualizar a interface
+                exibirEscala(escalaAtual);
+                
+                // Redetectar conflitos
+                detectarConflitos(escalaAtual);
+                
+                // Mostrar feedback
+                alert(`✅ Sugestão aplicada com sucesso!\n\n"${valorAtual}" foi substituído por "${novoValor}" no ${servico} do dia ${dia}.`);
+            } else {
+                alert('❌ Erro ao aplicar sugestão. Tente fazer a alteração manualmente.');
             }
         }
 
