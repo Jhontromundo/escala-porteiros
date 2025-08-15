@@ -773,15 +773,26 @@
 
             escalaAtual.sort((a, b) => a.dia - b.dia);
 
-            // Atualizar índices
+            // Atualizar índices - ESPECIAL para 5ª feira (rotatividade lateral→pedOracao)
             indices.terca = resultTerca.proximoIndice;
-            indices.quinta = resultQuinta.proximoIndice;
             indices.sabado = resultSabado.proximoIndice;
             indices.domingoOficial = resultDomingo.proximoIndice;
             indices.rjm = resultRJM.proximoIndice;
             indices.rSetor = resultRSetor.proximoIndice;
-            if ([1,4,7,10].includes(mes)) indices.rLocal = resultRLocal.proximoIndice;
+            if (temRLocal(mes)) {
+                indices.rLocal = resultRLocal.proximoIndice;
+            }
             indices.ensaio = resultEnsaio.proximoIndice;
+            
+            // 5ª feira: quem foi lateral no último serviço deve ser pedOracao no próximo mês
+            if (dias.quinta.length > 0) {
+                const ultimaQuinta = resultQuinta.escalacao[resultQuinta.escalacao.length - 1];
+                const ultimoLateral = ultimaQuinta.lateral;
+                const posicaoUltimoLateral = grupos.quinta.indexOf(ultimoLateral);
+                indices.quinta = posicaoUltimoLateral >= 0 ? posicaoUltimoLateral : resultQuinta.proximoIndice;
+            } else {
+                indices.quinta = resultQuinta.proximoIndice;
+            }
 
             escalas[mesAno] = [...escalaAtual];
             salvarDados();
