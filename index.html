@@ -464,6 +464,35 @@
             ensaio: { nome: 'ENSAIO', classe: 'ensaio' }
         };
 
+        // ========== ESCALA BASE FIXA DE AGOSTO 2025 ==========
+        const ESCALA_AGOSTO_2025 = [
+            {dia: 2, diaSemana: 'SÁBADO', servico: 'OFICIAL', pedOracao: 'JOSÉ CARLOS', principal: 'RODINEI', lateral: 'VANDERLEI', classe: 'oficial'},
+            {dia: 3, diaSemana: 'DOMINGO', servico: 'RJM', pedOracao: 'ELIZEU', principal: '-', lateral: 'ZANIN', classe: 'rjm'},
+            {dia: 3, diaSemana: 'DOMINGO', servico: 'OFICIAL', pedOracao: 'EDIVAN', principal: 'JOSÉ CARDOSO', lateral: 'ODEMIR', classe: 'oficial'},
+            {dia: 5, diaSemana: '3ª FEIRA', servico: 'OFICIAL', pedOracao: 'AFONSO', principal: 'ALGACIR', lateral: 'JONAS', classe: 'oficial'},
+            {dia: 7, diaSemana: '5ª FEIRA', servico: 'OFICIAL', pedOracao: 'EDI', principal: 'MARCOS', lateral: 'SAULO', classe: 'oficial'},
+            {dia: 9, diaSemana: 'SÁBADO', servico: 'OFICIAL', pedOracao: 'ELIZEU', principal: 'JOSÉ CARLOS', lateral: 'RODINEI', classe: 'oficial'},
+            {dia: 10, diaSemana: 'DOMINGO', servico: 'RJM', pedOracao: 'ALGACIR', principal: '-', lateral: 'EDI', classe: 'rjm'},
+            {dia: 10, diaSemana: 'DOMINGO', servico: 'OFICIAL', pedOracao: 'SAMUEL', principal: 'EDIVAN', lateral: 'JOSÉ CARDOSO', classe: 'oficial'},
+            {dia: 12, diaSemana: '3ª FEIRA', servico: 'OFICIAL', pedOracao: 'ZANIN', principal: 'AFONSO', lateral: 'ALGACIR', classe: 'oficial'},
+            {dia: 14, diaSemana: '5ª FEIRA', servico: 'OFICIAL', pedOracao: 'SAULO', principal: 'EDI', lateral: 'MARCOS', classe: 'oficial'},
+            {dia: 16, diaSemana: 'SÁBADO', servico: 'OFICIAL', pedOracao: 'RODINEI', principal: 'VANDERLEI', lateral: 'ELIZEU', classe: 'oficial'},
+            {dia: 17, diaSemana: 'DOMINGO', servico: 'RJM', pedOracao: 'JOSÉ CARDOSO', principal: '-', lateral: 'CÉLIO', classe: 'rjm'},
+            {dia: 17, diaSemana: 'DOMINGO', servico: 'OFICIAL', pedOracao: 'ODEMIR', principal: 'SAMUEL', lateral: 'EDIVAN', classe: 'oficial'},
+            {dia: 18, diaSemana: '2ª FEIRA', servico: 'R. SETOR', pedOracao: 'JONAS', principal: 'MESCLAR', lateral: 'MESCLAR', classe: 'rsetor', mesclar: true},
+            {dia: 19, diaSemana: '3ª FEIRA', servico: 'OFICIAL', pedOracao: 'JONAS', principal: 'ZANIN', lateral: 'AFONSO', classe: 'oficial'},
+            {dia: 21, diaSemana: '5ª FEIRA', servico: 'OFICIAL', pedOracao: 'MARCOS', principal: 'SAULO', lateral: 'EDI', classe: 'oficial'},
+            {dia: 22, diaSemana: '6ª FEIRA', servico: 'ENSAIO', pedOracao: 'AFONSO', principal: '-', lateral: 'MARCOS', classe: 'ensaio'},
+            {dia: 23, diaSemana: 'SÁBADO', servico: 'OFICIAL', pedOracao: 'JOSÉ CARLOS', principal: 'RODINEI', lateral: 'VANDERLEI', classe: 'oficial'},
+            {dia: 24, diaSemana: 'DOMINGO', servico: 'RJM', pedOracao: 'CÉLIO', principal: '-', lateral: 'EDIVAN', classe: 'rjm'},
+            {dia: 24, diaSemana: 'DOMINGO', servico: 'OFICIAL', pedOracao: 'JOSÉ CARDOSO', principal: 'ODEMIR', lateral: 'SAMUEL', classe: 'oficial'},
+            {dia: 26, diaSemana: '3ª FEIRA', servico: 'OFICIAL', pedOracao: 'ALGACIR', principal: 'JONAS', lateral: 'ZANIN', classe: 'oficial'},
+            {dia: 28, diaSemana: '5ª FEIRA', servico: 'OFICIAL', pedOracao: 'EDI', principal: 'MARCOS', lateral: 'SAULO', classe: 'oficial'},
+            {dia: 30, diaSemana: 'SÁBADO', servico: 'OFICIAL', pedOracao: 'ELIZEU', principal: 'JOSÉ CARLOS', lateral: 'RODINEI', classe: 'oficial'},
+            {dia: 31, diaSemana: 'DOMINGO', servico: 'RJM', pedOracao: 'SAULO', principal: '-', lateral: 'VANDERLEI', classe: 'rjm'},
+            {dia: 31, diaSemana: 'DOMINGO', servico: 'OFICIAL', pedOracao: 'EDIVAN', principal: 'JOSÉ CARDOSO', lateral: 'ODEMIR', classe: 'oficial'}
+        ];
+
         // ========== VARIÁVEIS GLOBAIS ==========
         let grupos = JSON.parse(JSON.stringify(GRUPOS_PADRAO));
         let sequencias = JSON.parse(JSON.stringify(SEQUENCIAS_PADRAO));
@@ -487,16 +516,30 @@
         // ========== INICIALIZAÇÃO ==========
         window.onload = function() {
             carregarDados();
+            
+            // Fixa a escala de agosto 2025 no sistema
+            escalas['2025-08'] = ESCALA_AGOSTO_2025;
+            
             const hoje = new Date();
             const mesAtual = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
-            document.getElementById('mesAno').value = mesAtual;
+            
+            // Define setembro como padrão se estivermos em 2025
+            if (mesAtual >= '2025-09') {
+                document.getElementById('mesAno').value = '2025-09';
+            } else {
+                document.getElementById('mesAno').value = mesAtual;
+            }
             
             // Event listeners
             document.getElementById('novaPessoa').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') adicionarPessoa();
             });
             
-            setTimeout(gerarEscala, 100);
+            setTimeout(function() {
+                if (document.getElementById('mesAno').value) {
+                    gerarEscala();
+                }
+            }, 100);
         };
 
         // ========== PERSISTÊNCIA ==========
@@ -572,6 +615,22 @@
         function gerarEscala() {
             const mesAno = document.getElementById('mesAno').value;
             if (!mesAno) return;
+
+            // Bloqueia geração anterior a setembro/2025
+            if (mesAno < '2025-09') {
+                alert('🚫 Geração Bloqueada!\n\nEscalas anteriores a setembro de 2025 não são permitidas.\n\n📋 A escala de agosto/2025 já está definida como base.\n\n✅ Selecione setembro/2025 ou posterior.');
+                document.getElementById('mesAno').value = '2025-09';
+                return;
+            }
+
+            // Se for agosto, carrega a escala fixa
+            if (mesAno === '2025-08') {
+                escalaAtual = ESCALA_AGOSTO_2025;
+                exibirEscala();
+                detectarConflitos();
+                alert('📋 Escala Base de Agosto!\n\nEsta é a escala oficial de agosto de 2025 (imutável).\n\n✅ Serve como base para continuidade das próximas escalas.');
+                return;
+            }
 
             if (escalas[mesAno]) {
                 escalaAtual = escalas[mesAno];
@@ -1086,6 +1145,12 @@
         }
 
         function deletarEscala(mesAno, nomeCompleto) {
+            // Protege a escala base de agosto
+            if (mesAno === '2025-08') {
+                alert('🔒 Escala Protegida!\n\nA escala de agosto de 2025 é a base do sistema e não pode ser deletada.\n\n📋 Esta escala serve como referência para continuidade.');
+                return;
+            }
+            
             if (confirm(`🗑️ Deletar Escala?\n\n📅 ${nomeCompleto}\n📊 ${escalas[mesAno].length} serviços\n\n⚠️ Esta ação não pode ser desfeita!`)) {
                 delete escalas[mesAno];
                 salvarDados();
@@ -1104,16 +1169,25 @@
         }
 
         function limparTodasEscalas() {
-            const total = Object.keys(escalas).length;
+            const totalEscalas = Object.keys(escalas).length;
+            const escalasDeleteis = Object.keys(escalas).filter(mes => mes !== '2025-08').length;
             
-            if (total === 0) {
-                alert('📭 Não há escalas para deletar!');
+            if (escalasDeleteis === 0) {
+                alert('📭 Não há escalas para deletar!\n\n🔒 A escala de agosto/2025 é protegida.');
                 return;
             }
             
-            if (confirm(`🗑️ DELETAR TODAS AS ESCALAS?\n\n📊 Total: ${total} escalas salvas\n\n⚠️ ESTA AÇÃO NÃO PODE SER DESFEITA!\n\nTem certeza absoluta?`)) {
-                escalas = {};
-                indices = { rjm: 0, rSetor: 0, rLocal: 0, ensaio: 0, terca: 0, quinta: 0, sabado: 0, domingoOficial: 0 };
+            if (confirm(`🗑️ DELETAR ESCALAS?\n\n📊 Total: ${totalEscalas} escalas\n🗑️ Deletáveis: ${escalasDeleteis} escalas\n🔒 Protegida: Agosto/2025\n\n⚠️ ESTA AÇÃO NÃO PODE SER DESFEITA!\n\nTem certeza?`)) {
+                // Remove todas exceto agosto/2025
+                Object.keys(escalas).forEach(mes => {
+                    if (mes !== '2025-08') {
+                        delete escalas[mes];
+                    }
+                });
+                
+                // Recalcula índices baseado na escala de agosto
+                calcularIndicesBaseadoAgosto();
+                
                 salvarDados();
                 carregarListaEscalas();
                 
@@ -1121,8 +1195,36 @@
                 document.getElementById('corpoTabela').innerHTML = '';
                 document.getElementById('conflitoAlert').style.display = 'none';
                 
-                alert(`✅ Todas as escalas foram deletadas!\n\n🔄 Os índices de continuidade também foram resetados.`);
+                alert(`✅ Escalas deletadas!\n\n🗑️ ${escalasDeleteis} escalas removidas\n🔒 Agosto/2025 mantida como base\n🔄 Índices recalculados`);
             }
+        }
+
+        // ========== CÁLCULO DE ÍNDICES BASEADO NA ESCALA DE AGOSTO ==========
+        function calcularIndicesBaseadoAgosto() {
+            // Analisa a escala de agosto para determinar onde parou cada sequência
+            const agostoRJM = ESCALA_AGOSTO_2025.filter(s => s.servico === 'RJM');
+            const ultimoRJM = agostoRJM[agostoRJM.length - 1]; // Último RJM: SAULO + VANDERLEI
+            
+            // Encontra posição do SAULO na sequência RJM (último pedOracao)
+            const posicaoSaulo = sequencias.rjm.indexOf('SAULO'); // posição 13
+            indices.rjm = (posicaoSaulo + 2) % sequencias.rjm.length; // próximo: RODINEI (posição 10)
+            
+            // R.Setor: último foi JONAS (posição 7), próximo CÉLIO (posição 8)
+            const posicaoJonas = sequencias.rSetor.indexOf('JONAS');
+            indices.rSetor = (posicaoJonas + 1) % sequencias.rSetor.length;
+            
+            // R.Local: próximo será em outubro, SAMUEL (posição 1)
+            indices.rLocal = 1;
+            
+            // Ensaio: último foi AFONSO + MARCOS, próximos CÉLIO + EDI
+            const posicaoAfonso = sequencias.ensaio.indexOf('AFONSO');
+            indices.ensaio = (posicaoAfonso + 2) % sequencias.ensaio.length;
+            
+            // Grupos oficiais: calcular baseado nas últimas posições
+            indices.terca = 0; // Reinicia para continuidade
+            indices.quinta = 0;
+            indices.sabado = 2;
+            indices.domingoOficial = 1;
         }
         // ========== GERENCIAMENTO DE PESSOAS ==========
         function abrirModalPessoas() {
