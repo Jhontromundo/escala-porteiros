@@ -1394,10 +1394,12 @@
                             <p style="font-size: 12px; color: #1976d2; font-weight: bold;">💡 Sugestões de resolução:</p>`;
                         
                         sugestoes.forEach((sugestao, index) => {
-                            const corBotao = index === 0 ? '#4caf50' : '#2196f3'; // Primeira sugestão em verde
+                            const corBotao = index === 0 ? '#4caf50' : '#2196f3';
+                            const parametrosTraca = sugestao.dadosTraca ? `, ${JSON.stringify(sugestao.dadosTraca)}` : ', null';
+                            
                             html += `<div style="margin: 5px 0; padding: 6px 10px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid ${corBotao};">
                                 <span style="font-size: 12px;">${sugestao.descricao}</span>
-                                <button onclick="aplicarSugestao(${conflito.dia}, '${sugestao.campo}', '${sugestao.valorAtual}', '${sugestao.novoValor}', '${sugestao.servico}')" 
+                                <button onclick="aplicarSugestao(${conflito.dia}, '${sugestao.campo}', '${sugestao.valorAtual}', '${sugestao.novoValor}', '${sugestao.servico}'${parametrosTraca})" 
                                         style="background: ${corBotao}; color: white; border: none; padding: 3px 8px; border-radius: 3px; margin-left: 8px; cursor: pointer; font-size: 11px;">
                                     ✨ Aplicar
                                 </button>
@@ -1427,31 +1429,196 @@
             );
             
             if (servicosComPessoa.length >= 2) {
-                // Analisar cada serviço e sugerir substituições
-                servicosComPessoa.forEach((servico, index) => {
-                    if (index > 0) { // Manter o primeiro, sugerir mudanças nos outros
-                        const campo = encontrarCampoPessoa(servico, pessoaConflito);
-                        if (campo) {
-                            const substituicoesSugeridas = encontrarSubstitutosPossiveis(servico, campo, dia);
-                            
-                            substituicoesSugeridas.forEach((substituto, subIndex) => {
-                                const prioridade = subIndex === 0 ? '🥇' : subIndex === 1 ? '🥈' : '🥉';
-                                sugestoes.push({
-                                    descricao: `${prioridade} Substituir "${pessoaConflito}" por "${substituto}" no ${servico.servico} (${campo})`,
-                                    campo: campo,
-                                    valorAtual: pessoaConflito,
-                                    novoValor: substituto,
-                                    servico: servico.servico,
-                                    prioridade: subIndex
+                // REGRA NOVA: Priorizar alterações apenas em sequências especiais
+                const servicosFlexiveis = servicosComPessoa.filter(servico => 
+                    ['RJM', 'R. SETOR', 'R. LOCAL', 'ENSAIO'].includes(servico.servico)
+                );
+                
+                const servicosFixos = servicosComPessoa.filter(servico => 
+                    servico.servico === 'OFICIAL'
+                );
+                
+                // Se há serviços flexíveis, sugerir alterações apenas neles
+                if (servicosFlexiveis.length > 0) {
+                    servicosFlexiveis.forEach(servico => {
+                        const sugestoesPorServico = gerarSugestoesParaSequenciaEspecial(servico, pessoaConflito, dia);
+                        sugestoes.push(...sugestoesPorServico);
+                    });
+                } else {
+                    // Caso extremo: só serviços oficiais (manter lógica original como fallback)
+                    servicosComPessoa.forEach((servico, index) => {
+                        if (index > 0) {
+                            const campo = encontrarCampoPessoa(servico, pessoaConflito);
+                            if (campo) {
+                                const substituicoesSugeridas = encontrarSubstitutosPossiveis(servico, campo, dia);
+                                
+                                substituicoesSugeridas.forEach((substituto, subIndex) => {
+                                    const prioridade = subIndex === 0 ? '🥇' : subIndex === 1 ? '🥈' : '🥉';
+                                    sugestoes.push({
+                                        descricao: `${prioridade} Substituir "${pessoaConflito}" por "${substituto}" no ${servico.servico} (${campo})`,
+                                        campo: campo,
+                                        valorAtual: pessoaConflito,
+                                        novoValor: substituto,
+                                        servico: servico.servico,
+                                        prioridade: subIndex + 10 // Baixa prioridade para serviços oficiais
+                                    });
                                 });
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Ordenar por prioridade (melhor sugestão primeiro)
+            return sugestoes.sort((a, b) => a.prioridade - b.prioridade).slice(0, 3);
+        }
+
+        // NOVA FUNÇÃO: Gerar sugestões específicas para sequências especiais
+        function gerarSugestoesParaSequenciaEspecial(servico, pessoaConflito, diaConflito) {
+            const sugestoes = [];
+            const tipoServico = servico.servico;
+            
+            // Encontrar todas as ocorrências desta sequência especial no mês
+            const outrasOcorrenciasSequencia = escalaAtual.filter(item => 
+                item.servico === tipoServico && item.dia !== diaConflito
+            );
+            
+            // Para cada outra ocorrência, verificar se podemos fazer uma troca
+            outrasOcorrenciasSequencia.forEach(outraOcorrencia => {
+                const pessoas = [outraOcorrencia.pedOracao, outraOcorrencia.principal, outraOcorrencia.lateral]
+                    .filter(p => p && p !== '-' && p !== 'MESCLAR');
+                
+                pessoas.forEach(pessoaAlternativa => {
+                    // Verificar se a pessoa alternativa está disponível no dia do conflito
+                    const pessoaDisponivelNoConflito = !estaPessoaEscaladaNoDia(pessoaAlternativa, diaConflito);
+                    // Verificar se a pessoa em conflito está disponível no outro dia
+                    const pessoaConflitoDisponivelNoOutroDia = !estaPessoaEscaladaNoDia(pessoaConflito, outraOcorrencia.dia, tipoServico);
+                    
+                    if (pessoaDisponivelNoConflito && pessoaConflitoDisponivelNoOutroDia) {
+                        const campoConflito = encontrarCampoPessoa(servico, pessoaConflito);
+                        const campoAlternativo = encontrarCampoPessoa(outraOcorrencia, pessoaAlternativa);
+                        
+                        if (campoConflito && campoAlternativo) {
+                            // Sugestão de troca entre dias
+                            sugestoes.push({
+                                descricao: `🔄 Trocar "${pessoaConflito}" (dia ${diaConflito}) com "${pessoaAlternativa}" (dia ${outraOcorrencia.dia}) no ${tipoServico}`,
+                                campo: campoConflito,
+                                valorAtual: pessoaConflito,
+                                novoValor: pessoaAlternativa,
+                                servico: tipoServico,
+                                prioridade: 0, // Alta prioridade para trocas dentro da sequência
+                                tipoPoracao: 'troca',
+                                dadosTraca: {
+                                    diaOrigem: diaConflito,
+                                    diaDestino: outraOcorrencia.dia,
+                                    campoDestino: campoAlternativo,
+                                    pessoaDestino: pessoaAlternativa
+                                }
                             });
                         }
                     }
                 });
+            });
+            
+            // Se não há trocas possíveis, sugerir substituições simples dentro da sequência
+            if (sugestoes.length === 0) {
+                const campo = encontrarCampoPessoa(servico, pessoaConflito);
+                if (campo) {
+                    const sequenciaRelevante = obterSequenciaRelevante(tipoServico);
+                    const pessoasDisponiveis = sequenciaRelevante.filter(pessoa => 
+                        !estaPessoaEscaladaNoDia(pessoa, diaConflito)
+                    );
+                    
+                    pessoasDisponiveis.slice(0, 3).forEach((substituto, index) => {
+                        const prioridade = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+                        sugestoes.push({
+                            descricao: `${prioridade} Substituir "${pessoaConflito}" por "${substituto}" no ${tipoServico} (qualquer posto)`,
+                            campo: campo,
+                            valorAtual: pessoaConflito,
+                            novoValor: substituto,
+                            servico: tipoServico,
+                            prioridade: index + 1
+                        });
+                    });
+                }
             }
             
-            // Ordenar por prioridade (melhor sugestão primeiro)
-            return sugestoes.sort((a, b) => a.prioridade - b.prioridade).slice(0, 3); // Máximo 3 sugestões
+            return sugestoes;
+        }
+
+        // NOVA FUNÇÃO: Verificar se pessoa está escalada em um dia específico
+        function estaPessoaEscaladaNoDia(pessoa, dia, excluirServico = null) {
+            const servicosDoDia = escalaAtual.filter(item => 
+                item.dia === dia && (excluirServico ? item.servico !== excluirServico : true)
+            );
+            
+            return servicosDoDia.some(item => 
+                [item.pedOracao, item.principal, item.lateral].includes(pessoa)
+            );
+        }
+
+        // NOVA FUNÇÃO: Obter sequência relevante baseada no tipo de serviço
+        function obterSequenciaRelevante(tipoServico) {
+            switch(tipoServico) {
+                case 'RJM': return sequencias.rjm;
+                case 'R. SETOR': return sequencias.rSetor;
+                case 'R. LOCAL': return sequencias.rLocal;
+                case 'ENSAIO': return sequencias.ensaio;
+                default: return todosMembros;
+            }
+        }
+
+        // FUNÇÃO ATUALIZADA: Aplicar sugestão com suporte a trocas
+        function aplicarSugestao(dia, campo, valorAtual, novoValor, servico, dadosTraca = null) {
+            let mensagemConfirmacao = `Aplicar sugestão?\n\nSubstituir "${valorAtual}" por "${novoValor}" no ${servico} do dia ${dia}?`;
+            
+            if (dadosTraca) {
+                mensagemConfirmacao = `Aplicar troca?\n\n"${valorAtual}" (dia ${dia}) ↔ "${dadosTraca.pessoaDestino}" (dia ${dadosTraca.diaDestino})\nno ${servico}?`;
+            }
+            
+            if (!confirm(mensagemConfirmacao)) {
+                return;
+            }
+            
+            // Encontrar o item na escala atual
+            const indiceItem = escalaAtual.findIndex(item => 
+                item.dia === dia && 
+                item.servico === servico && 
+                item[campo] === valorAtual
+            );
+            
+            if (indiceItem !== -1) {
+                // Aplicar a mudança principal
+                escalaAtual[indiceItem][campo] = novoValor;
+                
+                // Se é uma troca, aplicar a mudança no outro dia também
+                if (dadosTraca) {
+                    const indiceItemDestino = escalaAtual.findIndex(item => 
+                        item.dia === dadosTraca.diaDestino && 
+                        item.servico === servico && 
+                        item[dadosTraca.campoDestino] === dadosTraca.pessoaDestino
+                    );
+                    
+                    if (indiceItemDestino !== -1) {
+                        escalaAtual[indiceItemDestino][dadosTraca.campoDestino] = valorAtual;
+                    }
+                }
+                
+                // Atualizar a interface
+                exibirEscala(escalaAtual);
+                
+                // Redetectar conflitos
+                detectarConflitos(escalaAtual);
+                
+                // Mostrar feedback
+                const mensagemSucesso = dadosTraca 
+                    ? `✅ Troca realizada com sucesso!\n\n"${valorAtual}" e "${dadosTraca.pessoaDestino}" trocaram de dias no ${servico}.`
+                    : `✅ Sugestão aplicada com sucesso!\n\n"${valorAtual}" foi substituído por "${novoValor}" no ${servico} do dia ${dia}.`;
+                
+                alert(mensagemSucesso);
+            } else {
+                alert('❌ Erro ao aplicar sugestão. Tente fazer a alteração manualmente.');
+            }
         }
 
         function encontrarCampoPessoa(servico, pessoa) {
