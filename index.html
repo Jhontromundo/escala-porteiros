@@ -313,7 +313,7 @@
         
         .mesclar {
             text-align: center;
-            font-weight: bold;
+            font-weight: normal;
             background: linear-gradient(45deg, #f0f0f0, #e8e8e8);
             color: #555;
         }
@@ -658,7 +658,7 @@
         <div class="conflicts-alert" id="conflictsAlert">
             <strong>🚫 CONFLITOS DETECTADOS!</strong>
             <div class="conflicts-list" id="conflictsList"></div>
-            <small>💡 Use a edição manual (duplo clique ou botão direito) para resolver os conflitos.</small>
+            <small>💡 Use a edição manual (duplo clique ou botão direito) para resolver os conflitos, ou siga as sugestões acima.</small>
         </div>
         
         <div class="tabela-container">
@@ -1372,10 +1372,11 @@
             elemento.innerHTML = nomeOriginal;
         }
 
-        // ========== DETECÇÃO DE CONFLITOS ==========
+        // ========== DETECÇÃO DE CONFLITOS AVANÇADA ==========
         function detectarConflitos() {
             const conflitos = [];
             const servicosPorDia = {};
+            const sugestoes = [];
 
             // Agrupar serviços por dia
             escalаAtual.forEach((item, index) => {
@@ -1388,32 +1389,92 @@
             // Verificar conflitos em cada dia
             Object.entries(servicosPorDia).forEach(([dia, servicos]) => {
                 const membrosNoDia = [];
+                const servicosComMembros = [];
                 
                 servicos.forEach(servico => {
-                    [servico.pedOracao, servico.principal, servico.lateral].forEach(membro => {
+                    [servico.pedOracao, servico.principal, servico.lateral].forEach((membro, posicao) => {
                         if (membro && membro !== '-' && membro !== 'MESCLAR') {
-                            if (membrosNoDia.includes(membro)) {
-                                conflitos.push(`Dia ${dia}: ${membro} está em múltiplos serviços`);
+                            const membroInfo = {
+                                nome: membro,
+                                servico: servico.servico,
+                                classe: servico.classe,
+                                posicao: ['pedOracao', 'principal', 'lateral'][posicao],
+                                index: servico.index
+                            };
+                            
+                            if (membrosNoDia.find(m => m.nome === membro)) {
+                                const conflito = `Dia ${dia}: ${membro} está em múltiplos serviços`;
+                                if (!conflitos.includes(conflito)) {
+                                    conflitos.push(conflito);
+                                    
+                                    // Gerar sugestão para conflitos com RJM
+                                    const sugestao = gerarSugestaoConflito(dia, membro, servicosComMembros, servicos);
+                                    if (sugestao) {
+                                        sugestoes.push(sugestao);
+                                    }
+                                }
                             } else {
-                                membrosNoDia.push(membro);
+                                membrosNoDia.push(membroInfo);
+                                servicosComMembros.push(membroInfo);
                             }
                         }
                     });
                 });
             });
 
-            // Exibir conflitos
+            // Exibir conflitos e sugestões
             const alertDiv = document.getElementById('conflictsAlert');
             const listDiv = document.getElementById('conflictsList');
             
             if (conflitos.length > 0) {
-                listDiv.innerHTML = conflitos.map(c => `• ${c}`).join('<br>');
+                let htmlConflitos = conflitos.map(c => `• ${c}`).join('<br>');
+                
+                if (sugestoes.length > 0) {
+                    htmlConflitos += '<br><br><strong>💡 SUGESTÕES PARA RESOLVER:</strong><br>';
+                    htmlConflitos += sugestoes.map(s => `• ${s}`).join('<br>');
+                }
+                
+                listDiv.innerHTML = htmlConflitos;
                 alertDiv.style.display = 'block';
                 atualizarStatus(`${conflitos.length} conflito(s) detectado(s)`, 'error');
             } else {
                 alertDiv.style.display = 'none';
                 atualizarStatus('Nenhum conflito detectado', 'success');
             }
+        }
+
+        function gerarSugestaoConflito(dia, membroConflito, servicosComMembros, servicosDoDia) {
+            // Verificar se há RJM no mesmo dia
+            const rjmNoDia = servicosDoDia.find(s => s.classe === 'rjm');
+            if (!rjmNoDia) return null;
+
+            // Verificar se o conflito envolve RJM
+            const membroEstaNoRJM = [rjmNoDia.pedOracao, rjmNoDia.lateral].includes(membroConflito);
+            if (!membroEstaNoRJM) return null;
+
+            // Encontrar domingos com RJM no mês para sugestão de troca
+            const domingosMesAtual = escalаAtual.filter(item => 
+                item.diaSemana === 'DOMINGO' && item.classe === 'rjm'
+            );
+
+            // Buscar alternativas na sequência RJM
+            const membrosRJMDisponiveis = sequenciasAtuais.rjm.filter(membro => {
+                // Verificar se este membro não tem conflito no dia específico
+                const temConflito = servicosDoDia.some(servico => 
+                    [servico.pedOracao, servico.principal, servico.lateral].includes(membro) &&
+                    servico.classe !== 'rjm'
+                );
+                return !temConflito && membro !== membroConflito;
+            });
+
+            if (membrosRJMDisponiveis.length > 0) {
+                const alternativa = membrosRJMDisponiveis[0];
+                const posicaoConflito = rjmNoDia.pedOracao === membroConflito ? 'Ped Oração' : 'Lateral';
+                
+                return `Trocar ${membroConflito} por ${alternativa} no RJM do domingo ${dia} (posição: ${posicaoConflito})`;
+            }
+
+            return `Verificar possível troca no RJM do domingo ${dia} - ${membroConflito} está em conflito`;
         }
 
         // ========== GERENCIADOR DE PESSOAS ==========
@@ -1566,18 +1627,21 @@
             carregarListaGrupo('rLocal', sequenciasAtuais.rLocal);
             carregarListaGrupo('ensaio', sequenciasAtuais.ensaio);
 
-            // Dropdowns de adição
-            todosMembrosAtuais.forEach(membro => {
-                ['Terca', 'Quinta', 'Sabado', 'DomingoOficial', 'Rjm', 'RSetor', 'RLocal', 'Ensaio'].forEach(tipo => {
-                    const select = document.getElementById(`add${tipo}`);
-                    if (select) {
-                        select.innerHTML = '<option value="">Selecionar...</option>';
+            // Populando dropdowns com TODOS os membros atuais
+            ['Terca', 'Quinta', 'Sabado', 'DomingoOficial', 'Rjm', 'RSetor', 'RLocal', 'Ensaio'].forEach(tipo => {
+                const select = document.getElementById(`add${tipo}`);
+                if (select) {
+                    // Limpar dropdown
+                    select.innerHTML = '<option value="">Selecionar...</option>';
+                    
+                    // Adicionar todos os membros disponíveis
+                    todosMembrosAtuais.forEach(membro => {
                         const option = document.createElement('option');
                         option.value = membro;
                         option.textContent = membro;
                         select.appendChild(option);
-                    }
-                });
+                    });
+                }
             });
         }
 
