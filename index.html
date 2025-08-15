@@ -447,10 +447,10 @@
         };
 
         const SEQUENCIAS_PADRAO = {
-            rjm: ['MARCOS', 'JOSÉ CARDOSO', 'EDI', 'EDIVAN', 'JOSÉ CARLOS', 'VANDERLEI', 'ELIZEU', 'ZANIN'],
-            rSetor: ['ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI'],
-            rLocal: ['EDI', 'SAMUEL', 'EDIVAN', 'JONAS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN'],
-            ensaio: ['RODINEI', 'ALGACIR', 'VANDERLEI', 'SAULO', 'CÉLIO', 'EDI', 'SAMUEL']
+            rjm: ['MARCOS', 'JOSÉ CARDOSO', 'EDI', 'EDIVAN', 'JOSÉ CARLOS', 'VANDERLEI', 'ELIZEU', 'ZANIN', 'ALGACIR', 'SAULO', 'RODINEI', 'SAMUEL', 'CÉLIO', 'JONAS', 'AFONSO'],
+            rSetor: ['ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'JONAS', 'CÉLIO', 'EDI', 'SAMUEL', 'JOSÉ CARLOS', 'MARCOS', 'EDIVAN', 'SAULO'],
+            rLocal: ['EDI', 'SAMUEL', 'EDIVAN', 'JONAS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'CÉLIO', 'SAULO', 'MARCOS'],
+            ensaio: ['RODINEI', 'ALGACIR', 'VANDERLEI', 'SAULO', 'CÉLIO', 'EDI', 'SAMUEL', 'EDIVAN', 'MARCOS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'JONAS']
         };
 
         const GRUPOS_INFO = {
@@ -1191,17 +1191,41 @@
             const card = document.createElement('div');
             card.className = 'grupo-card';
             
-            card.innerHTML = `
-                <div class="grupo-titulo ${info.classe}">${info.nome}</div>
-                <div class="membros-lista" data-grupo="${id}">
-                    ${membros.map(m => `<span class="membro-item" onclick="removerMembro('${id}', '${m}', ${isGrupo})">${m}</span>`).join('')}
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <strong>Disponíveis:</strong><br>
-                    ${obterPessoasLivres(id, isGrupo).map(p => `<span class="pessoa-disponivel" onclick="adicionarMembro('${id}', '${p}', ${isGrupo})">${p}</span>`).join('')}
-                </div>
-                <button onclick="resetarGrupo('${id}', ${isGrupo})" style="width: 100%; padding: 8px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer;">🔄 Resetar</button>
-            `;
+            if (isGrupo) {
+                // Para grupos: mostra disponíveis
+                card.innerHTML = `
+                    <div class="grupo-titulo ${info.classe}">${info.nome}</div>
+                    <div class="membros-lista" data-grupo="${id}">
+                        ${membros.map(m => `<span class="membro-item" onclick="removerMembro('${id}', '${m}', ${isGrupo})">${m}</span>`).join('')}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>Disponíveis:</strong><br>
+                        ${obterPessoasLivres(id, isGrupo).map(p => `<span class="pessoa-disponivel" onclick="adicionarMembro('${id}', '${p}', ${isGrupo})">${p}</span>`).join('')}
+                    </div>
+                    <button onclick="resetarGrupo('${id}', ${isGrupo})" style="width: 100%; padding: 8px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer;">🔄 Resetar</button>
+                `;
+            } else {
+                // Para sequências: sequência completa de rotação + banco de reservas
+                const pessoasForaDaSequencia = pessoas.filter(p => !membros.includes(p) && p !== 'ODEMIR'); // Odemir não participa das sequências
+                
+                card.innerHTML = `
+                    <div class="grupo-titulo ${info.classe}">${info.nome}</div>
+                    <div style="margin-bottom: 10px; font-size: 13px; color: #666;">
+                        <strong>🔄 Sequência de Rotação</strong> (ordem de escalação entre meses)
+                    </div>
+                    <div class="membros-lista" data-grupo="${id}" style="min-height: 140px;">
+                        ${membros.map((m, i) => `<span class="membro-item" onclick="removerMembro('${id}', '${m}', ${isGrupo})" title="Posição ${i+1} na sequência">${i+1}. ${m}</span>`).join('')}
+                    </div>
+                    ${pessoasForaDaSequencia.length > 0 ? `
+                        <div style="margin-bottom: 10px;">
+                            <strong>➕ Banco de Reservas:</strong><br>
+                            <small style="color: #666;">Pessoas que podem ser incluídas na sequência</small><br>
+                            ${pessoasForaDaSequencia.map(p => `<span class="pessoa-disponivel" onclick="adicionarMembro('${id}', '${p}', ${isGrupo})">${p}</span>`).join('')}
+                        </div>
+                    ` : '<div style="margin-bottom: 10px; color: #666; font-style: italic;">✅ Todas as pessoas estão na sequência</div>'}
+                    <button onclick="resetarGrupo('${id}', ${isGrupo})" style="width: 100%; padding: 8px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer;">🔄 Resetar Sequência</button>
+                `;
+            }
             
             return card;
         }
