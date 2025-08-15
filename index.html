@@ -1003,17 +1003,28 @@
         function obterPessoasLivres(grupoAtual, isGrupoAtual) {
             const usadas = new Set();
             
-            Object.values(grupos).forEach(membros => {
-                membros.forEach(m => usadas.add(m));
-            });
-            
-            Object.values(sequencias).forEach(membros => {
-                membros.forEach(m => usadas.add(m));
-            });
-
-            // Remove pessoas do grupo atual
-            const atual = isGrupoAtual ? grupos[grupoAtual] : sequencias[grupoAtual];
-            atual.forEach(m => usadas.delete(m));
+            // Para grupos (terça, quinta, sábado, domingo): exclui pessoas de outros grupos
+            if (isGrupoAtual) {
+                Object.entries(grupos).forEach(([grupoId, membros]) => {
+                    if (grupoId !== grupoAtual) {
+                        membros.forEach(m => usadas.add(m));
+                    }
+                });
+            } else {
+                // Para sequências: exclui pessoas de grupos E outras sequências
+                Object.values(grupos).forEach(membros => {
+                    membros.forEach(m => usadas.add(m));
+                });
+                
+                Object.entries(sequencias).forEach(([sequenciaId, membros]) => {
+                    if (sequenciaId !== grupoAtual) {
+                        membros.forEach(m => usadas.add(m));
+                    }
+                });
+                
+                // ODEMIR é exclusivo do Domingo Oficial - não pode estar nas sequências especiais
+                usadas.add('ODEMIR');
+            }
             
             return pessoas.filter(p => !usadas.has(p)).sort();
         }
