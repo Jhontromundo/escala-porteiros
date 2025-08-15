@@ -630,6 +630,7 @@
             <input type="month" id="mesAno" onchange="atualizarExibicaoMes()">
             <span id="exibicaoMes" style="font-weight: 600; color: #1976d2; margin-left: 10px;"></span>
             <button class="btn-primary" onclick="gerarEscala()">🔄 Gerar Escala</button>
+            <button class="btn-primary" onclick="regerarEscala()" style="background: linear-gradient(45deg, #ff9800, #ffb74d);">🔄 Regerar Forçado</button>
             <button class="btn-secondary" onclick="gerarPDF()">📄 Gerar PDF</button>
             <button class="btn-manager" onclick="abrirGerenciador()">⚙️ Gerenciar Grupos</button>
             <button class="btn-manager" onclick="abrirGerenciadorPessoas()" style="background: linear-gradient(45deg, #4caf50, #66bb6a);">👥 Gerenciar Pessoas</button>
@@ -871,11 +872,13 @@
         let escalаAtual = [];
         let membroDestacado = null;
         let todosMembrosAtuais = [...TODOS_MEMBROS]; // Lista dinâmica
+        let escalаsSalvas = {}; // Cache de escalas por mês
 
         // Inicialização
         window.onload = function() {
             carregarConfiguracoes();
             carregarPessoas();
+            carregarEscalasSalvas();
             const hoje = new Date();
             const mesAtual = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
             document.getElementById('mesAno').value = mesAtual;
@@ -930,11 +933,21 @@
             }
         }
 
+        function carregarEscalasSalvas() {
+            const escalasSalvasStorage = localStorage.getItem('escalas_salvas');
+            if (escalasSalvasStorage) {
+                escalаsSalvas = JSON.parse(escalasSalvasStorage);
+            } else {
+                escalаsSalvas = {};
+            }
+        }
+
         function salvarConfiguracoes() {
             localStorage.setItem('escalas_grupos', JSON.stringify(gruposAtuais));
             localStorage.setItem('escalas_sequencias', JSON.stringify(sequenciasAtuais));
             localStorage.setItem('escalas_indices', JSON.stringify(indices));
             localStorage.setItem('escalas_pessoas', JSON.stringify(todosMembrosAtuais));
+            localStorage.setItem('escalas_salvas', JSON.stringify(escalаsSalvas));
         }
 
         // ========== UTILITÁRIOS DE DATA ==========
@@ -1040,11 +1053,58 @@
                 return;
             }
 
+            const chaveEscala = mesAnoValue; // "2025-08" formato
+
+            // Verificar se já existe escala salva para este mês
+            if (escalаsSalvas[chaveEscala]) {
+                escalаAtual = escalаsSalvas[chaveEscala];
+                exibirEscala();
+                detectarConflitos();
+                
+                const ano = mesAnoValue.split('-')[0];
+                const mes = parseInt(mesAnoValue.split('-')[1]);
+                const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                              'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+                atualizarStatus(`Escala de ${meses[mes-1]} ${ano} carregada (já existia)`, 'success');
+                document.getElementById('statusEscala').textContent = `${escalаAtual.length} serviços programados (salva)`;
+                return;
+            }
+
+            // Se não existe, gerar nova escala
+            gerarNovaEscala(mesAnoValue, chaveEscala);
+        }
+
+        function regerarEscala() {
+            const mesAnoValue = document.getElementById('mesAno').value;
+            if (!mesAnoValue) {
+                atualizarStatus('Selecione um mês primeiro!', 'error');
+                return;
+            }
+
+            if (!confirm('Isso irá regerar completamente a escala deste mês, perdendo edições manuais. Confirma?')) {
+                return;
+            }
+
+            const chaveEscala = mesAnoValue;
+            
+            // Remover escala salva
+            delete escalаsSalvas[chaveEscala];
+            
+            // Gerar nova escala
+            gerarNovaEscala(mesAnoValue, chaveEscala);
+            
+            atualizarStatus('Escala regerada com sucesso!', 'success');
+        }
+
+        function gerarNovaEscala(mesAnoValue, chaveEscala) {
             const ano = parseInt(mesAnoValue.split('-')[0]);
             const mes = parseInt(mesAnoValue.split('-')[1]);
             const diasNoMes = getDiasNoMes(ano, mes);
             
-            atualizarStatus('Gerando escala...', 'warning');
+            atualizarStatus('Gerando nova escala...', 'warning');
+
+            // Calcular índices baseados na ordem cronológica dos meses já gerados
+            calcularIndicesParaMes(ano, mes);
 
             // Contar ocorrências por tipo
             const contadores = { terca: 0, quinta: 0, sabado: 0, domingo: 0 };
@@ -1074,27 +1134,11 @@
             const resultSabado = distribuirGrupoComFolga(gruposAtuais.sabado, contadores.sabado, indices.sabado);
             const resultDomingo = distribuirGrupoComFolga(gruposAtuais.domingoOficial, contadores.domingo, indices.domingoOficial);
 
-            // Atualizar índices para próximo mês
-            indices.terca = resultTerca.proximoIndice;
-            indices.quinta = resultQuinta.proximoIndice;
-            indices.sabado = resultSabado.proximoIndice;
-            indices.domingoOficial = resultDomingo.proximoIndice;
-
             // Gerar escalações especiais
             const resultRJM = distribuirSequencia(sequenciasAtuais.rjm, contadores.domingo * 2, indices.rjm);
             const resultRSetor = distribuirSequencia(sequenciasAtuais.rSetor, 1, indices.rSetor);
             const resultRLocal = distribuirSequencia(sequenciasAtuais.rLocal, temRLocal(mes) ? 1 : 0, indices.rLocal);
             const resultEnsaio = distribuirSequencia(sequenciasAtuais.ensaio, 2, indices.ensaio);
-
-            // Atualizar índices das sequências especiais
-            indices.rjm = resultRJM.proximoIndice;
-            if (temRLocal(mes)) {
-                indices.rSetor = resultRSetor.proximoIndice;
-                indices.rLocal = resultRLocal.proximoIndice;
-            } else {
-                indices.rSetor = resultRSetor.proximoIndice;
-            }
-            indices.ensaio = resultEnsaio.proximoIndice;
 
             // Montar escala final
             escalаAtual = [];
@@ -1183,6 +1227,152 @@
                 escalаAtual.push({
                     dia: terceiraSegunda,
                     diaSemana: '2ª FEIRA',
+                    servico: 'R. SETOR',
+                    pedOracao: resultRSetor.membros[0],
+                    principal: 'MESCLAR',
+                    lateral: 'MESCLAR',
+                    classe: 'rsetor',
+                    mesclar: true
+                });
+            }
+
+            // R. LOCAL
+            if (temRLocal(mes)) {
+                const quartaSegunda = encontrarNesimoDay(ano, mes, 1, 4);
+                if (quartaSegunda && resultRLocal.membros.length > 0) {
+                    escalаAtual.push({
+                        dia: quartaSegunda,
+                        diaSemana: '2ª FEIRA',
+                        servico: 'R. LOCAL',
+                        pedOracao: resultRLocal.membros[0],
+                        principal: 'MESCLAR',
+                        lateral: 'MESCLAR',
+                        classe: 'rlocal',
+                        mesclar: true
+                    });
+                }
+            }
+
+            // ENSAIO
+            const quartaSexta = encontrarNesimoDay(ano, mes, 5, 4);
+            if (quartaSexta && resultEnsaio.membros.length >= 2) {
+                escalаAtual.push({
+                    dia: quartaSexta,
+                    diaSemana: '6ª FEIRA',
+                    servico: 'ENSAIO',
+                    pedOracao: resultEnsaio.membros[0],
+                    principal: '-',
+                    lateral: resultEnsaio.membros[1],
+                    classe: 'ensaio'
+                });
+            }
+
+            // Ordenar cronologicamente
+            escalаAtual.sort((a, b) => a.dia - b.dia);
+
+            // Salvar escala gerada
+            escalаsSalvas[chaveEscala] = JSON.parse(JSON.stringify(escalаAtual));
+
+            // Atualizar índices para próximo mês
+            indices.terca = resultTerca.proximoIndice;
+            indices.quinta = resultQuinta.proximoIndice;
+            indices.sabado = resultSabado.proximoIndice;
+            indices.domingoOficial = resultDomingo.proximoIndice;
+            indices.rjm = resultRJM.proximoIndice;
+            if (temRLocal(mes)) {
+                indices.rSetor = resultRSetor.proximoIndice;
+                indices.rLocal = resultRLocal.proximoIndice;
+            } else {
+                indices.rSetor = resultRSetor.proximoIndice;
+            }
+            indices.ensaio = resultEnsaio.proximoIndice;
+
+            // Salvar configurações e exibir
+            salvarConfiguracoes();
+            exibirEscala();
+            detectarConflitos();
+            
+            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                          'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            atualizarStatus(`Escala de ${meses[mes-1]} ${ano} gerada e salva!`, 'success');
+            document.getElementById('statusEscala').textContent = `${escalаAtual.length} serviços programados (nova)`;
+        }
+
+        // Calcular índices baseados na ordem cronológica
+        function calcularIndicesParaMes(anoAlvo, mesAlvo) {
+            // Obter lista de meses já gerados, ordenados cronologicamente
+            const mesesGerados = Object.keys(escalаsSalvas).sort();
+            
+            if (mesesGerados.length === 0) {
+                // Primeiro mês sendo gerado, usar índices padrão
+                return;
+            }
+
+            // Encontrar o último mês antes do mês alvo
+            let ultimoMesAnterior = null;
+            for (const mesStr of mesesGerados) {
+                const [ano, mes] = mesStr.split('-').map(Number);
+                if (ano < anoAlvo || (ano === anoAlvo && mes < mesAlvo)) {
+                    ultimoMesAnterior = mesStr;
+                } else {
+                    break;
+                }
+            }
+
+            if (!ultimoMesAnterior) {
+                // Não há mês anterior, usar índices padrão
+                return;
+            }
+
+            // Simular a continuidade desde o último mês anterior
+            const [anoAnterior, mesAnterior] = ultimoMesAnterior.split('-').map(Number);
+            simularContinuidadeAte(anoAnterior, mesAnterior, anoAlvo, mesAlvo);
+        }
+
+        function simularContinuidadeAte(anoInicio, mesInicio, anoFim, mesFim) {
+            // Esta função simula a progressão dos índices mês a mês
+            // para garantir continuidade perfeita
+            
+            let anoAtual = anoInicio;
+            let mesAtual = mesInicio;
+            
+            while (anoAtual < anoFim || (anoAtual === anoFim && mesAtual < mesFim)) {
+                // Avançar para próximo mês
+                mesAtual++;
+                if (mesAtual > 12) {
+                    mesAtual = 1;
+                    anoAtual++;
+                }
+                
+                // Simular progressão dos índices para este mês
+                const diasNoMes = getDiasNoMes(anoAtual, mesAtual);
+                
+                // Contar ocorrências
+                let contTerca = 0, contQuinta = 0, contSabado = 0, contDomingo = 0;
+                
+                for (let dia = 1; dia <= diasNoMes; dia++) {
+                    const diaSemana = getDiaSemana(anoAtual, mesAtual, dia);
+                    if (diaSemana === 2) contTerca++;
+                    else if (diaSemana === 4) contQuinta++;
+                    else if (diaSemana === 6) contSabado++;
+                    else if (diaSemana === 0) contDomingo++;
+                }
+                
+                // Simular progressão dos índices
+                indices.terca = (indices.terca + contTerca) % gruposAtuais.terca.length;
+                indices.quinta = (indices.quinta + contQuinta) % gruposAtuais.quinta.length;
+                indices.sabado = (indices.sabado + contSabado) % gruposAtuais.sabado.length;
+                indices.domingoOficial = (indices.domingoOficial + contDomingo) % gruposAtuais.domingoOficial.length;
+                
+                // Sequências especiais
+                indices.rjm = (indices.rjm + contDomingo * 2) % sequenciasAtuais.rjm.length;
+                indices.rSetor = (indices.rSetor + 1) % sequenciasAtuais.rSetor.length;
+                if (temRLocal(mesAtual)) {
+                    indices.rLocal = (indices.rLocal + 1) % sequenciasAtuais.rLocal.length;
+                }
+                indices.ensaio = (indices.ensaio + 2) % sequenciasAtuais.ensaio.length;
+            }
+        }
                     servico: 'R. SETOR',
                     pedOracao: resultRSetor.membros[0],
                     principal: 'MESCLAR',
@@ -1358,13 +1548,20 @@
             // Atualizar dados
             escalаAtual[index][campo] = novoNome;
             
+            // Atualizar escala salva
+            const mesAnoValue = document.getElementById('mesAno').value;
+            if (mesAnoValue) {
+                escalаsSalvas[mesAnoValue] = JSON.parse(JSON.stringify(escalаAtual));
+                salvarConfiguracoes();
+            }
+            
             // Atualizar display
             elemento.innerHTML = novoNome;
             
             // Redetectar conflitos
             detectarConflitos();
             
-            atualizarStatus('Edição realizada com sucesso', 'success');
+            atualizarStatus('Edição realizada e salva com sucesso', 'success');
         }
 
         function cancelarEdicao(elemento) {
@@ -1701,26 +1898,35 @@
         function salvarGrupos() {
             salvarConfiguracoes();
             fecharGerenciador();
-            atualizarStatus('Configurações salvas. Regenerando escala...', 'success');
-            gerarEscala();
+            
+            // Limpar escalas salvas pois os grupos mudaram
+            if (confirm('Os grupos foram alterados. Isso irá invalidar todas as escalas já geradas. Confirma?')) {
+                escalаsSalvas = {};
+                salvarConfiguracoes();
+                atualizarStatus('Configurações salvas. Escalas anteriores foram invalidadas.', 'warning');
+            } else {
+                atualizarStatus('Configurações salvas. Escalas mantidas.', 'success');
+            }
         }
 
         function restaurarPadrao() {
-            if (confirm('Isso irá restaurar todas as configurações para o padrão original e reiniciar as sequências. Confirma?')) {
+            if (confirm('Isso irá restaurar todas as configurações para o padrão original, reiniciar as sequências e apagar todas as escalas salvas. Confirma?')) {
                 gruposAtuais = JSON.parse(JSON.stringify(GRUPOS_PADRAO));
                 sequenciasAtuais = JSON.parse(JSON.stringify(SEQUENCIAS_PADRAO));
                 indices = JSON.parse(JSON.stringify(INDICES_PADRAO));
+                escalаsSalvas = {};
                 salvarConfiguracoes();
                 carregarGerenciador();
-                atualizarStatus('Configurações restauradas para o padrão', 'success');
+                atualizarStatus('Configurações restauradas para o padrão. Todas as escalas foram apagadas.', 'success');
             }
         }
 
         function reiniciarSequencias() {
-            if (confirm('Isso irá reiniciar apenas as sequências de continuidade (mantém grupos customizados). Confirma?')) {
+            if (confirm('Isso irá reiniciar apenas as sequências de continuidade e apagar todas as escalas salvas (mantém grupos customizados). Confirma?')) {
                 indices = JSON.parse(JSON.stringify(INDICES_PADRAO));
+                escalаsSalvas = {};
                 salvarConfiguracoes();
-                atualizarStatus('Sequências reiniciadas', 'success');
+                atualizarStatus('Sequências reiniciadas. Todas as escalas foram apagadas.', 'success');
             }
         }
 
