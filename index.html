@@ -500,14 +500,14 @@
         
         // ========== ÍNDICES AJUSTADOS PARA CONTINUIDADE AGOSTO → SETEMBRO ==========
         let indices = { 
-            rjm: 10,          // Próximo: RODINEI (após SAULO que foi último em agosto)
-            rSetor: 8,        // Próximo: CÉLIO (seguindo sequência R.Setor)
-            rLocal: 1,        // Próximo: SAMUEL (R.Local em outubro - após RODINEI em julho)
-            ensaio: 4,        // Próximos: CÉLIO + EDI (após AFONSO + MARCOS em agosto)
-            terca: 0,         // AFONSO (Zanin fica de folga na virada - posição 3→4)
-            quinta: 0,        // Continua rotação normal grupos  
-            sabado: 2,        // Continua rotação normal grupos
-            domingoOficial: 1 // Continua rotação normal grupos
+            rjm: 10,              // Próximo: RODINEI (após SAULO que foi último em agosto)
+            rSetor: 8,            // Próximo: CÉLIO (seguindo sequência R.Setor)
+            rLocal: 1,            // Próximo: SAMUEL (R.Local em outubro - após RODINEI em julho)
+            ensaio: 4,            // Próximos: CÉLIO + EDI (após AFONSO + MARCOS em agosto)
+            terca: 0,             // AFONSO (reinicia sequência)
+            quinta: 0,            // EDI (reinicia sequência)
+            sabado: 2,            // VANDERLEI (continua sequência)
+            domingoOficial: 2     // SAMUEL (após EDIVAN que foi último pedOracao em agosto)
         };
         
         let escalaAtual = [];
@@ -1220,11 +1220,16 @@
             const posicaoAfonso = sequencias.ensaio.indexOf('AFONSO');
             indices.ensaio = (posicaoAfonso + 2) % sequencias.ensaio.length;
             
-            // Grupos oficiais: calcular baseado nas últimas posições
-            indices.terca = 0; // Reinicia para continuidade
-            indices.quinta = 0;
+            // Grupos oficiais: baseado no último domingo de agosto
+            // Último domingo oficial: EDIVAN (ped), JOSÉ CARDOSO (prin), ODEMIR (lat)
+            // Grupo: [JOSÉ CARDOSO, ODEMIR, SAMUEL, EDIVAN]
+            // Último índice foi 3 (EDIVAN ped), próximo deve ser 2 (SAMUEL ped)
+            indices.domingoOficial = 2; // SAMUEL como próximo pedOracao
+            
+            // Outros grupos
+            indices.terca = 0;
+            indices.quinta = 0; 
             indices.sabado = 2;
-            indices.domingoOficial = 1;
         }
         // ========== GERENCIAMENTO DE PESSOAS ==========
         function abrirModalPessoas() {
