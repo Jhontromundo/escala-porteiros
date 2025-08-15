@@ -626,7 +626,8 @@
             // Event listeners para edição e destaque
             document.querySelectorAll('.nome-editavel').forEach(span => {
                 // Clique simples para destacar
-                span.addEventListener('click', function() {
+                span.addEventListener('click', function(e) {
+                    e.stopPropagation();
                     destacarPessoa(this.textContent);
                 });
                 
@@ -655,6 +656,11 @@
                         escalas[mesAno] = [...escalaAtual];
                         salvarDados();
                         detectarConflitos();
+                        
+                        // Reaplica destaque se a pessoa ainda estava destacada
+                        if (pessoaDestacada) {
+                            setTimeout(() => destacarPessoa(pessoaDestacada), 100);
+                        }
                     };
                     
                     this.innerHTML = '';
@@ -666,25 +672,34 @@
         }
 
         // ========== SISTEMA DE DESTAQUE ==========
+        let pessoaDestacada = null;
+
         function destacarPessoa(pessoa) {
             // Remove destaques anteriores
             document.querySelectorAll('.nome-destacado').forEach(el => {
                 el.classList.remove('nome-destacado');
             });
             
-            // Destaca todas as ocorrências da pessoa
+            // Se clicou na mesma pessoa, remove destaque
+            if (pessoaDestacada === pessoa) {
+                pessoaDestacada = null;
+                return;
+            }
+            
+            // Destaca todas as ocorrências da nova pessoa
+            pessoaDestacada = pessoa;
             document.querySelectorAll('.nome-editavel').forEach(span => {
                 if (span.textContent === pessoa) {
                     span.classList.add('nome-destacado');
                 }
             });
-            
-            // Remove destaque após 5 segundos
-            setTimeout(() => {
-                document.querySelectorAll('.nome-destacado').forEach(el => {
-                    el.classList.remove('nome-destacado');
-                });
-            }, 5000);
+        }
+
+        function removerDestaque() {
+            document.querySelectorAll('.nome-destacado').forEach(el => {
+                el.classList.remove('nome-destacado');
+            });
+            pessoaDestacada = null;
         }
 
         // ========== DETECÇÃO E RESOLUÇÃO DE CONFLITOS ==========
@@ -757,48 +772,99 @@
                 const item = document.createElement('div');
                 item.className = 'conflito-item';
                 
-                const escalacaoRJM = conflito.escalacoes.find(e => e.servico === 'RJM');
-                const sugestao = obterSugestaoSubstituicao(conflito.dia, conflito.pessoa, escalacaoRJM);
+                const sugestao = obterSugestaoTroca(conflito.dia, conflito.pessoa);
                 
                 item.innerHTML = `
                     <strong>Dia ${conflito.dia}:</strong> ${conflito.pessoa} está escalado(a) em RJM e OFICIAL
                     ${sugestao ? `
-                        <br><span style="color: #2e7d32;">💡 Sugestão: Substituir por <strong>${sugestao}</strong> na RJM</span>
-                        <button class="btn-resolver" onclick="aplicarSugestao(${conflito.dia}, '${conflito.pessoa}', '${sugestao}', ${escalacaoRJM.index}, '${escalacaoRJM.posicao}')">
-                            ✅ Aplicar Sugestão
+                        <br><span style="color: #2e7d32;">💡 Sugestão: Trocar ${conflito.pessoa} ↔ ${sugestao.pessoa} entre domingos ${conflito.dia} e ${sugestao.dia}</span>
+                        <button class="btn-resolver" onclick="aplicarTroca(${conflito.dia}, '${conflito.pessoa}', ${sugestao.dia}, '${sugestao.pessoa}')">
+                            ✅ Aplicar Troca
                         </button>
-                    ` : '<br><span style="color: #d32f2f;">❌ Nenhuma substituição disponível</span>'}
+                    ` : '<br><span style="color: #d32f2f;">❌ Nenhuma troca disponível</span>'}
                 `;
                 
                 listaDiv.appendChild(item);
             });
         }
 
-        function obterSugestaoSubstituicao(diaConflito, pessoaConflito, escalacaoRJM) {
-            // Busca pessoas da sequência RJM que não estão escaladas no domingo oficial do mesmo dia
-            const servicosDoDia = escalaAtual.filter(s => s.dia === diaConflito);
-            const pessoasOcupadasNoDia = new Set();
+        function obterSugestaoTroca(diaConflito, pessoaConflito) {
+            // Busca todos os domingos com RJM no mês
+            const domingoRJM = escalaAtual.filter(s => s.servico === 'RJM' && s.diaSemana === 'DOMINGO');
             
-            servicosDoDia.forEach(s => {
-                if (s.servico === 'OFICIAL') {
-                    [s.pedOracao, s.principal, s.lateral].forEach(p => {
-                        if (p && p !== '-') pessoasOcupadasNoDia.add(p);
-                    });
+            for (let domingo of domingoRJM) {
+                if (domingo.dia === diaConflito) continue; // Pula o domingo do conflito
+                
+                // Pega as pessoas da RJM deste domingo
+                const pessoasRJM = [domingo.pedOracao, domingo.lateral].filter(p => p && p !== '-');
+                
+                for (let candidato of pessoasRJM) {
+                    // Verifica se o candidato NÃO está no oficial do dia do conflito
+                    const oficiaisDiaConflito = escalaAtual.filter(s => 
+                        s.dia === diaConflito && s.servico === 'OFICIAL'
+                    );
+                    
+                    const candidatoTemConflito = oficiaisDiaConflito.some(oficial => 
+                        [oficial.pedOracao, oficial.principal, oficial.lateral].includes(candidato)
+                    );
+                    
+                    // Verifica se a pessoa do conflito NÃO está no oficial do dia do candidato
+                    const oficiaisDiaCandidato = escalaAtual.filter(s => 
+                        s.dia === domingo.dia && s.servico === 'OFICIAL'
+                    );
+                    
+                    const pessoaConflituTemConflito = oficiaisDiaCandidato.some(oficial => 
+                        [oficial.pedOracao, oficial.principal, oficial.lateral].includes(pessoaConflito)
+                    );
+                    
+                    if (!candidatoTemConflito && !pessoaConflituTemConflito) {
+                        return {
+                            pessoa: candidato,
+                            dia: domingo.dia
+                        };
+                    }
                 }
-            });
-
-            // Encontra candidatos da sequência RJM
-            const candidatos = sequencias.rjm.filter(pessoa => 
-                pessoa !== pessoaConflito && 
-                !pessoasOcupadasNoDia.has(pessoa)
-            );
-
-            return candidatos.length > 0 ? candidatos[0] : null;
+            }
+            
+            return null;
         }
 
-        function aplicarSugestao(dia, pessoaOriginal, pessoaSugestao, index, posicao) {
-            if (confirm(`Substituir ${pessoaOriginal} por ${pessoaSugestao} na RJM do dia ${dia}?`)) {
-                escalaAtual[index][posicao] = pessoaSugestao;
+        function aplicarTroca(dia1, pessoa1, dia2, pessoa2) {
+            if (confirm(`Trocar na RJM:\n• Dia ${dia1}: ${pessoa1} → ${pessoa2}\n• Dia ${dia2}: ${pessoa2} → ${pessoa1}\n\nConfirmar troca?`)) {
+                // Encontra os índices das RJMs dos dois domingos
+                const rjm1Index = escalaAtual.findIndex(s => s.dia === dia1 && s.servico === 'RJM');
+                const rjm2Index = escalaAtual.findIndex(s => s.dia === dia2 && s.servico === 'RJM');
+                
+                if (rjm1Index === -1 || rjm2Index === -1) {
+                    alert('Erro: Não foi possível encontrar as RJMs dos domingos.');
+                    return;
+                }
+                
+                const rjm1 = escalaAtual[rjm1Index];
+                const rjm2 = escalaAtual[rjm2Index];
+                
+                // Realiza a troca
+                if (rjm1.pedOracao === pessoa1) {
+                    if (rjm2.pedOracao === pessoa2) {
+                        rjm1.pedOracao = pessoa2;
+                        rjm2.pedOracao = pessoa1;
+                    } else if (rjm2.lateral === pessoa2) {
+                        rjm1.pedOracao = pessoa2;
+                        rjm2.lateral = pessoa1;
+                    }
+                } else if (rjm1.lateral === pessoa1) {
+                    if (rjm2.pedOracao === pessoa2) {
+                        rjm1.lateral = pessoa2;
+                        rjm2.pedOracao = pessoa1;
+                    } else if (rjm2.lateral === pessoa2) {
+                        rjm1.lateral = pessoa2;
+                        rjm2.lateral = pessoa1;
+                    }
+                }
+                
+                // Evita pessoa sozinha na RJM
+                corrigirPessoaSozinha(rjm1Index);
+                corrigirPessoaSozinha(rjm2Index);
                 
                 const mesAno = document.getElementById('mesAno').value;
                 escalas[mesAno] = [...escalaAtual];
@@ -807,7 +873,36 @@
                 exibirEscala();
                 detectarConflitos();
                 
-                alert(`✅ Substituição aplicada com sucesso!\n${pessoaOriginal} → ${pessoaSugestao}`);
+                alert(`✅ Troca realizada com sucesso!\nDia ${dia1}: ${pessoa2}\nDia ${dia2}: ${pessoa1}`);
+            }
+        }
+
+        function corrigirPessoaSozinha(rjmIndex) {
+            const rjm = escalaAtual[rjmIndex];
+            
+            // Se a mesma pessoa está em pedOracao e lateral
+            if (rjm.pedOracao === rjm.lateral && rjm.pedOracao !== '-') {
+                // Busca próxima pessoa da sequência RJM que não está no oficial do mesmo dia
+                const oficiaisDoMesmoDia = escalaAtual.filter(s => 
+                    s.dia === rjm.dia && s.servico === 'OFICIAL'
+                );
+                
+                const pessoasOcupadas = new Set();
+                oficiaisDoMesmoDia.forEach(oficial => {
+                    [oficial.pedOracao, oficial.principal, oficial.lateral].forEach(p => {
+                        if (p && p !== '-') pessoasOcupadas.add(p);
+                    });
+                });
+                
+                // Adiciona a pessoa atual para evitar mantê-la
+                pessoasOcupadas.add(rjm.pedOracao);
+                
+                // Busca substituto na sequência RJM
+                const substituto = sequencias.rjm.find(p => !pessoasOcupadas.has(p));
+                
+                if (substituto) {
+                    rjm.lateral = substituto;
+                }
             }
         }
 
@@ -1039,12 +1134,18 @@ tr:nth-child(even) { background: #f9f9f9; }
                 fecharModalPessoas();
                 fecharModalGrupos();
             }
+            
+            // Remove destaque quando clica em área neutra
+            if (!e.target.closest('.nome-editavel') && !e.target.closest('select') && !e.target.closest('button')) {
+                removerDestaque();
+            }
         });
 
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 fecharModalPessoas();
                 fecharModalGrupos();
+                removerDestaque();
             }
         });
     </script>
