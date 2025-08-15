@@ -1,15 +1,11 @@
-<div class="<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escala de Porteiros - CCB Santa Amélia</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: Arial, sans-serif;
@@ -18,10 +14,7 @@
             padding: 20px;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1200px; margin: 0 auto; }
         
         .header {
             background: white;
@@ -32,16 +25,8 @@
             text-align: center;
         }
         
-        .header h1 {
-            color: #1976d2;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            color: #666;
-            font-size: 16px;
-        }
+        .header h1 { color: #1976d2; font-size: 28px; margin-bottom: 10px; }
+        .header p { color: #666; font-size: 16px; }
         
         .controls {
             background: white;
@@ -55,53 +40,39 @@
             flex-wrap: wrap;
         }
         
-        .controls input, .controls button {
-            padding: 12px 16px;
-            border: 2px solid #ddd;
+        .mes-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8f9fa;
+            padding: 8px 12px;
             border-radius: 8px;
-            font-size: 16px;
+            border: 2px solid #ddd;
         }
         
-        .controls input:focus {
-            outline: none;
-            border-color: #1976d2;
+        .mes-texto {
+            font-weight: bold;
+            color: #1976d2;
+            min-width: 150px;
         }
         
-        .btn-gerar {
-            background: #1976d2;
-            color: white;
+        .btn {
+            padding: 12px 20px;
             border: none;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
+            font-weight: bold;
+            transition: all 0.3s;
         }
         
-        .btn-gerar:hover {
-            background: #1565c0;
-        }
-        
-        .btn-pdf {
-            background: #d32f2f;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .btn-pdf:hover {
-            background: #c62828;
-        }
-        
-        .btn-gerenciar {
-            background: #4caf50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .btn-gerenciar:hover {
-            background: #45a049;
-        }
+        .btn-primary { background: #1976d2; color: white; }
+        .btn-primary:hover { background: #1565c0; }
+        .btn-danger { background: #d32f2f; color: white; }
+        .btn-danger:hover { background: #c62828; }
+        .btn-success { background: #4caf50; color: white; }
+        .btn-success:hover { background: #45a049; }
+        .btn-warning { background: #ff9800; color: white; }
+        .btn-warning:hover { background: #f57c00; }
         
         .tabela-container {
             background: white;
@@ -110,34 +81,17 @@
             overflow: hidden;
         }
         
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
+        table { width: 100%; border-collapse: collapse; }
         th {
             background: #f5f5f5;
             padding: 15px 10px;
             text-align: left;
             font-weight: bold;
             border-bottom: 2px solid #ddd;
-            font-size: 14px;
-            text-transform: uppercase;
         }
-        
-        td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-        
-        tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-        
-        tr:hover {
-            background: #e3f2fd;
-        }
+        td { padding: 12px 10px; border-bottom: 1px solid #eee; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        tr:hover { background: #e3f2fd; }
         
         .servico-badge {
             padding: 6px 12px;
@@ -145,7 +99,6 @@
             font-size: 12px;
             font-weight: bold;
             text-align: center;
-            white-space: nowrap;
         }
         
         .oficial { background: #e3f2fd; color: #1976d2; }
@@ -154,62 +107,16 @@
         .rlocal { background: #f3e5f5; color: #7b1fa2; }
         .ensaio { background: #e8eaf6; color: #3f51b5; }
         
-        .mesclar {
-            text-align: center;
-            background: #f0f0f0;
-        }
-        
         .editavel {
             cursor: pointer;
             padding: 4px 8px;
             border-radius: 4px;
-            transition: background-color 0.2s;
-            min-height: 20px;
-            display: inline-block;
             min-width: 60px;
+            display: inline-block;
         }
+        .editavel:hover { background: #e3f2fd; border: 1px dashed #1976d2; }
         
-        .editavel:hover {
-            background-color: #e3f2fd;
-            border: 1px dashed #1976d2;
-        }
-        
-        .editando {
-            background-color: #fff3e0;
-            border: 2px solid #ff9800;
-        }
-        
-        .destaque {
-            background-color: #ffeb3b !important;
-            font-weight: bold;
-            color: #f57f17;
-        }
-        
-        .dropdown-edicao {
-            background: white;
-            border: 2px solid #1976d2;
-            border-radius: 4px;
-            padding: 4px;
-            font-size: 12px;
-            min-width: 120px;
-        }
-        
-        .btn-edicao {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 2px 6px;
-            margin: 0 2px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 11px;
-        }
-        
-        .btn-cancelar {
-            background: #f44336;
-        }
-        
-        .conflito-alerta {
+        .conflitos {
             background: #ffebee;
             border: 2px solid #f44336;
             border-radius: 15px;
@@ -218,24 +125,15 @@
             display: none;
         }
         
-        .conflito-alerta h3 {
-            color: #d32f2f;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .conflitos h3 { color: #d32f2f; margin-bottom: 10px; }
         
-        .conflito-lista {
-            color: #d32f2f;
-            font-size: 14px;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #666;
-            font-size: 14px;
+        .substituicoes {
+            background: #e8f5e8;
+            border: 2px solid #4caf50;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: none;
         }
         
         .modal {
@@ -246,11 +144,11 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.5);
         }
         
         .modal-content {
-            background-color: white;
+            background: white;
             margin: 5% auto;
             padding: 30px;
             border-radius: 15px;
@@ -258,195 +156,27 @@
             max-width: 800px;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
         
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: -10px;
-        }
-        
-        .close:hover {
-            color: #000;
-        }
-        
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid #ddd;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        
-        .tab {
-            padding: 12px 20px;
-            cursor: pointer;
-            border: none;
-            background: #f5f5f5;
-            border-radius: 8px 8px 0 0;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        
-        .tab.active {
-            background: #1976d2;
+        .feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
             color: white;
-        }
-        
-        .tab:hover:not(.active) {
-            background: #e3f2fd;
-        }
-        
-        .tab-content {
+            font-weight: bold;
+            z-index: 9999;
             display: none;
         }
         
-        .tab-content.active {
-            display: block;
-        }
-        
-        .grupo-editor {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .grupo-titulo {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1976d2;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .membros-lista {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .membro-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 12px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-        
-        .membro-nome {
-            flex: 1;
-            font-weight: bold;
-        }
-        
-        .btn-mover, .btn-remover {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        .btn-mover {
-            background: #2196f3;
-        }
-        
-        .btn-adicionar-membro {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-top: 10px;
-        }
-        
-        .select-membro {
-            padding: 8px 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            flex: 1;
-        }
-        
-        .btn-add {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .modal-footer {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-        }
-        
-        .btn-modal {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        
-        .btn-salvar {
-            background: #4caf50;
-            color: white;
-        }
-        
-        .btn-salvar:hover {
-            background: #45a049;
-        }
-        
-        .btn-restaurar {
-            background: #ff9800;
-            color: white;
-        }
-        
-        .btn-restaurar:hover {
-            background: #f57c00;
-        }
-        
-        .btn-cancelar-modal {
-            background: #f44336;
-            color: white;
-        }
-        
-        .btn-cancelar-modal:hover {
-            background: #d32f2f;
-        }
+        .feedback.sucesso { background: #4caf50; }
+        .feedback.erro { background: #f44336; }
+        .feedback.info { background: #2196f3; }
         
         @media (max-width: 768px) {
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .controls input, .controls button {
-                width: 100%;
-            }
-            
-            table {
-                font-size: 12px;
-            }
-            
-            th, td {
-                padding: 8px 6px;
-            }
+            .controls { flex-direction: column; align-items: stretch; }
+            .btn { width: 100%; }
         }
     </style>
 </head>
@@ -458,39 +188,30 @@
         </div>
         
         <div class="controls">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <label for="mesAno">📅 Mês Selecionado:</label>
-                <div style="display: flex; align-items: center; gap: 8px; background: #f8f9fa; padding: 8px 12px; border-radius: 8px; border: 2px solid #ddd;">
-                    <span id="mesTexto" style="font-weight: bold; color: #1976d2; min-width: 150px;">AGOSTO DE 2025</span>
-                    <button onclick="abrirSeletorMes()" style="background: #1976d2; color: white; border: none; padding: 6px 8px; border-radius: 4px; cursor: pointer;" title="Alterar mês">
-                        📅
-                    </button>
-                </div>
-                <input type="month" id="mesAno" style="display: none;" onchange="atualizarMesTexto(); gerarEscala()">
+            <div class="mes-selector">
+                <span>📅 Mês Selecionado:</span>
+                <span id="mesTexto" class="mes-texto">AGOSTO DE 2025</span>
+                <button onclick="selecionarMes()" class="btn btn-primary" style="padding: 6px 8px;">📅</button>
+                <input type="month" id="mesAno" style="display: none;">
             </div>
-            <button class="btn-gerar" onclick="gerarEscala()">🔄 Gerar Escala</button>
-            <button class="btn-pdf" onclick="gerarPDF()">📄 Gerar PDF</button>
-            <button class="btn-gerenciar" onclick="abrirGerenciador()">⚙️ Gerenciar Grupos</button>
-            <button class="btn-gerar" onclick="resolverConflitosAutomatico()" id="btnResolverConflitos" style="display: none; background: #ff9800;">🔧 Resolver Conflitos</button>
-            <div id="membroDestacado" style="display: none;" class="btn-gerar">
-                Destacando: <span id="nomeDestacado"></span>
-                <button onclick="limparDestaque()" style="background: transparent; border: none; color: white; margin-left: 10px;">✕</button>
-            </div>
+            <button onclick="gerarEscala()" class="btn btn-primary">🔄 Gerar Escala</button>
+            <button onclick="gerarPDF()" class="btn btn-danger">📄 Gerar PDF</button>
+            <button onclick="abrirGerenciador()" class="btn btn-success">⚙️ Gerenciar</button>
+            <button onclick="resolverConflitos()" id="btnConflitos" class="btn btn-warning" style="display: none;">🔧 Resolver Conflitos</button>
         </div>
         
-        <div id="alertaConflitos" class="conflito-alerta">
-            <h3>⚠️ Conflitos de Mesmo Dia Detectados</h3>
-            <div id="listaConflitos" class="conflito-lista"></div>
-            <p style="font-size: 12px; margin-top: 15px; color: #666; border-top: 1px solid #ddd; padding-top: 10px;">
-                <strong>💡 Como resolver:</strong><br>
-                • <strong>Aplicar sugestão:</strong> Clique no botão "✨ Aplicar" nas sugestões automáticas<br>
-                • <strong>Edição manual:</strong> Use <strong>duplo clique</strong> ou <strong>botão direito</strong> em qualquer nome<br>
-                • <strong>Dica:</strong> Sugestões 🥇 são as mais recomendadas
-            </p>
+        <div id="alertaSubstituicoes" class="substituicoes">
+            <h3>🔧 Substituições Realizadas</h3>
+            <div id="listaSubstituicoes"></div>
+        </div>
+        
+        <div id="alertaConflitos" class="conflitos">
+            <h3>⚠️ Conflitos Detectados</h3>
+            <div id="listaConflitos"></div>
         </div>
         
         <div class="tabela-container">
-            <table id="tabelaEscala">
+            <table>
                 <thead>
                     <tr>
                         <th>Dia</th>
@@ -501,240 +222,63 @@
                         <th>Lateral</th>
                     </tr>
                 </thead>
-                <tbody id="corpoTabela">
-                    <!-- Dados serão inseridos aqui -->
-                </tbody>
+                <tbody id="tabelaCorpo"></tbody>
             </table>
         </div>
         
-        <div class="footer">
-            <p>✅ Sistema v3.0 - Continuidade Total Implementada</p>
-            <p>🎯 Distribuição Justa e Inteligente com Persistência</p>
-        </div>
-    </div>
-
-    <!-- Modal de Gerenciamento de Grupos -->
-    <div id="modalGerenciador" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="fecharGerenciador()">&times;</span>
-            <h2 style="text-align: center; color: #1976d2; margin-bottom: 30px;">⚙️ Gerenciar Grupos e Sequências v3.0</h2>
-            
-            <div class="tabs">
-                <button class="tab active" onclick="mostrarTab('grupos')">👥 Grupos Semanais</button>
-                <button class="tab" onclick="mostrarTab('sequencias')">🔄 Sequências Especiais</button>
-                <button class="tab" onclick="mostrarTab('membros')">👤 Gerenciar Membros</button>
-            </div>
-            
-            <!-- Tab Grupos Semanais -->
-            <div id="tab-grupos" class="tab-content active">
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🗓️ 3ª Feira (4 pessoas - 1 folga rotativa)</div>
-                    <div id="grupo-terca" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-terca" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('terca')">+ Adicionar</button>
-                    </div>
+        <div id="modalGerenciador" class="modal">
+            <div class="modal-content">
+                <h2>⚙️ Gerenciar Grupos</h2>
+                <div id="gerenciadorConteudo"></div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button onclick="salvarGrupos()" class="btn btn-success">💾 Salvar</button>
+                    <button onclick="fecharModal()" class="btn" style="background: #666; color: white;">❌ Fechar</button>
                 </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🗓️ 5ª Feira (3 pessoas - sem folga)</div>
-                    <div id="grupo-quinta" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-quinta" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('quinta')">+ Adicionar</button>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🗓️ Sábado (4 pessoas - 1 folga rotativa)</div>
-                    <div id="grupo-sabado" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-sabado" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('sabado')">+ Adicionar</button>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🗓️ Domingo Oficial (4 pessoas - 1 folga rotativa)</div>
-                    <div id="grupo-domingoOficial" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-domingoOficial" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('domingoOficial')">+ Adicionar</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Tab Sequências Especiais -->
-            <div id="tab-sequencias" class="tab-content">
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">📿 RJM (2 por domingo)</div>
-                    <div id="sequencia-rjm" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-rjm" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('rjm')">+ Adicionar</button>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🏢 R. SETOR (1 por mês - 3ª segunda-feira)</div>
-                    <div id="sequencia-rSetor" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-rSetor" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('rSetor')">+ Adicionar</button>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🌍 R. LOCAL (trimestral - 4ª segunda-feira jan/abr/jul/out)</div>
-                    <div id="sequencia-rLocal" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-rLocal" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('rLocal')">+ Adicionar</button>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">🎵 ENSAIO (2 por mês - 4ª sexta-feira)</div>
-                    <div id="sequencia-ensaio" class="membros-lista"></div>
-                    <div class="btn-adicionar-membro">
-                        <select id="select-ensaio" class="select-membro"></select>
-                        <button class="btn-add" onclick="adicionarMembro('ensaio')">+ Adicionar</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Tab Gerenciar Membros -->
-            <div id="tab-membros" class="tab-content">
-                <div class="grupo-editor">
-                    <div class="grupo-titulo">👤 Lista de Membros do Sistema</div>
-                    <div id="lista-membros" class="membros-lista"></div>
-                    
-                    <div style="border-top: 1px solid #ddd; padding-top: 15px; margin-top: 15px;">
-                        <h4 style="color: #1976d2; margin-bottom: 10px;">➕ Adicionar Novo Membro</h4>
-                        <div class="btn-adicionar-membro">
-                            <input type="text" id="input-novo-membro" placeholder="Digite o nome do novo membro..." class="select-membro" style="flex: 2;">
-                            <button class="btn-add" onclick="adicionarNovoMembro()">+ Adicionar ao Sistema</button>
-                        </div>
-                        <p style="font-size: 12px; color: #666; margin-top: 8px;">
-                            <strong>Dica:</strong> Após adicionar, você poderá incluir o membro nos grupos e sequências desejados.
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="grupo-editor" style="background: #f0f8ff; border: 1px solid #1976d2;">
-                    <div class="grupo-titulo">⚠️ Atenção</div>
-                    <p style="color: #1976d2; font-size: 14px; line-height: 1.5;">
-                        • <strong>Adicionar membro:</strong> Inclui na lista geral do sistema<br>
-                        • <strong>Remover membro:</strong> Remove completamente do sistema<br>
-                        • <strong>Lembre-se:</strong> Após alterações, atualize os grupos e sequências conforme necessário
-                    </p>
-                </div>
-            </div>
-            
-            <div class="modal-footer">
-                <button class="btn-modal btn-salvar" onclick="salvarAlteracoes()">💾 Salvar e Regenerar</button>
-                <button class="btn-modal btn-restaurar" onclick="restaurarPadrao()">🔄 Restaurar Padrão</button>
-                <button class="btn-modal" onclick="reiniciarSequencias()" style="background: #9c27b0; color: white;">🎯 Reiniciar Sequências</button>
-                <button class="btn-modal btn-cancelar-modal" onclick="fecharGerenciador()">❌ Cancelar</button>
             </div>
         </div>
     </div>
+    
+    <div id="feedback" class="feedback"></div>
 
     <script>
-        // ==================== CONFIGURAÇÕES PADRÃO v3.0 ====================
+        // ==================== DADOS BÁSICOS ====================
         
-        // Grupos por dia da semana (configuração padrão conforme documentação)
-        const gruposPadraoOriginal = {
+        const gruposPadrao = {
             terca: ['AFONSO', 'ALGACIR', 'JONAS', 'ZANIN'],
             quinta: ['EDI', 'MARCOS', 'SAULO'],
             sabado: ['JOSÉ CARLOS', 'RODINEI', 'VANDERLEI', 'ELIZEU'],
             domingoOficial: ['JOSÉ CARDOSO', 'ODEMIR', 'SAMUEL', 'EDIVAN']
         };
 
-        // Sequências dos serviços especiais (configuração padrão conforme documentação)
-        const sequenciasPadraoOriginal = {
+        const sequenciasPadrao = {
             rjm: ['MARCOS', 'JOSÉ CARDOSO', 'EDI', 'EDIVAN', 'JOSÉ CARLOS', 'VANDERLEI', 'ELIZEU', 'ZANIN', 'ALGACIR', 'SAULO', 'RODINEI', 'SAMUEL', 'CÉLIO', 'JONAS', 'AFONSO'],
             rSetor: ['ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'JONAS', 'CÉLIO', 'EDI', 'SAMUEL', 'JOSÉ CARLOS', 'MARCOS', 'EDIVAN', 'SAULO'],
             rLocal: ['EDI', 'SAMUEL', 'EDIVAN', 'JONAS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'CÉLIO', 'SAULO', 'MARCOS'],
             ensaio: ['RODINEI', 'ALGACIR', 'VANDERLEI', 'SAULO', 'CÉLIO', 'EDI', 'SAMUEL', 'EDIVAN', 'MARCOS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'JONAS']
         };
 
-        // ==================== VARIÁVEIS GLOBAIS ====================
-        
-        // Grupos e sequências atuais (carregados do localStorage ou padrão)
-        let gruposPorDia = carregarConfiguracoes('grupos') || JSON.parse(JSON.stringify(gruposPadraoOriginal));
-        let sequencias = carregarConfiguracoes('sequencias') || JSON.parse(JSON.stringify(sequenciasPadraoOriginal));
-
-        const diasSemana = ['DOMINGO', '2ª FEIRA', '3ª FEIRA', '4ª FEIRA', '5ª FEIRA', '6ª FEIRA', 'SÁBADO'];
+        let grupos = JSON.parse(localStorage.getItem('grupos') || JSON.stringify(gruposPadrao));
+        let sequencias = JSON.parse(localStorage.getItem('sequencias') || JSON.stringify(sequenciasPadrao));
+        let indices = JSON.parse(localStorage.getItem('indices') || '{"rjm":0,"rSetor":0,"rLocal":0,"ensaio":0,"terca":0,"quinta":0,"sabado":0,"domingoOficial":0}');
         let escalaAtual = [];
-        let membroDestacadoAtual = null;
-        let editandoAtualmente = null;
-
-        // Lista de todos os membros para edição (dinâmica conforme documentação)
-        let todosMembros = carregarConfiguracoes('membros') || [
-            'AFONSO', 'ALGACIR', 'JONAS', 'ZANIN', 'EDI', 'MARCOS', 'SAULO',
-            'JOSÉ CARLOS', 'RODINEI', 'VANDERLEI', 'ELIZEU', 'JOSÉ CARDOSO',
-            'ODEMIR', 'SAMUEL', 'EDIVAN', 'CÉLIO'
-        ];
-
-        // ==================== FUNÇÕES DE PERSISTÊNCIA v3.0 ====================
-        
-        function salvarConfiguracoes(tipo, dados) {
-            try {
-                localStorage.setItem('escalas_' + tipo, JSON.stringify(dados));
-            } catch (e) {
-                console.log('Não foi possível salvar no localStorage');
-            }
-        }
-
-        function carregarConfiguracoes(tipo) {
-            try {
-                const dados = localStorage.getItem('escalas_' + tipo);
-                return dados ? JSON.parse(dados) : null;
-            } catch (e) {
-                console.log('Não foi possível carregar do localStorage');
-                return null;
-            }
-        }
-
-        // ==================== SISTEMA DE CONTINUIDADE v3.0 ====================
-        
-        // Funções para persistir índices das sequências E grupos semanais
-        function salvarIndices(indices) {
-            try {
-                localStorage.setItem('escalas_indices', JSON.stringify(indices));
-                console.log('Índices salvos para continuidade:', indices);
-            } catch (e) {
-                console.log('Não foi possível salvar índices');
-            }
-        }
-
-        function carregarIndices() {
-            try {
-                const dados = localStorage.getItem('escalas_indices');
-                const indicesPadrao = {
-                    rjm: 0,
-                    rSetor: 0,
-                    rLocal: 0,
-                    ensaio: 0,
-                    // NOVA FUNCIONALIDADE v3.0: Índices para grupos semanais (continuidade entre meses)
-                    terca: 0,
-                    quinta: 0,
-                    sabado: 0,
-                    domingoOficial: 0
-                };
-                return dados ? JSON.parse(dados) : indicesPadrao;
-            } catch (e) {
-                console.log('Não foi possível carregar índices');
-                return {
-                    rjm: 0, rSetor: 0, rLocal: 0, ensaio: 0,
-                    terca: 0, quinta: 0, sabado: 0, domingoOficial: 0
-                };
-            }
-        }
+        let substituicoes = [];
 
         // ==================== FUNÇÕES AUXILIARES ====================
         
+        function salvarDados() {
+            localStorage.setItem('grupos', JSON.stringify(grupos));
+            localStorage.setItem('sequencias', JSON.stringify(sequencias));
+            localStorage.setItem('indices', JSON.stringify(indices));
+        }
+
+        function mostrarFeedback(msg, tipo = 'sucesso') {
+            const fb = document.getElementById('feedback');
+            fb.textContent = msg;
+            fb.className = `feedback ${tipo}`;
+            fb.style.display = 'block';
+            setTimeout(() => fb.style.display = 'none', 3000);
+        }
+
         function getDiasNoMes(ano, mes) {
             return new Date(ano, mes, 0).getDate();
         }
@@ -743,1645 +287,501 @@
             return new Date(ano, mes - 1, dia).getDay();
         }
 
-        function encontrarNesimoDay(ano, mes, diaSemana, nesimo) {
-            let contador = 0;
-            const diasNoMes = getDiasNoMes(ano, mes);
-            
-            for (let dia = 1; dia <= diasNoMes; dia++) {
+        function encontrarNDay(ano, mes, diaSemana, n) {
+            let count = 0;
+            for (let dia = 1; dia <= getDiasNoMes(ano, mes); dia++) {
                 if (getDiaSemana(ano, mes, dia) === diaSemana) {
-                    contador++;
-                    if (contador === nesimo) {
-                        return dia;
-                    }
+                    count++;
+                    if (count === n) return dia;
                 }
             }
             return null;
         }
 
-        function temRLocal(mes) {
-            return [1, 4, 7, 10].includes(mes);
-        }
-
-        // ==================== ALGORITMOS DE DISTRIBUIÇÃO v3.0 ====================
+        // ==================== INTERFACE ====================
         
-        // Função para calcular próximo índice em grupos com folga (NOVA v3.0)
-        function calcularProximoIndiceComFolga(grupo, totalOcorrencias, indiceInicial) {
-            let indiceAtual = indiceInicial;
-            
-            // Simular a distribuição para encontrar o último que folgou
-            for (let i = 0; i < totalOcorrencias; i++) {
-                const indiceFolga = (indiceAtual + 3) % grupo.length;
-                indiceAtual = indiceFolga; // Próximo começa com quem folgou
-            }
-            
-            return indiceAtual;
-        }
-
-        // Distribuição com folga rotativa (4→3 postos) - ATUALIZADA v3.0
-        function distribuirGrupoComFolga(grupo, totalOcorrencias, indiceInicial = 0) {
-            const escalacao = [];
-            let indiceAtual = indiceInicial;
-            
-            for (let i = 0; i < totalOcorrencias; i++) {
-                const posicoes = [];
-                const indiceFolga = (indiceAtual + 3) % grupo.length;
-                
-                // Preencher 3 posições, pulando quem folga
-                for (let j = 0; j < 3; j++) {
-                    const indiceAtualPessoa = (indiceAtual + j) % grupo.length;
-                    if (indiceAtualPessoa !== indiceFolga) {
-                        posicoes.push(grupo[indiceAtualPessoa]);
-                    }
-                }
-                
-                // Garantir 3 posições preenchidas
-                while (posicoes.length < 3) {
-                    for (let k = 0; k < grupo.length; k++) {
-                        const indiceK = (indiceAtual + k) % grupo.length;
-                        if (indiceK !== indiceFolga && !posicoes.includes(grupo[indiceK])) {
-                            posicoes.push(grupo[indiceK]);
-                            break;
-                        }
-                    }
-                }
-                
-                escalacao.push({
-                    pedOracao: posicoes[0],
-                    principal: posicoes[1],
-                    lateral: posicoes[2]
-                });
-                
-                // REGRA FUNDAMENTAL: Quem folga sempre inicia na próxima no Ped Oração
-                indiceAtual = indiceFolga;
-            }
-            
-            return escalacao;
-        }
-
-        // Distribuição sem folga (3→3 postos) - ATUALIZADA v3.0
-        function distribuirGrupoSemFolga(grupo, totalOcorrencias, indiceInicial = 0) {
-            const escalacao = [];
-            
-            for (let i = 0; i < totalOcorrencias; i++) {
-                const posicaoBase = (indiceInicial + i) % grupo.length;
-                
-                escalacao.push({
-                    pedOracao: grupo[posicaoBase],
-                    principal: grupo[(posicaoBase + 1) % grupo.length],
-                    lateral: grupo[(posicaoBase + 2) % grupo.length]
-                });
-            }
-            
-            return escalacao;
-        }
-
-        // ==================== FUNÇÃO PRINCIPAL DE GERAÇÃO v3.0 - CORRIGIDA ====================
-        
-        function gerarEscala() {
-            console.log('🔄 Iniciando geração de escala...');
-            
-            const mesAnoValue = document.getElementById('mesAno').value;
-            if (!mesAnoValue) {
-                mostrarFeedback('Selecione um mês primeiro!', 'erro');
-                return;
-            }
-
-            try {
-                const ano = parseInt(mesAnoValue.split('-')[0]);
-                const mes = parseInt(mesAnoValue.split('-')[1]);
-                
-                console.log(`Gerando escala para ${mes}/${ano}`);
-                
-                // ==================== VERIFICAÇÃO DE ESCALA EXISTENTE ====================
-                const chaveEscala = `escala_${ano}_${mes}`;
-                const escalaExistente = carregarConfiguracoes(chaveEscala);
-                
-                if (escalaExistente && escalaExistente.length > 0) {
-                    // Se já existe uma escala salva para este mês, carregar ela
-                    escalaAtual = escalaExistente;
-                    exibirEscala(escalaAtual);
-                    detectarConflitos(escalaAtual);
-                    
-                    console.log(`📋 Escala ${mes}/${ano} carregada (determinística) - ${escalaAtual.length} itens`);
-                    mostrarFeedback(`Escala ${mes}/${ano} carregada (versão salva)`, 'info');
-                    return;
-                }
-                
-                // ==================== VALIDAR CONFIGURAÇÃO ====================
-                if (!validarConfiguracao()) {
-                    mostrarFeedback('Configuração incompleta. Verifique os grupos no Gerenciador.', 'erro');
-                    return;
-                }
-                
-                // ==================== GERAÇÃO NOVA ESCALA ====================
-                const diasNoMes = getDiasNoMes(ano, mes);
-                const escala = [];
-                
-                // Carregar índices para continuidade v3.0
-                const indices = carregarIndices();
-                let indiceRJM = indices.rjm || 0;
-                let indiceRSetor = indices.rSetor || 0;
-                let indiceRLocal = indices.rLocal || 0;
-                let indiceEnsaio = indices.ensaio || 0;
-                
-                // Índices para grupos semanais (CONTINUIDADE v3.0)
-                let indiceTerca = indices.terca || 0;
-                let indiceQuinta = indices.quinta || 0;
-                let indiceSabado = indices.sabado || 0;
-                let indiceDomingoOficial = indices.domingoOficial || 0;
-                
-                // Contar ocorrências
-                const contadores = { terca: 0, quinta: 0, sabado: 0, domingo: 0 };
-                const diasPorTipo = { terca: [], quinta: [], sabado: [], domingo: [] };
-                
-                for (let dia = 1; dia <= diasNoMes; dia++) {
-                    const diaSemana = getDiaSemana(ano, mes, dia);
-                    
-                    if (diaSemana === 2) {
-                        contadores.terca++;
-                        diasPorTipo.terca.push(dia);
-                    } else if (diaSemana === 4) {
-                        contadores.quinta++;
-                        diasPorTipo.quinta.push(dia);
-                    } else if (diaSemana === 6) {
-                        contadores.sabado++;
-                        diasPorTipo.sabado.push(dia);
-                    } else if (diaSemana === 0) {
-                        contadores.domingo++;
-                        diasPorTipo.domingo.push(dia);
-                    }
-                }
-
-                console.log('Contadores:', contadores);
-
-                // Gerar escalações COM CONTINUIDADE v3.0
-                const escalacaoTerca = distribuirGrupoComFolga(gruposPorDia.terca, contadores.terca, indiceTerca);
-                const escalacaoQuinta = distribuirGrupoSemFolga(gruposPorDia.quinta, contadores.quinta, indiceQuinta);
-                const escalacaoSabado = distribuirGrupoComFolga(gruposPorDia.sabado, contadores.sabado, indiceSabado);
-                const escalacaoDomingo = distribuirGrupoComFolga(gruposPorDia.domingoOficial, contadores.domingo, indiceDomingoOficial);
-
-                // ==================== APLICAR ESCALAÇÕES - 3ª FEIRAS ====================
-                for (let i = 0; i < diasPorTipo.terca.length; i++) {
-                    const dia = diasPorTipo.terca[i];
-                    const escalacaoDia = escalacaoTerca[i];
-                    escala.push({
-                        dia: dia,
-                        diaSemana: '3ª FEIRA',
-                        servico: 'OFICIAL',
-                        pedOracao: escalacaoDia.pedOracao,
-                        principal: escalacaoDia.principal,
-                        lateral: escalacaoDia.lateral,
-                        classe: 'oficial'
-                    });
-                }
-
-                // ==================== APLICAR ESCALAÇÕES - 5ª FEIRAS ====================
-                for (let i = 0; i < diasPorTipo.quinta.length; i++) {
-                    const dia = diasPorTipo.quinta[i];
-                    const escalacaoDia = escalacaoQuinta[i];
-                    escala.push({
-                        dia: dia,
-                        diaSemana: '5ª FEIRA',
-                        servico: 'OFICIAL',
-                        pedOracao: escalacaoDia.pedOracao,
-                        principal: escalacaoDia.principal,
-                        lateral: escalacaoDia.lateral,
-                        classe: 'oficial'
-                    });
-                }
-
-                // ==================== APLICAR ESCALAÇÕES - SÁBADOS ====================
-                for (let i = 0; i < diasPorTipo.sabado.length; i++) {
-                    const dia = diasPorTipo.sabado[i];
-                    const escalacaoDia = escalacaoSabado[i];
-                    escala.push({
-                        dia: dia,
-                        diaSemana: 'SÁBADO',
-                        servico: 'OFICIAL',
-                        pedOracao: escalacaoDia.pedOracao,
-                        principal: escalacaoDia.principal,
-                        lateral: escalacaoDia.lateral,
-                        classe: 'oficial'
-                    });
-                }
-
-                // ==================== APLICAR ESCALAÇÕES - DOMINGOS ====================
-                for (let i = 0; i < diasPorTipo.domingo.length; i++) {
-                    const dia = diasPorTipo.domingo[i];
-                    
-                    // RJM primeiro - usando índice contínuo v3.0
-                    const membroRJM1 = sequencias.rjm[indiceRJM % sequencias.rjm.length];
-                    const membroRJM2 = sequencias.rjm[(indiceRJM + 1) % sequencias.rjm.length];
-                    indiceRJM += 2;
-
-                    escala.push({
-                        dia: dia,
-                        diaSemana: 'DOMINGO',
-                        servico: 'RJM',
-                        pedOracao: membroRJM1,
-                        principal: '-',
-                        lateral: membroRJM2,
-                        classe: 'rjm'
-                    });
-
-                    // OFICIAL depois
-                    const escalacaoDia = escalacaoDomingo[i];
-                    escala.push({
-                        dia: dia,
-                        diaSemana: 'DOMINGO',
-                        servico: 'OFICIAL',
-                        pedOracao: escalacaoDia.pedOracao,
-                        principal: escalacaoDia.principal,
-                        lateral: escalacaoDia.lateral,
-                        classe: 'oficial'
-                    });
-                }
-
-                // ==================== SEQUÊNCIAS ESPECIAIS ====================
-                
-                // R. SETOR - 3ª segunda-feira - usando índice contínuo v3.0
-                const terceiraSegunda = encontrarNesimoDay(ano, mes, 1, 3);
-                if (terceiraSegunda) {
-                    escala.push({
-                        dia: terceiraSegunda,
-                        diaSemana: '2ª FEIRA',
-                        servico: 'R. SETOR',
-                        pedOracao: sequencias.rSetor[indiceRSetor % sequencias.rSetor.length],
-                        principal: 'MESCLAR',
-                        lateral: 'MESCLAR',
-                        classe: 'rsetor',
-                        mesclar: true
-                    });
-                    indiceRSetor++;
-                }
-
-                // R. LOCAL - 4ª segunda-feira trimestral - usando índice contínuo v3.0
-                if (temRLocal(mes)) {
-                    const quartaSegunda = encontrarNesimoDay(ano, mes, 1, 4);
-                    if (quartaSegunda) {
-                        escala.push({
-                            dia: quartaSegunda,
-                            diaSemana: '2ª FEIRA',
-                            servico: 'R. LOCAL',
-                            pedOracao: sequencias.rLocal[indiceRLocal % sequencias.rLocal.length],
-                            principal: 'MESCLAR',
-                            lateral: 'MESCLAR',
-                            classe: 'rlocal',
-                            mesclar: true
-                        });
-                        indiceRLocal++;
-                    }
-                }
-
-                // ENSAIO - 4ª sexta-feira - usando índice contínuo v3.0
-                const quartaSexta = encontrarNesimoDay(ano, mes, 5, 4);
-                if (quartaSexta) {
-                    const membroEnsaio1 = sequencias.ensaio[indiceEnsaio % sequencias.ensaio.length];
-                    const membroEnsaio2 = sequencias.ensaio[(indiceEnsaio + 1) % sequencias.ensaio.length];
-                    
-                    escala.push({
-                        dia: quartaSexta,
-                        diaSemana: '6ª FEIRA',
-                        servico: 'ENSAIO',
-                        pedOracao: membroEnsaio1,
-                        principal: '-',
-                        lateral: membroEnsaio2,
-                        classe: 'ensaio'
-                    });
-                    indiceEnsaio += 2;
-                }
-
-                // ==================== CALCULAR E SALVAR NOVOS ÍNDICES v3.0 ====================
-                
-                // Para grupos com folga (4 pessoas): calcular próximo índice baseado no último que folgou
-                if (contadores.terca > 0) {
-                    indiceTerca = calcularProximoIndiceComFolga(gruposPorDia.terca, contadores.terca, indiceTerca);
-                }
-                if (contadores.sabado > 0) {
-                    indiceSabado = calcularProximoIndiceComFolga(gruposPorDia.sabado, contadores.sabado, indiceSabado);
-                }
-                if (contadores.domingo > 0) {
-                    indiceDomingoOficial = calcularProximoIndiceComFolga(gruposPorDia.domingoOficial, contadores.domingo, indiceDomingoOficial);
-                }
-                
-                // Para grupo sem folga (3 pessoas): apenas avançar
-                if (contadores.quinta > 0) {
-                    indiceQuinta = (indiceQuinta + contadores.quinta) % gruposPorDia.quinta.length;
-                }
-
-                // SALVAR ÍNDICES PARA CONTINUIDADE TOTAL v3.0
-                salvarIndices({
-                    rjm: indiceRJM,
-                    rSetor: indiceRSetor,
-                    rLocal: indiceRLocal,
-                    ensaio: indiceEnsaio,
-                    terca: indiceTerca,
-                    quinta: indiceQuinta,
-                    sabado: indiceSabado,
-                    domingoOficial: indiceDomingoOficial
-                });
-
-                // ==================== SALVAR ESCALA GERADA (DETERMINÍSTICA) ====================
-                
-                // Ordenar e salvar escala
-                escala.sort(function(a, b) { return a.dia - b.dia; });
-                escalaAtual = escala;
-                
-                // SALVAR A ESCALA PARA ESTE MÊS
-                salvarConfiguracoes(chaveEscala, escala);
-                
-                exibirEscala(escala);
-                detectarConflitos(escala);
-                
-                console.log(`✅ Nova escala ${mes}/${ano} gerada e salva - ${escala.length} itens`);
-                mostrarFeedback(`Escala ${mes}/${ano} gerada com sucesso!`, 'sucesso');
-                
-                // Limpar substituições ao gerar nova escala
-                limparSubstituicoes();
-                
-                // Remover exibição de substituições anteriores
-                const substituicoesExistentes = document.getElementById('substituicoesRealizadas');
-                if (substituicoesExistentes) {
-                    substituicoesExistentes.remove();
-                }
-                
-            } catch (error) {
-                console.error('❌ Erro ao gerar escala:', error);
-                mostrarFeedback('Erro ao gerar escala: ' + error.message, 'erro');
-            }
-        }
-        }
-
-        // ==================== FUNÇÕES DE INTERFACE PARA MÊS v3.0 ====================
-        
-        function abrirSeletorMes() {
+        function selecionarMes() {
             document.getElementById('mesAno').click();
         }
 
         function atualizarMesTexto() {
-            const mesAnoValue = document.getElementById('mesAno').value;
-            if (!mesAnoValue) return;
-
-            const ano = mesAnoValue.split('-')[0];
-            const mes = parseInt(mesAnoValue.split('-')[1]);
-            const meses = [
-                'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
-                'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
-            ];
-            const mesNome = meses[mes - 1];
+            const mesAno = document.getElementById('mesAno').value;
+            if (!mesAno) return;
             
-            document.getElementById('mesTexto').textContent = `${mesNome} DE ${ano}`;
+            const [ano, mes] = mesAno.split('-');
+            const meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
+                          'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+            
+            document.getElementById('mesTexto').textContent = `${meses[parseInt(mes) - 1]} DE ${ano}`;
         }
 
-        // ==================== RESOLUÇÃO AUTOMÁTICA DE CONFLITOS v3.0 ====================
+        // ==================== GERAÇÃO DE ESCALA ====================
         
-        function resolverConflitosAutomatico() {
-            if (!confirm('🔧 Resolver conflitos automaticamente?\n\n⚠️ Esta ação irá:\n• Manter todas as escalas oficiais intactas\n• Ajustar apenas a escala RJM para eliminar conflitos\n• Usar flexibilização de postos (Ped Oração ↔ Lateral) quando necessário\n\nContinuar?')) {
-                return;
-            }
-
-            // Limpar registro de substituições anteriores
-            limparSubstituicoes();
-
-            let conflitosResolvidos = 0;
-            const conflitosOriginais = detectarConflitosDetalhados(escalaAtual);
-            
-            console.log('🔍 Conflitos detectados:', conflitosOriginais);
-
-            // Processar cada conflito
-            conflitosOriginais.forEach(conflito => {
-                if (resolverConflitoRJM(conflito)) {
-                    conflitosResolvidos++;
+        function gerarEscala() {
+            try {
+                const mesAno = document.getElementById('mesAno').value;
+                if (!mesAno) {
+                    mostrarFeedback('Selecione um mês!', 'erro');
+                    return;
                 }
-            });
 
-            // Atualizar interface
-            exibirEscala(escalaAtual);
-            
-            // Exibir substituições realizadas antes dos conflitos remanescentes
-            mostrarSubstituicoesNaInterface();
-            
-            detectarConflitos(escalaAtual);
-
-            if (conflitosResolvidos > 0) {
-                mostrarFeedback(`✅ ${conflitosResolvidos} conflito(s) resolvido(s) automaticamente!`, 'sucesso');
+                const [ano, mes] = mesAno.split('-').map(Number);
                 
-                // Salvar escala atualizada
-                const mesAnoValue = document.getElementById('mesAno').value;
-                if (mesAnoValue) {
-                    const ano = parseInt(mesAnoValue.split('-')[0]);
-                    const mes = parseInt(mesAnoValue.split('-')[1]);
-                    const chaveEscala = `escala_${ano}_${mes}`;
-                    salvarConfiguracoes(chaveEscala, escalaAtual);
+                // Verificar escala salva
+                const chave = `escala_${ano}_${mes}`;
+                const escalaSalva = localStorage.getItem(chave);
+                if (escalaSalva) {
+                    escalaAtual = JSON.parse(escalaSalva);
+                    exibirEscala();
+                    detectarConflitos();
+                    mostrarFeedback('Escala carregada (salva)');
+                    return;
                 }
-            } else {
-                mostrarFeedback('ℹ️ Nenhum conflito pôde ser resolvido automaticamente.', 'info');
+
+                escalaAtual = [];
+                
+                // Contar dias
+                const contadores = { terca: 0, quinta: 0, sabado: 0, domingo: 0 };
+                const dias = { terca: [], quinta: [], sabado: [], domingo: [] };
+                
+                for (let dia = 1; dia <= getDiasNoMes(ano, mes); dia++) {
+                    const semana = getDiaSemana(ano, mes, dia);
+                    if (semana === 2) { contadores.terca++; dias.terca.push(dia); }
+                    if (semana === 4) { contadores.quinta++; dias.quinta.push(dia); }
+                    if (semana === 6) { contadores.sabado++; dias.sabado.push(dia); }
+                    if (semana === 0) { contadores.domingo++; dias.domingo.push(dia); }
+                }
+
+                // Gerar escalações
+                gerarEscalacaoSemanal('terca', dias.terca, grupos.terca, true);
+                gerarEscalacaoSemanal('quinta', dias.quinta, grupos.quinta, false);
+                gerarEscalacaoSemanal('sabado', dias.sabado, grupos.sabado, true);
+                gerarEscalacaoSemanal('domingoOficial', dias.domingo, grupos.domingoOficial, true, 'DOMINGO');
+
+                // RJM nos domingos
+                dias.domingo.forEach(dia => {
+                    const p1 = sequencias.rjm[indices.rjm % sequencias.rjm.length];
+                    const p2 = sequencias.rjm[(indices.rjm + 1) % sequencias.rjm.length];
+                    indices.rjm += 2;
+                    
+                    escalaAtual.unshift({
+                        dia, diaSemana: 'DOMINGO', servico: 'RJM',
+                        pedOracao: p1, principal: '-', lateral: p2, classe: 'rjm'
+                    });
+                });
+
+                // Serviços especiais
+                const rSetor = encontrarNDay(ano, mes, 1, 3);
+                if (rSetor) {
+                    escalaAtual.push({
+                        dia: rSetor, diaSemana: '2ª FEIRA', servico: 'R. SETOR',
+                        pedOracao: sequencias.rSetor[indices.rSetor % sequencias.rSetor.length],
+                        principal: 'MESCLAR', lateral: 'MESCLAR', classe: 'rsetor'
+                    });
+                    indices.rSetor++;
+                }
+
+                if ([1, 4, 7, 10].includes(mes)) {
+                    const rLocal = encontrarNDay(ano, mes, 1, 4);
+                    if (rLocal) {
+                        escalaAtual.push({
+                            dia: rLocal, diaSemana: '2ª FEIRA', servico: 'R. LOCAL',
+                            pedOracao: sequencias.rLocal[indices.rLocal % sequencias.rLocal.length],
+                            principal: 'MESCLAR', lateral: 'MESCLAR', classe: 'rlocal'
+                        });
+                        indices.rLocal++;
+                    }
+                }
+
+                const ensaio = encontrarNDay(ano, mes, 5, 4);
+                if (ensaio) {
+                    const p1 = sequencias.ensaio[indices.ensaio % sequencias.ensaio.length];
+                    const p2 = sequencias.ensaio[(indices.ensaio + 1) % sequencias.ensaio.length];
+                    indices.ensaio += 2;
+                    
+                    escalaAtual.push({
+                        dia: ensaio, diaSemana: '6ª FEIRA', servico: 'ENSAIO',
+                        pedOracao: p1, principal: '-', lateral: p2, classe: 'ensaio'
+                    });
+                }
+
+                // Atualizar índices dos grupos
+                atualizarIndicesGrupos(contadores);
+
+                // Ordenar e salvar
+                escalaAtual.sort((a, b) => a.dia - b.dia);
+                localStorage.setItem(chave, JSON.stringify(escalaAtual));
+                salvarDados();
+
+                exibirEscala();
+                detectarConflitos();
+                mostrarFeedback('Escala gerada com sucesso!');
+                
+                // Limpar substituições
+                substituicoes = [];
+                document.getElementById('alertaSubstituicoes').style.display = 'none';
+
+            } catch (error) {
+                console.error('Erro:', error);
+                mostrarFeedback('Erro ao gerar escala: ' + error.message, 'erro');
             }
         }
 
-        function mostrarSubstituicoesNaInterface() {
-            const substituicoesHTML = exibirSubstituicoesRealizadas();
-            if (substituicoesHTML) {
-                // Inserir antes do alerta de conflitos
-                const alertaConflitos = document.getElementById('alertaConflitos');
-                
-                // Remover substituições anteriores se existirem
-                const substituicoesExistentes = document.getElementById('substituicoesRealizadas');
-                if (substituicoesExistentes) {
-                    substituicoesExistentes.remove();
-                }
-                
-                // Criar div para substituições
-                const divSubstituicoes = document.createElement('div');
-                divSubstituicoes.id = 'substituicoesRealizadas';
-                divSubstituicoes.innerHTML = substituicoesHTML;
-                
-                // Inserir antes do alerta de conflitos
-                alertaConflitos.parentNode.insertBefore(divSubstituicoes, alertaConflitos);
-            }
-        }
+        function gerarEscalacaoSemanal(tipo, diasArray, grupo, temFolga, diaSemanaTexto = null) {
+            if (!diasArray.length) return;
+            
+            const nomes = {
+                terca: '3ª FEIRA',
+                quinta: '5ª FEIRA', 
+                sabado: 'SÁBADO',
+                domingoOficial: diaSemanaTexto || 'DOMINGO'
+            };
 
-        function detectarConflitosDetalhados(escala) {
-            const conflitos = [];
-            const diasComServicos = {};
+            let indice = indices[tipo] || 0;
             
-            // Agrupar serviços por dia
-            for (let i = 0; i < escala.length; i++) {
-                const item = escala[i];
-                if (!diasComServicos[item.dia]) {
-                    diasComServicos[item.dia] = [];
-                }
-                diasComServicos[item.dia].push({ ...item, indiceEscala: i });
-            }
-            
-            // Verificar conflitos no mesmo dia
-            const dias = Object.keys(diasComServicos);
-            for (let d = 0; d < dias.length; d++) {
-                const dia = dias[d];
-                const servicosDoDia = diasComServicos[dia];
-                
-                if (servicosDoDia.length > 1) {
-                    for (let i = 0; i < servicosDoDia.length; i++) {
-                        const servico1 = servicosDoDia[i];
-                        for (let j = i + 1; j < servicosDoDia.length; j++) {
-                            const servico2 = servicosDoDia[j];
-                            
-                            const pessoas1 = [servico1.pedOracao, servico1.principal, servico1.lateral].filter(function(p) {
-                                return p && p !== '-' && p !== 'MESCLAR';
-                            });
-                            
-                            const pessoas2 = [servico2.pedOracao, servico2.principal, servico2.lateral].filter(function(p) {
-                                return p && p !== '-' && p !== 'MESCLAR';
-                            });
-                            
-                            for (let p1 = 0; p1 < pessoas1.length; p1++) {
-                                const pessoa = pessoas1[p1];
-                                if (pessoas2.indexOf(pessoa) !== -1) {
-                                    // Identificar qual campo em cada serviço
-                                    const campo1 = encontrarCampoPessoa(servico1, pessoa);
-                                    const campo2 = encontrarCampoPessoa(servico2, pessoa);
-                                    
-                                    conflitos.push({
-                                        dia: parseInt(dia),
-                                        pessoa: pessoa,
-                                        servico1: {
-                                            ...servico1,
-                                            campo: campo1
-                                        },
-                                        servico2: {
-                                            ...servico2,
-                                            campo: campo2
-                                        }
-                                    });
-                                }
+            diasArray.forEach((dia, i) => {
+                let posicoes;
+                if (temFolga && grupo.length >= 4) {
+                    // Com folga: 4→3 pessoas
+                    const folgaPos = (indice + 3) % grupo.length;
+                    posicoes = [];
+                    for (let j = 0; j < 3; j++) {
+                        const pos = (indice + j) % grupo.length;
+                        if (pos !== folgaPos) posicoes.push(grupo[pos]);
+                    }
+                    while (posicoes.length < 3) {
+                        for (let k = 0; k < grupo.length; k++) {
+                            const pos = (indice + k) % grupo.length;
+                            if (pos !== folgaPos && !posicoes.includes(grupo[pos])) {
+                                posicoes.push(grupo[pos]);
+                                break;
                             }
                         }
                     }
+                    indice = folgaPos; // Próximo começa com quem folgou
+                } else {
+                    // Sem folga: rotação simples
+                    posicoes = [
+                        grupo[indice % grupo.length],
+                        grupo[(indice + 1) % grupo.length],
+                        grupo[(indice + 2) % grupo.length]
+                    ];
+                    indice = (indice + 1) % grupo.length;
                 }
-            }
-            
-            return conflitos;
-        }
 
-        function resolverConflitoRJM(conflito) {
-            // Priorizar alterações no RJM (conforme solicitado)
-            let servicoRJM = null;
-            let servicoIntacto = null;
-
-            if (conflito.servico1.servico === 'RJM') {
-                servicoRJM = conflito.servico1;
-                servicoIntacto = conflito.servico2;
-            } else if (conflito.servico2.servico === 'RJM') {
-                servicoRJM = conflito.servico2;
-                servicoIntacto = conflito.servico1;
-            } else {
-                // Se nenhum é RJM, não alterar (manter escalas oficiais intactas)
-                console.log('⚠️ Conflito entre escalas oficiais - não alterado:', conflito);
-                return false;
-            }
-
-            // NOVA LÓGICA: Flexibilização apenas entre Ped Oração ↔ Lateral no RJM
-            const indiceEscalaRJM = servicoRJM.indiceEscala;
-            const itemRJM = escalaAtual[indiceEscalaRJM];
-            
-            // Primeiro tentar trocar postos dentro do próprio RJM (Ped Oração ↔ Lateral)
-            if (servicoRJM.campo === 'pedOracao' && itemRJM.lateral !== conflito.pessoa) {
-                // Trocar Ped Oração com Lateral
-                const pessoaOriginalPed = itemRJM.pedOracao;
-                const pessoaOriginalLat = itemRJM.lateral;
-                
-                // Verificar se a pessoa do Lateral não está escalada em outro serviço no mesmo dia
-                if (!estaPessoaEscaladaNoDia(pessoaOriginalLat, conflito.dia, 'RJM')) {
-                    escalaAtual[indiceEscalaRJM].pedOracao = pessoaOriginalLat;
-                    escalaAtual[indiceEscalaRJM].lateral = pessoaOriginalPed;
-                    
-                    // Salvar informação da substituição para exibição
-                    salvarSubstituicaoRealizada({
-                        dia: conflito.dia,
-                        servico: 'RJM',
-                        tipo: 'Troca de postos',
-                        detalhes: `${pessoaOriginalPed} (Ped Oração) ↔ ${pessoaOriginalLat} (Lateral)`,
-                        motivoOriginal: `Conflito de ${conflito.pessoa} com ${servicoIntacto.servico}`
-                    });
-                    
-                    console.log(`✅ Conflito resolvido por troca de postos RJM: ${pessoaOriginalPed} ↔ ${pessoaOriginalLat} no dia ${conflito.dia}`);
-                    return true;
-                }
-            } else if (servicoRJM.campo === 'lateral' && itemRJM.pedOracao !== conflito.pessoa) {
-                // Trocar Lateral com Ped Oração
-                const pessoaOriginalPed = itemRJM.pedOracao;
-                const pessoaOriginalLat = itemRJM.lateral;
-                
-                // Verificar se a pessoa do Ped Oração não está escalada em outro serviço no mesmo dia
-                if (!estaPessoaEscaladaNoDia(pessoaOriginalPed, conflito.dia, 'RJM')) {
-                    escalaAtual[indiceEscalaRJM].pedOracao = pessoaOriginalLat;
-                    escalaAtual[indiceEscalaRJM].lateral = pessoaOriginalPed;
-                    
-                    // Salvar informação da substituição para exibição
-                    salvarSubstituicaoRealizada({
-                        dia: conflito.dia,
-                        servico: 'RJM',
-                        tipo: 'Troca de postos',
-                        detalhes: `${pessoaOriginalLat} (Lateral) ↔ ${pessoaOriginalPed} (Ped Oração)`,
-                        motivoOriginal: `Conflito de ${conflito.pessoa} com ${servicoIntacto.servico}`
-                    });
-                    
-                    console.log(`✅ Conflito resolvido por troca de postos RJM: ${pessoaOriginalLat} ↔ ${pessoaOriginalPed} no dia ${conflito.dia}`);
-                    return true;
-                }
-            }
-
-            // Se troca de postos não resolveu, tentar substituição por pessoa da sequência RJM
-            const substitutoDisponivel = encontrarSubstitutoRJM(conflito.dia, conflito.pessoa);
-            
-            if (substitutoDisponivel) {
-                // Aplicar substituição
-                const campo = servicoRJM.campo;
-                const pessoaOriginal = escalaAtual[indiceEscalaRJM][campo];
-                
-                escalaAtual[indiceEscalaRJM][campo] = substitutoDisponivel;
-                
-                // Salvar informação da substituição para exibição
-                salvarSubstituicaoRealizada({
-                    dia: conflito.dia,
-                    servico: 'RJM',
-                    tipo: 'Substituição de pessoa',
-                    detalhes: `${pessoaOriginal} → ${substitutoDisponivel} (${campo === 'pedOracao' ? 'Ped Oração' : 'Lateral'})`,
-                    motivoOriginal: `Conflito de ${conflito.pessoa} com ${servicoIntacto.servico}`
+                escalaAtual.push({
+                    dia, diaSemana: nomes[tipo], servico: 'OFICIAL',
+                    pedOracao: posicoes[0], principal: posicoes[1], lateral: posicoes[2],
+                    classe: 'oficial'
                 });
+            });
+
+            indices[tipo] = indice;
+        }
+
+        function atualizarIndicesGrupos(contadores) {
+            // Grupos com folga
+            ['terca', 'sabado', 'domingoOficial'].forEach(tipo => {
+                if (contadores[tipo === 'domingoOficial' ? 'domingo' : tipo] > 0) {
+                    // Simular para encontrar último que folgou
+                    const grupo = grupos[tipo];
+                    let ind = indices[tipo] || 0;
+                    const count = contadores[tipo === 'domingoOficial' ? 'domingo' : tipo];
+                    
+                    for (let i = 0; i < count; i++) {
+                        ind = (ind + 3) % grupo.length;
+                    }
+                    indices[tipo] = ind;
+                }
+            });
+            
+            // Grupo sem folga
+            if (contadores.quinta > 0) {
+                indices.quinta = (indices.quinta + contadores.quinta) % grupos.quinta.length;
+            }
+        }
+
+        // ==================== EXIBIÇÃO ====================
+        
+        function exibirEscala() {
+            const tbody = document.getElementById('tabelaCorpo');
+            tbody.innerHTML = '';
+
+            escalaAtual.forEach((item, i) => {
+                const tr = document.createElement('tr');
                 
-                console.log(`✅ Conflito resolvido por substituição: ${pessoaOriginal} → ${substitutoDisponivel} no ${servicoRJM.servico} dia ${conflito.dia}`);
-                return true;
-            } else {
-                console.log(`⚠️ Não foi possível encontrar substituto para ${conflito.pessoa} no dia ${conflito.dia}`);
-                return false;
-            }
-        }
-
-        // ==================== SISTEMA DE REGISTRO DE SUBSTITUIÇÕES ====================
-        
-        let substituicoesRealizadas = [];
-
-        function salvarSubstituicaoRealizada(substituicao) {
-            substituicoesRealizadas.push(substituicao);
-        }
-
-        function limparSubstituicoes() {
-            substituicoesRealizadas = [];
-        }
-
-        function exibirSubstituicoesRealizadas() {
-            if (substituicoesRealizadas.length === 0) return '';
-
-            let html = '<div style="background: #e8f5e8; border: 2px solid #4caf50; border-radius: 15px; padding: 20px; margin-bottom: 30px;">';
-            html += '<h3 style="color: #2e7d32; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">';
-            html += '🔧 Substituições Realizadas para Resolver Conflitos</h3>';
-            
-            substituicoesRealizadas.forEach((sub, index) => {
-                html += `<div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 8px; border-left: 4px solid #4caf50;">
-                    <p style="margin: 0; font-weight: bold; color: #2e7d32;">📅 Dia ${sub.dia} - ${sub.servico}</p>
-                    <p style="margin: 5px 0 0 0; font-size: 14px;">
-                        <strong>${sub.tipo}:</strong> ${sub.detalhes}<br>
-                        <em style="color: #666; font-size: 12px;">Motivo: ${sub.motivoOriginal}</em>
-                    </p>
-                </div>`;
+                if (item.principal === 'MESCLAR') {
+                    tr.innerHTML = `
+                        <td>${item.dia}</td>
+                        <td>${item.diaSemana}</td>
+                        <td><span class="servico-badge ${item.classe}">${item.servico}</span></td>
+                        <td colspan="3" style="text-align: center;">
+                            <span class="editavel" onclick="editarCampo(${i}, 'pedOracao')" ondblclick="editarCampo(${i}, 'pedOracao')">${item.pedOracao}</span>
+                        </td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td>${item.dia}</td>
+                        <td>${item.diaSemana}</td>
+                        <td><span class="servico-badge ${item.classe}">${item.servico}</span></td>
+                        <td><span class="editavel" onclick="editarCampo(${i}, 'pedOracao')" ondblclick="editarCampo(${i}, 'pedOracao')">${item.pedOracao}</span></td>
+                        <td><span class="editavel" onclick="editarCampo(${i}, 'principal')" ondblclick="editarCampo(${i}, 'principal')">${item.principal}</span></td>
+                        <td><span class="editavel" onclick="editarCampo(${i}, 'lateral')" ondblclick="editarCampo(${i}, 'lateral')">${item.lateral}</span></td>
+                    `;
+                }
+                tbody.appendChild(tr);
             });
-            
-            html += '<p style="font-size: 12px; color: #666; margin-top: 15px; border-top: 1px solid #ddd; padding-top: 10px;">';
-            html += '<strong>💡 Nota:</strong> Apenas a escala RJM foi alterada. Todas as escalas oficiais permanecem inalteradas conforme a sequência original.';
-            html += '</p></div>';
-            
-            return html;
         }
 
-        function encontrarSubstitutoRJM(dia, pessoaConflito) {
-            // Pessoas já escaladas neste dia (evitar)
-            const pessoasJaEscaladas = [];
-            escalaAtual.filter(item => item.dia === dia).forEach(item => {
-                if (item.pedOracao && item.pedOracao !== '-' && item.pedOracao !== 'MESCLAR') {
-                    pessoasJaEscaladas.push(item.pedOracao);
-                }
-                if (item.principal && item.principal !== '-' && item.principal !== 'MESCLAR') {
-                    pessoasJaEscaladas.push(item.principal);
-                }
-                if (item.lateral && item.lateral !== '-' && item.lateral !== 'MESCLAR') {
-                    pessoasJaEscaladas.push(item.lateral);
-                }
-            });
-            
-            // Remover a pessoa em conflito da lista (ela pode ser substituída)
-            const pessoasIndisponiveis = pessoasJaEscaladas.filter(p => p !== pessoaConflito);
-            
-            // Procurar na sequência RJM alguém disponível
-            for (let i = 0; i < sequencias.rjm.length; i++) {
-                const candidato = sequencias.rjm[i];
-                if (!pessoasIndisponiveis.includes(candidato)) {
-                    return candidato;
-                }
-            }
-            
-            return null; // Nenhum substituto encontrado
-        }
-
-        // ==================== DETECÇÃO DE CONFLITOS ATUALIZADA v3.0 ====================
+        // ==================== CONFLITOS ====================
         
-        function detectarConflitos(escala) {
+        function detectarConflitos() {
             const conflitos = [];
-            const diasComServicos = {};
-            
-            // Agrupar serviços por dia
-            for (let i = 0; i < escala.length; i++) {
-                const item = escala[i];
-                if (!diasComServicos[item.dia]) {
-                    diasComServicos[item.dia] = [];
-                }
-                diasComServicos[item.dia].push(item);
-            }
-            
-            // Verificar conflitos no mesmo dia
-            const dias = Object.keys(diasComServicos);
-            for (let d = 0; d < dias.length; d++) {
-                const dia = dias[d];
-                const servicosDoDia = diasComServicos[dia];
-                
-                if (servicosDoDia.length > 1) {
-                    for (let i = 0; i < servicosDoDia.length; i++) {
-                        const servico1 = servicosDoDia[i];
-                        for (let j = i + 1; j < servicosDoDia.length; j++) {
-                            const servico2 = servicosDoDia[j];
+            const porDia = {};
+
+            escalaAtual.forEach(item => {
+                if (!porDia[item.dia]) porDia[item.dia] = [];
+                porDia[item.dia].push(item);
+            });
+
+            Object.keys(porDia).forEach(dia => {
+                const servicos = porDia[dia];
+                if (servicos.length > 1) {
+                    servicos.forEach((s1, i) => {
+                        servicos.slice(i + 1).forEach(s2 => {
+                            const p1 = [s1.pedOracao, s1.principal, s1.lateral].filter(p => p && p !== '-' && p !== 'MESCLAR');
+                            const p2 = [s2.pedOracao, s2.principal, s2.lateral].filter(p => p && p !== '-' && p !== 'MESCLAR');
                             
-                            const pessoas1 = [servico1.pedOracao, servico1.principal, servico1.lateral].filter(function(p) {
-                                return p && p !== '-' && p !== 'MESCLAR';
-                            });
-                            
-                            const pessoas2 = [servico2.pedOracao, servico2.principal, servico2.lateral].filter(function(p) {
-                                return p && p !== '-' && p !== 'MESCLAR';
-                            });
-                            
-                            for (let p1 = 0; p1 < pessoas1.length; p1++) {
-                                const pessoa = pessoas1[p1];
-                                if (pessoas2.indexOf(pessoa) !== -1) {
-                                    // Verificar se conflito já existe
-                                    let conflitoDuplicado = false;
-                                    for (let c = 0; c < conflitos.length; c++) {
-                                        if (conflitos[c].dia === parseInt(dia) && conflitos[c].pessoa === pessoa) {
-                                            conflitoDuplicado = true;
-                                            break;
-                                        }
-                                    }
-                                    
-                                    if (!conflitoDuplicado) {
+                            p1.forEach(pessoa => {
+                                if (p2.includes(pessoa)) {
+                                    if (!conflitos.find(c => c.dia == dia && c.pessoa === pessoa)) {
                                         conflitos.push({
                                             dia: parseInt(dia),
-                                            pessoa: pessoa,
-                                            servicos: [servico1.servico, servico2.servico]
+                                            pessoa,
+                                            servicos: [s1.servico, s2.servico]
                                         });
                                     }
                                 }
-                            }
-                        }
-                    }
+                            });
+                        });
+                    });
                 }
-            }
-            
+            });
+
             exibirConflitos(conflitos);
         }
 
         function exibirConflitos(conflitos) {
-            const alertaDiv = document.getElementById('alertaConflitos');
-            const listaDiv = document.getElementById('listaConflitos');
-            const btnResolver = document.getElementById('btnResolverConflitos');
-            
+            const alerta = document.getElementById('alertaConflitos');
+            const lista = document.getElementById('listaConflitos');
+            const btn = document.getElementById('btnConflitos');
+
             if (conflitos.length === 0) {
-                alertaDiv.style.display = 'none';
-                btnResolver.style.display = 'none';
+                alerta.style.display = 'none';
+                btn.style.display = 'none';
             } else {
-                alertaDiv.style.display = 'block';
-                btnResolver.style.display = 'block';
+                alerta.style.display = 'block';
+                btn.style.display = 'inline-block';
                 
-                let html = '<div style="background: #fff3e0; padding: 10px; border-radius: 8px; border: 1px solid #ff9800; margin-bottom: 15px;">';
-                html += '<div style="display: flex; align-items: center; justify-content: space-between;">';
-                html += '<p style="margin: 0; color: #f57c00; font-weight: bold;">🔧 Resolução Automática Disponível</p>';
-                html += '<button onclick="resolverConflitosAutomatico()" style="background: #ff9800; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">✨ Resolver Automaticamente</button>';
-                html += '</div>';
-                html += '<p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">O sistema pode resolver conflitos automaticamente ajustando apenas a escala RJM.</p>';
-                html += '</div>';
-                
-                for (let i = 0; i < conflitos.length; i++) {
-                    const conflito = conflitos[i];
-                    const sugestoes = gerarSugestoesConflito(conflito);
-                    
-                    html += `<div style="margin-bottom: 15px; padding: 10px; background: #fff; border-radius: 8px; border-left: 4px solid #f44336;">
-                        <p><strong>📅 Dia ${conflito.dia}:</strong> <span style="color: #d32f2f; font-weight: bold;">${conflito.pessoa}</span> escalado em ${conflito.servicos.join(' e ')}</p>`;
-                    
-                    if (sugestoes.length > 0) {
-                        html += `<div style="margin-top: 8px;">
-                            <p style="font-size: 12px; color: #1976d2; font-weight: bold;">💡 Sugestões de resolução manual:</p>`;
-                        
-                        sugestoes.forEach((sugestao, index) => {
-                            const corBotao = index === 0 ? '#4caf50' : '#2196f3';
-                            
-                            // Escapar aspas nos parâmetros para evitar problemas no onclick
-                            const diaParam = conflito.dia;
-                            const campoParam = sugestao.campo.replace(/'/g, "\\'");
-                            const valorAtualParam = sugestao.valorAtual.replace(/'/g, "\\'");
-                            const novoValorParam = sugestao.novoValor.replace(/'/g, "\\'");
-                            const servicoParam = sugestao.servico.replace(/'/g, "\\'");
-                            
-                            // Criar um ID único para cada botão e usar atributos data
-                            const botaoId = `btn-sugestao-${conflito.dia}-${index}`;
-                            
-                            html += `<div style="margin: 5px 0; padding: 6px 10px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid ${corBotao};">
-                                <span style="font-size: 12px;">${sugestao.descricao}</span>
-                                <button id="${botaoId}" 
-                                        data-dia="${diaParam}"
-                                        data-campo="${campoParam}"
-                                        data-valor-atual="${valorAtualParam}"
-                                        data-novo-valor="${novoValorParam}"
-                                        data-servico="${servicoParam}"
-                                        data-dados-troca='${sugestao.dadosTraca ? JSON.stringify(sugestao.dadosTraca) : 'null'}'
-                                        style="background: ${corBotao}; color: white; border: none; padding: 3px 8px; border-radius: 3px; margin-left: 8px; cursor: pointer; font-size: 11px;">
-                                    ✨ Aplicar
-                                </button>
-                            </div>`;
-                        });
-                        
-                        html += '</div>';
-                    }
-                    
-                    html += '</div>';
-                }
-                
-                listaDiv.innerHTML = html;
-                
-                // Adicionar event listeners para os botões após inserir o HTML
-                for (let i = 0; i < conflitos.length; i++) {
-                    const conflito = conflitos[i];
-                    const sugestoes = gerarSugestoesConflito(conflito);
-                    
-                    sugestoes.forEach((sugestao, index) => {
-                        const botaoId = `btn-sugestao-${conflito.dia}-${index}`;
-                        const botao = document.getElementById(botaoId);
-                        
-                        if (botao) {
-                            botao.addEventListener('click', function() {
-                                const dia = parseInt(this.getAttribute('data-dia'));
-                                const campo = this.getAttribute('data-campo');
-                                const valorAtual = this.getAttribute('data-valor-atual');
-                                const novoValor = this.getAttribute('data-novo-valor');
-                                const servico = this.getAttribute('data-servico');
-                                const dadosTracaStr = this.getAttribute('data-dados-troca');
-                                const dadosTraca = dadosTracaStr === 'null' ? null : JSON.parse(dadosTracaStr);
-                                
-                                aplicarSugestao(dia, campo, valorAtual, novoValor, servico, dadosTraca);
-                            });
-                        }
-                    });
-                }
+                lista.innerHTML = conflitos.map(c => 
+                    `<p>📅 Dia ${c.dia}: <strong>${c.pessoa}</strong> em ${c.servicos.join(' e ')}</p>`
+                ).join('');
             }
         }
 
-        // ==================== SUGESTÕES INTELIGENTES DE CONFLITOS v3.0 ====================
-        
-        function gerarSugestoesConflito(conflito) {
-            const sugestoes = [];
-            const dia = conflito.dia;
-            const pessoaConflito = conflito.pessoa;
-            
-            // Encontrar os serviços em conflito neste dia
-            const servicosDoDia = escalaAtual.filter(item => item.dia === dia);
-            const servicosComPessoa = servicosDoDia.filter(item => 
-                [item.pedOracao, item.principal, item.lateral].includes(pessoaConflito)
-            );
-            
-            if (servicosComPessoa.length >= 2) {
-                // REGRA NOVA v3.0: Priorizar alterações apenas em sequências especiais
-                const servicosFlexiveis = servicosComPessoa.filter(servico => 
-                    ['RJM', 'R. SETOR', 'R. LOCAL', 'ENSAIO'].includes(servico.servico)
-                );
-                
-                // Se há serviços flexíveis, sugerir alterações apenas neles
-                if (servicosFlexiveis.length > 0) {
-                    servicosFlexiveis.forEach(servico => {
-                        const sugestoesPorServico = gerarSugestoesParaSequenciaEspecial(servico, pessoaConflito, dia);
-                        sugestoes.push(...sugestoesPorServico);
-                    });
-                } else {
-                    // Caso extremo: só serviços oficiais (manter lógica original como fallback)
-                    servicosComPessoa.forEach((servico, index) => {
-                        if (index > 0) {
-                            const campo = encontrarCampoPessoa(servico, pessoaConflito);
-                            if (campo) {
-                                const substituicoesSugeridas = encontrarSubstitutosPossiveis(servico, campo, dia);
-                                
-                                substituicoesSugeridas.forEach((substituto, subIndex) => {
-                                    const prioridade = subIndex === 0 ? '🥇' : subIndex === 1 ? '🥈' : '🥉';
-                                    sugestoes.push({
-                                        descricao: `${prioridade} Substituir "${pessoaConflito}" por "${substituto}" no ${servico.servico} (${campo})`,
-                                        campo: campo,
-                                        valorAtual: pessoaConflito,
-                                        novoValor: substituto,
-                                        servico: servico.servico,
-                                        prioridade: subIndex + 10 // Baixa prioridade para serviços oficiais
-                                    });
-                                });
-                            }
-                        }
-                    });
-                }
-            }
-            
-            // Ordenar por prioridade (melhor sugestão primeiro)
-            return sugestoes.sort((a, b) => a.prioridade - b.prioridade).slice(0, 3);
-        }
+        function resolverConflitos() {
+            if (!confirm('Resolver conflitos automaticamente?\n\nApenas a escala RJM será alterada.')) return;
 
-        function gerarSugestoesParaSequenciaEspecial(servico, pessoaConflito, diaConflito) {
-            const sugestoes = [];
-            const tipoServico = servico.servico;
-            
-            // Encontrar todas as ocorrências desta sequência especial no mês
-            const outrasOcorrenciasSequencia = escalaAtual.filter(item => 
-                item.servico === tipoServico && item.dia !== diaConflito
-            );
-            
-            // Para cada outra ocorrência, verificar se podemos fazer uma troca
-            outrasOcorrenciasSequencia.forEach(outraOcorrencia => {
-                const pessoas = [outraOcorrencia.pedOracao, outraOcorrencia.principal, outraOcorrencia.lateral]
-                    .filter(p => p && p !== '-' && p !== 'MESCLAR');
-                
-                pessoas.forEach(pessoaAlternativa => {
-                    // Verificar se a pessoa alternativa está disponível no dia do conflito
-                    const pessoaDisponivelNoConflito = !estaPessoaEscaladaNoDia(pessoaAlternativa, diaConflito);
-                    // Verificar se a pessoa em conflito está disponível no outro dia
-                    const pessoaConflitoDisponivelNoOutroDia = !estaPessoaEscaladaNoDia(pessoaConflito, outraOcorrencia.dia, tipoServico);
-                    
-                    if (pessoaDisponivelNoConflito && pessoaConflitoDisponivelNoOutroDia) {
-                        const campoConflito = encontrarCampoPessoa(servico, pessoaConflito);
-                        const campoAlternativo = encontrarCampoPessoa(outraOcorrencia, pessoaAlternativa);
-                        
-                        if (campoConflito && campoAlternativo) {
-                            // Sugestão de troca entre dias
-                            sugestoes.push({
-                                descricao: `🔄 Trocar "${pessoaConflito}" (dia ${diaConflito}) com "${pessoaAlternativa}" (dia ${outraOcorrencia.dia}) no ${tipoServico}`,
-                                campo: campoConflito,
-                                valorAtual: pessoaConflito,
-                                novoValor: pessoaAlternativa,
-                                servico: tipoServico,
-                                prioridade: 0, // Alta prioridade para trocas dentro da sequência
-                                dadosTraca: {
-                                    diaOrigem: diaConflito,
-                                    diaDestino: outraOcorrencia.dia,
-                                    campoDestino: campoAlternativo,
-                                    pessoaDestino: pessoaAlternativa
+            let resolvidos = 0;
+            substituicoes = [];
+
+            const conflitos = [];
+            const porDia = {};
+
+            escalaAtual.forEach((item, index) => {
+                if (!porDia[item.dia]) porDia[item.dia] = [];
+                porDia[item.dia].push({...item, index});
+            });
+
+            Object.keys(porDia).forEach(dia => {
+                const servicos = porDia[dia];
+                if (servicos.length > 1) {
+                    servicos.forEach((s1, i) => {
+                        servicos.slice(i + 1).forEach(s2 => {
+                            const p1 = [s1.pedOracao, s1.principal, s1.lateral].filter(p => p && p !== '-' && p !== 'MESCLAR');
+                            const p2 = [s2.pedOracao, s2.principal, s2.lateral].filter(p => p && p !== '-' && p !== 'MESCLAR');
+                            
+                            p1.forEach(pessoa => {
+                                if (p2.includes(pessoa)) {
+                                    // Priorizar RJM para alteração
+                                    const servicoRJM = s1.servico === 'RJM' ? s1 : s2.servico === 'RJM' ? s2 : null;
+                                    if (servicoRJM && resolverConflitoRJM(servicoRJM, pessoa, dia)) {
+                                        resolvidos++;
+                                    }
                                 }
                             });
-                        }
+                        });
+                    });
+                }
+            });
+
+            if (resolvidos > 0) {
+                exibirEscala();
+                detectarConflitos();
+                exibirSubstituicoes();
+                mostrarFeedback(`${resolvidos} conflito(s) resolvido(s)!`);
+                
+                // Salvar escala atualizada
+                const mesAno = document.getElementById('mesAno').value;
+                if (mesAno) {
+                    const [ano, mes] = mesAno.split('-');
+                    localStorage.setItem(`escala_${ano}_${mes}`, JSON.stringify(escalaAtual));
+                }
+            } else {
+                mostrarFeedback('Nenhum conflito pôde ser resolvido automaticamente.', 'info');
+            }
+        }
+
+        function resolverConflitoRJM(servicoRJM, pessoa, dia) {
+            const index = servicoRJM.index;
+            const item = escalaAtual[index];
+            
+            // Tentar trocar Ped Oração ↔ Lateral
+            if ((item.pedOracao === pessoa || item.lateral === pessoa) && 
+                item.pedOracao !== item.lateral &&
+                !estaEscaladoNoDia(item.pedOracao === pessoa ? item.lateral : item.pedOracao, dia, 'RJM')) {
+                
+                const original = {ped: item.pedOracao, lat: item.lateral};
+                escalaAtual[index].pedOracao = original.lat;
+                escalaAtual[index].lateral = original.ped;
+                
+                substituicoes.push({
+                    dia: parseInt(dia),
+                    tipo: 'Troca de postos',
+                    detalhes: `${original.ped} (Ped Oração) ↔ ${original.lat} (Lateral)`,
+                    motivo: `Conflito de ${pessoa}`
+                });
+                
+                return true;
+            }
+
+            // Tentar substituir por alguém da sequência RJM
+            const campo = item.pedOracao === pessoa ? 'pedOracao' : 'lateral';
+            const substituto = encontrarSubstitutoRJM(dia, pessoa);
+            
+            if (substituto) {
+                const original = escalaAtual[index][campo];
+                escalaAtual[index][campo] = substituto;
+                
+                substituicoes.push({
+                    dia: parseInt(dia),
+                    tipo: 'Substituição',
+                    detalhes: `${original} → ${substituto} (${campo === 'pedOracao' ? 'Ped Oração' : 'Lateral'})`,
+                    motivo: `Conflito de ${pessoa}`
+                });
+                
+                return true;
+            }
+
+            return false;
+        }
+
+        function encontrarSubstitutoRJM(dia, pessoaConflito) {
+            const escaladosNoDia = [];
+            escalaAtual.filter(item => item.dia == dia).forEach(item => {
+                [item.pedOracao, item.principal, item.lateral].forEach(p => {
+                    if (p && p !== '-' && p !== 'MESCLAR' && p !== pessoaConflito) {
+                        escaladosNoDia.push(p);
                     }
                 });
             });
-            
-            // Se não há trocas possíveis, sugerir substituições simples dentro da sequência
-            if (sugestoes.length === 0) {
-                const campo = encontrarCampoPessoa(servico, pessoaConflito);
-                if (campo) {
-                    const sequenciaRelevante = obterSequenciaRelevante(tipoServico);
-                    const pessoasDisponiveis = sequenciaRelevante.filter(pessoa => 
-                        !estaPessoaEscaladaNoDia(pessoa, diaConflito)
-                    );
-                    
-                    pessoasDisponiveis.slice(0, 3).forEach((substituto, index) => {
-                        const prioridade = index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
-                        sugestoes.push({
-                            descricao: `${prioridade} Substituir "${pessoaConflito}" por "${substituto}" no ${tipoServico} (qualquer posto)`,
-                            campo: campo,
-                            valorAtual: pessoaConflito,
-                            novoValor: substituto,
-                            servico: tipoServico,
-                            prioridade: index + 1
-                        });
-                    });
-                }
-            }
-            
-            return sugestoes;
+
+            return sequencias.rjm.find(pessoa => !escaladosNoDia.includes(pessoa));
         }
 
-        function estaPessoaEscaladaNoDia(pessoa, dia, excluirServico = null) {
-            const servicosDoDia = escalaAtual.filter(item => 
-                item.dia === dia && (excluirServico ? item.servico !== excluirServico : true)
-            );
-            
-            return servicosDoDia.some(item => 
+        function estaEscaladoNoDia(pessoa, dia, excluirServico = null) {
+            return escalaAtual.some(item => 
+                item.dia == dia && 
+                (!excluirServico || item.servico !== excluirServico) &&
                 [item.pedOracao, item.principal, item.lateral].includes(pessoa)
             );
         }
 
-        function obterSequenciaRelevante(tipoServico) {
-            switch(tipoServico) {
-                case 'RJM': return sequencias.rjm;
-                case 'R. SETOR': return sequencias.rSetor;
-                case 'R. LOCAL': return sequencias.rLocal;
-                case 'ENSAIO': return sequencias.ensaio;
-                default: return todosMembros;
-            }
-        }
+        function exibirSubstituicoes() {
+            const alerta = document.getElementById('alertaSubstituicoes');
+            const lista = document.getElementById('listaSubstituicoes');
 
-        function encontrarCampoPessoa(servico, pessoa) {
-            if (servico.pedOracao === pessoa) return 'pedOracao';
-            if (servico.principal === pessoa) return 'principal';
-            if (servico.lateral === pessoa) return 'lateral';
-            return null;
-        }
-
-        function encontrarSubstitutosPossiveis(servico, campo, dia) {
-            const substitutos = [];
-            
-            // Pessoas já escaladas neste dia (evitar)
-            const pessoasJaEscaladas = [];
-            escalaAtual.filter(item => item.dia === dia).forEach(item => {
-                if (item.pedOracao && item.pedOracao !== '-' && item.pedOracao !== 'MESCLAR') {
-                    pessoasJaEscaladas.push(item.pedOracao);
-                }
-                if (item.principal && item.principal !== '-' && item.principal !== 'MESCLAR') {
-                    pessoasJaEscaladas.push(item.principal);
-                }
-                if (item.lateral && item.lateral !== '-' && item.lateral !== 'MESCLAR') {
-                    pessoasJaEscaladas.push(item.lateral);
-                }
-            });
-            
-            // Determinar grupo relevante baseado no serviço
-            let grupoRelevante = [];
-            const diaSemana = getDiaSemana(parseInt(document.getElementById('mesAno').value.split('-')[0]), 
-                                         parseInt(document.getElementById('mesAno').value.split('-')[1]), dia);
-            
-            if (servico.servico === 'OFICIAL') {
-                if (diaSemana === 2) grupoRelevante = gruposPorDia.terca;
-                else if (diaSemana === 4) grupoRelevante = gruposPorDia.quinta;
-                else if (diaSemana === 6) grupoRelevante = gruposPorDia.sabado;
-                else if (diaSemana === 0) grupoRelevante = gruposPorDia.domingoOficial;
+            if (substituicoes.length === 0) {
+                alerta.style.display = 'none';
             } else {
-                // Para serviços especiais, usar toda a sequência
-                if (servico.servico === 'RJM') grupoRelevante = sequencias.rjm;
-                else if (servico.servico === 'R. SETOR') grupoRelevante = sequencias.rSetor;
-                else if (servico.servico === 'R. LOCAL') grupoRelevante = sequencias.rLocal;
-                else if (servico.servico === 'ENSAIO') grupoRelevante = sequencias.ensaio;
+                alerta.style.display = 'block';
+                lista.innerHTML = substituicoes.map(s => 
+                    `<p>📅 Dia ${s.dia}: <strong>${s.tipo}</strong> - ${s.detalhes}<br>
+                    <small>Motivo: ${s.motivo}</small></p>`
+                ).join('');
             }
-            
-            // Sugerir pessoas do grupo relevante que não estão escaladas no dia
-            grupoRelevante.forEach(pessoa => {
-                if (!pessoasJaEscaladas.includes(pessoa)) {
-                    substitutos.push(pessoa);
-                }
-            });
-            
-            // Se não há ninguém do grupo relevante disponível, sugerir outros membros
-            if (substitutos.length === 0) {
-                todosMembros.forEach(pessoa => {
-                    if (!pessoasJaEscaladas.includes(pessoa)) {
-                        substitutos.push(pessoa);
-                    }
-                });
-            }
-            
-            return substitutos.slice(0, 3); // Máximo 3 substitutos
         }
 
-        function aplicarSugestao(dia, campo, valorAtual, novoValor, servico, dadosTraca = null) {
-            let mensagemConfirmacao = `Aplicar sugestão?\n\nSubstituir "${valorAtual}" por "${novoValor}" no ${servico} do dia ${dia}?`;
+        // ==================== EDIÇÃO ====================
+        
+        function editarCampo(index, campo) {
+            const valorAtual = escalaAtual[index][campo];
+            const todosMembros = [...new Set([
+                ...Object.values(grupos).flat(),
+                ...Object.values(sequencias).flat()
+            ])].sort();
+
+            const novoValor = prompt(`Editar ${campo}:\nValor atual: ${valorAtual}`, valorAtual);
             
-            if (dadosTraca) {
-                mensagemConfirmacao = `Aplicar troca?\n\n"${valorAtual}" (dia ${dia}) ↔ "${dadosTraca.pessoaDestino}" (dia ${dadosTraca.diaDestino})\nno ${servico}?`;
-            }
-            
-            if (!confirm(mensagemConfirmacao)) {
-                return;
-            }
-            
-            // Encontrar o item na escala atual
-            const indiceItem = escalaAtual.findIndex(item => 
-                item.dia === dia && 
-                item.servico === servico && 
-                item[campo] === valorAtual
-            );
-            
-            if (indiceItem !== -1) {
-                // Aplicar a mudança principal
-                escalaAtual[indiceItem][campo] = novoValor;
-                
-                // Se é uma troca, aplicar a mudança no outro dia também
-                if (dadosTraca) {
-                    const indiceItemDestino = escalaAtual.findIndex(item => 
-                        item.dia === dadosTraca.diaDestino && 
-                        item.servico === servico && 
-                        item[dadosTraca.campoDestino] === dadosTraca.pessoaDestino
-                    );
-                    
-                    if (indiceItemDestino !== -1) {
-                        escalaAtual[indiceItemDestino][dadosTraca.campoDestino] = valorAtual;
-                    }
-                }
-                
-                // Atualizar a interface
-                exibirEscala(escalaAtual);
-                
-                // Redetectar conflitos
-                detectarConflitos(escalaAtual);
+            if (novoValor !== null && novoValor !== valorAtual) {
+                escalaAtual[index][campo] = novoValor.toUpperCase();
+                exibirEscala();
+                detectarConflitos();
                 
                 // Salvar escala atualizada
-                const mesAnoValue = document.getElementById('mesAno').value;
-                if (mesAnoValue) {
-                    const ano = parseInt(mesAnoValue.split('-')[0]);
-                    const mes = parseInt(mesAnoValue.split('-')[1]);
-                    const chaveEscala = `escala_${ano}_${mes}`;
-                    salvarConfiguracoes(chaveEscala, escalaAtual);
+                const mesAno = document.getElementById('mesAno').value;
+                if (mesAno) {
+                    const [ano, mes] = mesAno.split('-');
+                    localStorage.setItem(`escala_${ano}_${mes}`, JSON.stringify(escalaAtual));
                 }
                 
-                // Mostrar feedback
-                const mensagemSucesso = dadosTraca 
-                    ? `✅ Troca realizada com sucesso!\n\n"${valorAtual}" e "${dadosTraca.pessoaDestino}" trocaram de dias no ${servico}.`
-                    : `✅ Sugestão aplicada com sucesso!\n\n"${valorAtual}" foi substituído por "${novoValor}" no ${servico} do dia ${dia}.`;
-                
-                mostrarFeedback(mensagemSucesso.replace(/\n\n.*/, ''), 'sucesso');
-            } else {
-                mostrarFeedback('Erro ao aplicar sugestão. Tente fazer a alteração manualmente.', 'erro');
+                mostrarFeedback('Campo editado com sucesso!');
             }
         }
 
-        // ==================== EXIBIÇÃO DA ESCALA v3.0 ====================
-        
-        function exibirEscala(escala) {
-            const tbody = document.getElementById('corpoTabela');
-            tbody.innerHTML = '';
-
-            for (let i = 0; i < escala.length; i++) {
-                const item = escala[i];
-                const row = document.createElement('tr');
-                
-                if (item.mesclar) {
-                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td colspan="3" class="mesclar"><span class="editavel" onclick="destacarMembro(\'' + item.pedOracao + '\')" oncontextmenu="editarCampo(' + i + ', \'pedOracao\'); return false;" ondblclick="editarCampo(' + i + ', \'pedOracao\')" title="Duplo clique ou botão direito para editar">' + item.pedOracao + '</span></td>';
-                } else {
-                    row.innerHTML = '<td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.pedOracao + '\')" oncontextmenu="editarCampo(' + i + ', \'pedOracao\'); return false;" ondblclick="editarCampo(' + i + ', \'pedOracao\')" title="Duplo clique ou botão direito para editar">' + item.pedOracao + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.principal + '\')" oncontextmenu="editarCampo(' + i + ', \'principal\'); return false;" ondblclick="editarCampo(' + i + ', \'principal\')" title="Duplo clique ou botão direito para editar">' + item.principal + '</span></td><td><span class="editavel" onclick="destacarMembro(\'' + item.lateral + '\')" oncontextmenu="editarCampo(' + i + ', \'lateral\'); return false;" ondblclick="editarCampo(' + i + ', \'lateral\')" title="Duplo clique ou botão direito para editar">' + item.lateral + '</span></td>';
-                }
-                
-                tbody.appendChild(row);
-            }
-            
-            // Aplicar destaques se houver membro selecionado
-            if (membroDestacadoAtual) {
-                aplicarDestaques();
-            }
-        }
-
-        // ==================== SISTEMA DE DESTAQUE v3.0 ====================
-        
-        function destacarMembro(nome) {
-            if (nome === '-' || nome === 'MESCLAR') return;
-            
-            if (membroDestacadoAtual === nome) {
-                limparDestaque();
-            } else {
-                membroDestacadoAtual = nome;
-                document.getElementById('nomeDestacado').textContent = nome;
-                document.getElementById('membroDestacado').style.display = 'block';
-                aplicarDestaques();
-            }
-        }
-
-        function limparDestaque() {
-            membroDestacadoAtual = null;
-            document.getElementById('membroDestacado').style.display = 'none';
-            
-            const editaveis = document.querySelectorAll('.editavel');
-            for (let i = 0; i < editaveis.length; i++) {
-                editaveis[i].classList.remove('destaque');
-            }
-        }
-
-        function aplicarDestaques() {
-            const editaveis = document.querySelectorAll('.editavel');
-            for (let i = 0; i < editaveis.length; i++) {
-                const elemento = editaveis[i];
-                if (elemento.textContent === membroDestacadoAtual) {
-                    elemento.classList.add('destaque');
-                } else {
-                    elemento.classList.remove('destaque');
-                }
-            }
-        }
-
-        // ==================== EDIÇÃO MANUAL v3.0 ====================
-        
-        function editarCampo(indiceEscala, campo) {
-            if (editandoAtualmente) return; // Já está editando algo
-            
-            editandoAtualmente = { indice: indiceEscala, campo: campo };
-            
-            const valorAtual = escalaAtual[indiceEscala][campo];
-            
-            // Encontrar o elemento na tela
-            const tbody = document.getElementById('corpoTabela');
-            const rows = tbody.children;
-            const targetRow = rows[indiceEscala];
-            
-            let targetCell;
-            if (escalaAtual[indiceEscala].mesclar) {
-                targetCell = targetRow.children[3].querySelector('.editavel');
-            } else {
-                const colIndex = campo === 'pedOracao' ? 3 : campo === 'principal' ? 4 : 5;
-                targetCell = targetRow.children[colIndex].querySelector('.editavel');
-            }
-            
-            // Criar dropdown
-            const dropdown = document.createElement('select');
-            dropdown.className = 'dropdown-edicao';
-            
-            // Adicionar opções
-            const opcaoVazia = document.createElement('option');
-            opcaoVazia.value = '-';
-            opcaoVazia.textContent = '-';
-            dropdown.appendChild(opcaoVazia);
-            
-            for (let i = 0; i < todosMembros.length; i++) {
-                const opcao = document.createElement('option');
-                opcao.value = todosMembros[i];
-                opcao.textContent = todosMembros[i];
-                if (todosMembros[i] === valorAtual) {
-                    opcao.selected = true;
-                }
-                dropdown.appendChild(opcao);
-            }
-            
-            // Criar botões
-            const btnSalvar = document.createElement('button');
-            btnSalvar.textContent = '✓';
-            btnSalvar.className = 'btn-edicao';
-            btnSalvar.onclick = function() { salvarEdicao(dropdown.value); };
-            
-            const btnCancelar = document.createElement('button');
-            btnCancelar.textContent = '✕';
-            btnCancelar.className = 'btn-edicao btn-cancelar';
-            btnCancelar.onclick = cancelarEdicao;
-            
-            // Substituir conteúdo
-            const conteudoOriginal = targetCell.innerHTML;
-            targetCell.innerHTML = '';
-            targetCell.appendChild(dropdown);
-            targetCell.appendChild(btnSalvar);
-            targetCell.appendChild(btnCancelar);
-            targetCell.classList.add('editando');
-            
-            // Focar no dropdown
-            dropdown.focus();
-            
-            // Salvar referência para cancelar
-            editandoAtualmente.elementoOriginal = targetCell;
-            editandoAtualmente.conteudoOriginal = conteudoOriginal;
-        }
-
-        function salvarEdicao(novoValor) {
-            if (!editandoAtualmente) return;
-            
-            // Atualizar dados
-            escalaAtual[editandoAtualmente.indice][editandoAtualmente.campo] = novoValor;
-            
-            // Restaurar elemento
-            const elemento = editandoAtualmente.elementoOriginal;
-            const indice = editandoAtualmente.indice;
-            const campo = editandoAtualmente.campo;
-            
-            elemento.innerHTML = '<span class="editavel" onclick="destacarMembro(\'' + novoValor + '\')" oncontextmenu="editarCampo(' + indice + ', \'' + campo + '\'); return false;" ondblclick="editarCampo(' + indice + ', \'' + campo + '\')" title="Duplo clique ou botão direito para editar">' + novoValor + '</span>';
-            elemento.classList.remove('editando');
-            
-            // Limpar estado
-            editandoAtualmente = null;
-            
-            // Redetectar conflitos
-            detectarConflitos(escalaAtual);
-            
-            // Reaplicar destaques
-            if (membroDestacadoAtual) {
-                aplicarDestaques();
-            }
-        }
-
-        function cancelarEdicao() {
-            if (!editandoAtualmente) return;
-            
-            // Restaurar conteúdo original
-            const elemento = editandoAtualmente.elementoOriginal;
-            elemento.innerHTML = editandoAtualmente.conteudoOriginal;
-            elemento.classList.remove('editando');
-            
-            // Limpar estado
-            editandoAtualmente = null;
-        }
-
-        // ==================== GERENCIADOR DE GRUPOS v3.0 ====================
-        
-        function abrirGerenciador() {
-            const modal = document.getElementById('modalGerenciador');
-            modal.style.display = 'block';
-            atualizarInterfaceGerenciador();
-        }
-
-        function fecharGerenciador() {
-            const modal = document.getElementById('modalGerenciador');
-            modal.style.display = 'none';
-        }
-
-        function mostrarTab(tabNome) {
-            // Esconder todas as tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Mostrar tab selecionada
-            document.getElementById('tab-' + tabNome).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        function atualizarInterfaceGerenciador() {
-            // Atualizar grupos semanais
-            const gruposSemanais = ['terca', 'quinta', 'sabado', 'domingoOficial'];
-            gruposSemanais.forEach(grupo => {
-                atualizarListaMembros(grupo, gruposPorDia[grupo], 'grupo');
-                atualizarSelectMembros(grupo);
-            });
-
-            // Atualizar sequências especiais
-            const sequenciasEspeciais = ['rjm', 'rSetor', 'rLocal', 'ensaio'];
-            sequenciasEspeciais.forEach(seq => {
-                atualizarListaMembros(seq, sequencias[seq], 'sequencia');
-                atualizarSelectMembros(seq);
-            });
-            
-            // Atualizar lista de membros
-            atualizarListaTodosMembros();
-        }
-
-        function atualizarListaMembros(nomeGrupo, membros, tipo) {
-            const container = document.getElementById((tipo === 'grupo' ? 'grupo-' : 'sequencia-') + nomeGrupo);
-            container.innerHTML = '';
-
-            membros.forEach((membro, index) => {
-                const item = document.createElement('div');
-                item.className = 'membro-item';
-                item.innerHTML = `
-                    <span class="membro-nome">${membro}</span>
-                    <button class="btn-mover" onclick="moverMembro('${nomeGrupo}', ${index}, -1, '${tipo}')">↑</button>
-                    <button class="btn-mover" onclick="moverMembro('${nomeGrupo}', ${index}, 1, '${tipo}')">↓</button>
-                    <button class="btn-remover" onclick="removerMembro('${nomeGrupo}', ${index}, '${tipo}')">🗑️</button>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function atualizarSelectMembros(nomeGrupo) {
-            const select = document.getElementById('select-' + nomeGrupo);
-            select.innerHTML = '<option value="">Selecione um membro...</option>';
-
-            todosMembros.forEach(membro => {
-                const option = document.createElement('option');
-                option.value = membro;
-                option.textContent = membro;
-                select.appendChild(option);
-            });
-        }
-
-        function adicionarMembro(nomeGrupo) {
-            const select = document.getElementById('select-' + nomeGrupo);
-            const novoMembro = select.value;
-
-            if (!novoMembro) {
-                alert('Selecione um membro primeiro!');
-                return;
-            }
-
-            // Verificar se é grupo ou sequência
-            let isGrupo = ['terca', 'quinta', 'sabado', 'domingoOficial'].includes(nomeGrupo);
-            let lista = isGrupo ? gruposPorDia[nomeGrupo] : sequencias[nomeGrupo];
-
-            if (lista.includes(novoMembro)) {
-                alert('Este membro já está neste grupo/sequência!');
-                return;
-            }
-
-            lista.push(novoMembro);
-            atualizarListaMembros(nomeGrupo, lista, isGrupo ? 'grupo' : 'sequencia');
-            select.value = '';
-        }
-
-        function removerMembro(nomeGrupo, index, tipo) {
-            if (!confirm('Tem certeza que deseja remover este membro?')) return;
-
-            let lista = tipo === 'grupo' ? gruposPorDia[nomeGrupo] : sequencias[nomeGrupo];
-            lista.splice(index, 1);
-            atualizarListaMembros(nomeGrupo, lista, tipo);
-        }
-
-        function moverMembro(nomeGrupo, index, direcao, tipo) {
-            let lista = tipo === 'grupo' ? gruposPorDia[nomeGrupo] : sequencias[nomeGrupo];
-            const novoIndex = index + direcao;
-
-            if (novoIndex < 0 || novoIndex >= lista.length) return;
-
-            // Trocar posições
-            [lista[index], lista[novoIndex]] = [lista[novoIndex], lista[index]];
-            atualizarListaMembros(nomeGrupo, lista, tipo);
-        }
-
-        function salvarAlteracoes() {
-            if (!confirm('Salvar alterações e regenerar escala?')) return;
-
-            // Salvar no localStorage
-            salvarConfiguracoes('grupos', gruposPorDia);
-            salvarConfiguracoes('sequencias', sequencias);
-            salvarConfiguracoes('membros', todosMembros);
-
-            // NOVA FUNCIONALIDADE: Limpar escalas salvas para forçar regeneração
-            limparEscalasSalvas();
-
-            // Fechar modal
-            fecharGerenciador();
-
-            // Regenerar escala
-            gerarEscala();
-
-            alert('✅ Alterações salvas com sucesso! Escala regenerada.');
-        }
-
-        function restaurarPadrao() {
-            if (!confirm('Restaurar configurações padrão? Todas as alterações serão perdidas!')) return;
-
-            // Restaurar grupos padrão
-            gruposPorDia.terca = [...gruposPadraoOriginal.terca];
-            gruposPorDia.quinta = [...gruposPadraoOriginal.quinta];
-            gruposPorDia.sabado = [...gruposPadraoOriginal.sabado];
-            gruposPorDia.domingoOficial = [...gruposPadraoOriginal.domingoOficial];
-            
-            sequencias.rjm = [...sequenciasPadraoOriginal.rjm];
-            sequencias.rSetor = [...sequenciasPadraoOriginal.rSetor];
-            sequencias.rLocal = [...sequenciasPadraoOriginal.rLocal];
-            sequencias.ensaio = [...sequenciasPadraoOriginal.ensaio];
-
-            // Restaurar lista de membros padrão
-            todosMembros = [
-                'AFONSO', 'ALGACIR', 'JONAS', 'ZANIN', 'EDI', 'MARCOS', 'SAULO',
-                'JOSÉ CARLOS', 'RODINEI', 'VANDERLEI', 'ELIZEU', 'JOSÉ CARDOSO',
-                'ODEMIR', 'SAMUEL', 'EDIVAN', 'CÉLIO'
-            ];
-
-            // Limpar índices salvos (restart das sequências)
-            localStorage.removeItem('escalas_indices');
-            
-            // NOVA FUNCIONALIDADE: Limpar todas as escalas salvas
-            limparEscalasSalvas();
-
-            // Atualizar interface
-            atualizarInterfaceGerenciador();
-
-            alert('✅ Configurações padrão restauradas! Sequências e escalas reiniciadas.');
-        }
-
-        function reiniciarSequencias() {
-            if (!confirm('Reiniciar todas as sequências do início? Isso vai resetar a continuidade entre meses.')) return;
-            
-            localStorage.removeItem('escalas_indices');
-            
-            // NOVA FUNCIONALIDADE: Limpar escalas salvas para regeneração
-            limparEscalasSalvas();
-            
-            alert('✅ Sequências reiniciadas! Escalas existentes serão regeneradas.');
-        }
-
-        // ==================== NOVA FUNÇÃO: GERENCIAR ESCALAS SALVAS ====================
-        
-        function limparEscalasSalvas() {
-            // Remover todas as escalas salvas (chaves que começam com 'escala_')
-            const chavesParaRemover = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const chave = localStorage.key(i);
-                if (chave && chave.startsWith('escalas_escala_')) {
-                    chavesParaRemover.push(chave);
-                }
-            }
-            
-            chavesParaRemover.forEach(chave => {
-                localStorage.removeItem(chave);
-            });
-            
-            console.log(`🗑️ ${chavesParaRemover.length} escalas salvas removidas para regeneração`);
-        }
-
-        function adicionarNovaSerieEscalas() {
-            if (!confirm('⚠️ ATENÇÃO: Esta ação irá limpar TODAS as escalas salvas e reiniciar as sequências.\n\nUse apenas quando quiser começar uma nova série de escalas (ex: novo ano).\n\nContinuar?')) return;
-            
-            // Limpar tudo
-            localStorage.removeItem('escalas_indices');
-            limparEscalasSalvas();
-            
-            // Regenerar escala atual
-            gerarEscala();
-            
-            alert('✅ Nova série de escalas iniciada! Todas as escalas anteriores foram limpas.');
-        }
-
-        // ==================== GERENCIAMENTO DE MEMBROS v3.0 ====================
-        
-        function atualizarListaTodosMembros() {
-            const container = document.getElementById('lista-membros');
-            container.innerHTML = '';
-
-            todosMembros.forEach((membro, index) => {
-                const item = document.createElement('div');
-                item.className = 'membro-item';
-                item.innerHTML = `
-                    <span class="membro-nome">${membro}</span>
-                    <button class="btn-mover" onclick="moverMembroGeral(${index}, -1)">↑</button>
-                    <button class="btn-mover" onclick="moverMembroGeral(${index}, 1)">↓</button>
-                    <button class="btn-remover" onclick="removerMembroGeral(${index})">🗑️</button>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function adicionarNovoMembro() {
-            const input = document.getElementById('input-novo-membro');
-            const novoMembro = input.value.trim().toUpperCase();
-
-            if (!novoMembro) {
-                alert('Digite o nome do novo membro!');
-                return;
-            }
-
-            if (todosMembros.includes(novoMembro)) {
-                alert('Este membro já existe no sistema!');
-                return;
-            }
-
-            // Adicionar à lista de membros
-            todosMembros.push(novoMembro);
-            
-            // Atualizar interface
-            atualizarListaTodosMembros();
-            atualizarTodosSelects();
-            
-            // Limpar input
-            input.value = '';
-            
-            alert(`✅ Membro "${novoMembro}" adicionado com sucesso!\nAgora você pode incluí-lo nos grupos e sequências desejados.`);
-        }
-
-        function removerMembroGeral(index) {
-            const membro = todosMembros[index];
-            
-            if (!confirm(`Tem certeza que deseja remover "${membro}" completamente do sistema?\n\nEle será removido de todos os grupos e sequências automaticamente.`)) return;
-
-            // Remover da lista principal
-            todosMembros.splice(index, 1);
-            
-            // Remover de todos os grupos e sequências
-            Object.keys(gruposPorDia).forEach(grupo => {
-                const indiceNoGrupo = gruposPorDia[grupo].indexOf(membro);
-                if (indiceNoGrupo !== -1) {
-                    gruposPorDia[grupo].splice(indiceNoGrupo, 1);
-                }
-            });
-            
-            Object.keys(sequencias).forEach(seq => {
-                const indiceNaSeq = sequencias[seq].indexOf(membro);
-                if (indiceNaSeq !== -1) {
-                    sequencias[seq].splice(indiceNaSeq, 1);
-                }
-            });
-            
-            // Atualizar toda a interface
-            atualizarInterfaceGerenciador();
-            
-            alert(`✅ Membro "${membro}" removido de todo o sistema!`);
-        }
-
-        function moverMembroGeral(index, direcao) {
-            const novoIndex = index + direcao;
-
-            if (novoIndex < 0 || novoIndex >= todosMembros.length) return;
-
-            // Trocar posições
-            [todosMembros[index], todosMembros[novoIndex]] = [todosMembros[novoIndex], todosMembros[index]];
-            atualizarListaTodosMembros();
-        }
-        
-        function atualizarTodosSelects() {
-            // Atualizar todos os selects com a nova lista de membros
-            const gruposSemanais = ['terca', 'quinta', 'sabado', 'domingoOficial'];
-            const sequenciasEspeciais = ['rjm', 'rSetor', 'rLocal', 'ensaio'];
-            
-            gruposSemanais.forEach(grupo => {
-                atualizarSelectMembros(grupo);
-            });
-            
-            sequenciasEspeciais.forEach(seq => {
-                atualizarSelectMembros(seq);
-            });
-        }
-
-        // ==================== GERAÇÃO DE PDF v3.0 ====================
+        // ==================== PDF ====================
         
         function gerarPDF() {
-            const mesAnoValue = document.getElementById('mesAno').value;
-            if (!mesAnoValue) {
-                alert('Selecione um mês primeiro!');
+            const mesAno = document.getElementById('mesAno').value;
+            if (!mesAno) {
+                mostrarFeedback('Gere uma escala primeiro!', 'erro');
                 return;
             }
 
-            const ano = mesAnoValue.split('-')[0];
-            const mes = mesAnoValue.split('-')[1];
-            const meses = [
-                'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
-                'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
-            ];
+            const [ano, mes] = mesAno.split('-');
+            const meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
+                          'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
             const mesNome = meses[parseInt(mes) - 1];
-            
-            // Construir linhas HTML com cores baseadas na escala atual
-            let linhasHTML = '';
-            for (let i = 0; i < escalaAtual.length; i++) {
-                const item = escalaAtual[i];
-                
-                // Determinar cor de fundo baseada no serviço (conforme documentação v3.0)
-                let corFundo = '';
-                switch(item.servico) {
-                    case 'OFICIAL':
-                        corFundo = '#e3f2fd';
-                        break;
-                    case 'RJM':
-                        corFundo = '#e8f5e8';
-                        break;
-                    case 'R. SETOR':
-                        corFundo = '#fff3e0';
-                        break;
-                    case 'R. LOCAL':
-                        corFundo = '#f3e5f5';
-                        break;
-                    case 'ENSAIO':
-                        corFundo = '#e8eaf6';
-                        break;
-                    default:
-                        corFundo = '#ffffff';
-                }
-                
-                if (item.mesclar) {
-                    linhasHTML += `<tr style="background-color: ${corFundo};">
+
+            let linhas = '';
+            escalaAtual.forEach(item => {
+                const cores = {
+                    oficial: '#e3f2fd',
+                    rjm: '#e8f5e8', 
+                    rsetor: '#fff3e0',
+                    rlocal: '#f3e5f5',
+                    ensaio: '#e8eaf6'
+                };
+
+                if (item.principal === 'MESCLAR') {
+                    linhas += `<tr style="background-color: ${cores[item.classe]};">
                         <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.dia}</td>
                         <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.diaSemana}</td>
                         <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.servico}</td>
                         <td colspan="3" style="border: 1px solid #333; padding: 8px; text-align: center;">${item.pedOracao}</td>
                     </tr>`;
                 } else {
-                    linhasHTML += `<tr style="background-color: ${corFundo};">
+                    linhas += `<tr style="background-color: ${cores[item.classe]};">
                         <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.dia}</td>
                         <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.diaSemana}</td>
                         <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.servico}</td>
@@ -2390,83 +790,30 @@
                         <td style="border: 1px solid #333; padding: 8px; text-align: center;">${item.lateral}</td>
                     </tr>`;
                 }
-            }
-            
-            const htmlContent = `<!DOCTYPE html>
+            });
+
+            const html = `<!DOCTYPE html>
             <html>
             <head>
                 <meta charset="UTF-8">
                 <title>Escala de Porteiros - ${mesNome} ${ano}</title>
                 <style>
-                    @page { 
-                        margin: 2cm; 
-                        size: A4; 
-                    }
-                    body { 
-                        font-family: Arial, sans-serif; 
-                        margin: 0; 
-                        padding: 0; 
-                        color: #333; 
-                    }
-                    .cabecalho { 
-                        text-align: center; 
-                        margin-bottom: 30px; 
-                    }
-                    .cabecalho h1 { 
-                        font-size: 16px; 
-                        font-weight: bold; 
-                        margin: 5px 0; 
-                    }
-                    .cabecalho h2 { 
-                        font-size: 14px; 
-                        font-weight: bold; 
-                        margin: 5px 0; 
-                    }
-                    .cabecalho h3 { 
-                        font-size: 14px; 
-                        font-weight: bold; 
-                        margin: 5px 0; 
-                    }
-                    .versao {
-                        font-size: 10px;
-                        color: #666;
-                        margin-top: 10px;
-                    }
-                    table { 
-                        width: 100%; 
-                        border-collapse: collapse; 
-                        margin-top: 20px; 
-                        font-size: 12px; 
-                    }
-                    th { 
-                        background-color: #f0f0f0; 
-                        font-weight: bold; 
-                        text-align: center; 
-                        padding: 10px 8px; 
-                        border: 1px solid #333; 
-                    }
-                    td { 
-                        text-align: center; 
-                        padding: 8px; 
-                        border: 1px solid #333; 
-                    }
-                    
-                    /* Configurações para impressão colorida */
-                    @media print {
-                        * {
-                            -webkit-print-color-adjust: exact !important;
-                            color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                        }
-                    }
+                    @page { margin: 2cm; size: A4; }
+                    body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; }
+                    .cabecalho { text-align: center; margin-bottom: 30px; }
+                    .cabecalho h1 { font-size: 16px; font-weight: bold; margin: 5px 0; }
+                    .cabecalho h2 { font-size: 14px; font-weight: bold; margin: 5px 0; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+                    th { background-color: #f0f0f0; font-weight: bold; text-align: center; padding: 10px 8px; border: 1px solid #333; }
+                    td { text-align: center; padding: 8px; border: 1px solid #333; }
+                    @media print { * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; } }
                 </style>
             </head>
             <body>
                 <div class="cabecalho">
                     <h1>CONGREGAÇÃO CRISTÃ NO BRASIL – SANTA AMÉLIA – CURITIBA PR</h1>
                     <h2>ESCALA DE PORTEIROS</h2>
-                    <h3>${mesNome} DE ${ano}</h3>
-                    <div class="versao">Sistema v3.0 - Gerado com Continuidade Total</div>
+                    <h2>${mesNome} DE ${ano}</h2>
                 </div>
                 <table>
                     <thead>
@@ -2479,414 +826,172 @@
                             <th>LATERAL</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        ${linhasHTML}
-                    </tbody>
+                    <tbody>${linhas}</tbody>
                 </table>
             </body>
             </html>`;
-            
+
             const novaJanela = window.open('', '_blank');
-            novaJanela.document.write(htmlContent);
+            novaJanela.document.write(html);
             novaJanela.document.close();
-            setTimeout(function() { 
-                novaJanela.print(); 
-            }, 1000);
+            setTimeout(() => novaJanela.print(), 1000);
         }
 
-        // ==================== INICIALIZAÇÃO DO SISTEMA v3.0 ====================
+        // ==================== GERENCIADOR ====================
         
-        // Fechar modal ao clicar fora
-        window.onclick = function(event) {
+        function abrirGerenciador() {
             const modal = document.getElementById('modalGerenciador');
-            if (event.target === modal) {
-                fecharGerenciador();
-            }
-        };
-
-        // ==================== INICIALIZAÇÃO DO SISTEMA v3.0 - CORRIGIDA ====================
-        
-        // Verificar compatibilidade do navegador
-        function verificarCompatibilidade() {
-            try {
-                // Testar localStorage
-                localStorage.setItem('teste', 'teste');
-                localStorage.removeItem('teste');
-                
-                // Testar APIs necessárias
-                if (!Date || !JSON || !Array.prototype.forEach) {
-                    throw new Error('APIs básicas não suportadas');
-                }
-                
-                return true;
-            } catch (e) {
-                mostrarFeedback('Seu navegador pode não ser compatível com este sistema.', 'erro');
-                return false;
-            }
-        }
-
-        // Inicializar com mês atual
-        window.onload = function() {
-            console.log('🎉 Iniciando Sistema de Escalas CCB v3.0...');
+            const conteudo = document.getElementById('gerenciadorConteudo');
             
-            // Verificar compatibilidade
-            if (!verificarCompatibilidade()) {
-                return;
-            }
+            let html = '<div style="display: flex; gap: 20px; flex-wrap: wrap;">';
             
-            try {
-                const hoje = new Date();
-                const mesAtual = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
-                document.getElementById('mesAno').value = mesAtual;
-                
-                // Atualizar texto do mês
-                atualizarMesTexto();
-                
-                // Validar configuração
-                if (!validarConfiguracao()) {
-                    console.warn('⚠️ Sistema carregado com configuração incompleta');
-                    return;
-                }
-                
-                // Gerar escala
-                gerarEscala();
-                
-                console.log('✅ Sistema carregado com sucesso!');
-                mostrarFeedback('Sistema carregado com sucesso!', 'sucesso');
-                
-            } catch (error) {
-                console.error('❌ Erro ao inicializar sistema:', error);
-                mostrarFeedback('Erro ao carregar o sistema: ' + error.message, 'erro');
-            }
-        };
-
-        // ==================== FUNÇÕES DE DEBUG E MONITORAMENTO v3.0 ====================
-        
-        // Função para verificar estado das sequências (útil para debug)
-        function verificarEstadoSequencias() {
-            const indices = carregarIndices();
-            console.log('Estado atual das sequências:', indices);
-            console.log('Grupos semanais:', gruposPorDia);
-            console.log('Sequências especiais:', sequencias);
-            console.log('Todos os membros:', todosMembros);
-        }
-
-        // Função para exportar configurações (funcionalidade futura)
-        function exportarConfiguracoes() {
-            const configuracoes = {
-                versao: '3.0',
-                grupos: gruposPorDia,
-                sequencias: sequencias,
-                membros: todosMembros,
-                indices: carregarIndices(),
-                dataExportacao: new Date().toISOString()
-            };
+            // Grupos semanais
+            html += '<div style="flex: 1; min-width: 300px;">';
+            html += '<h3>👥 Grupos Semanais</h3>';
             
-            const json = JSON.stringify(configuracoes, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
+            const gruposInfo = [
+                {key: 'terca', nome: '3ª Feira', desc: '4 pessoas (1 folga)'},
+                {key: 'quinta', nome: '5ª Feira', desc: '3 pessoas'},
+                {key: 'sabado', nome: 'Sábado', desc: '4 pessoas (1 folga)'},
+                {key: 'domingoOficial', nome: 'Domingo', desc: '4 pessoas (1 folga)'}
+            ];
             
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `escalas_ccb_config_${new Date().toISOString().slice(0, 10)}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // ==================== FUNÇÕES AUXILIARES DE VALIDAÇÃO ====================
-        
-        function validarConfiguracao() {
-            // Verificar se grupos têm membros suficientes
-            const erros = [];
-            
-            if (!gruposPorDia.terca || gruposPorDia.terca.length < 3) {
-                erros.push('Grupo 3ª feira precisa de pelo menos 3 membros');
-            }
-            if (!gruposPorDia.quinta || gruposPorDia.quinta.length < 3) {
-                erros.push('Grupo 5ª feira precisa de pelo menos 3 membros');
-            }
-            if (!gruposPorDia.sabado || gruposPorDia.sabado.length < 3) {
-                erros.push('Grupo sábado precisa de pelo menos 3 membros');
-            }
-            if (!gruposPorDia.domingoOficial || gruposPorDia.domingoOficial.length < 3) {
-                erros.push('Grupo domingo precisa de pelo menos 3 membros');
-            }
-            
-            if (!sequencias.rjm || sequencias.rjm.length < 2) {
-                erros.push('Sequência RJM precisa de pelo menos 2 membros');
-            }
-            if (!sequencias.rSetor || sequencias.rSetor.length < 1) {
-                erros.push('Sequência R.SETOR precisa de pelo menos 1 membro');
-            }
-            if (!sequencias.rLocal || sequencias.rLocal.length < 1) {
-                erros.push('Sequência R.LOCAL precisa de pelo menos 1 membro');
-            }
-            if (!sequencias.ensaio || sequencias.ensaio.length < 2) {
-                erros.push('Sequência ENSAIO precisa de pelo menos 2 membros');
-            }
-            
-            if (erros.length > 0) {
-                mostrarFeedback('Configuração incompleta: ' + erros[0], 'erro');
-                return false;
-            }
-            
-            return true;
-        }
-
-        // ==================== EVENTOS E TRATAMENTO DE ERROS v3.0 ====================
-        
-        // Adicionar tratamento global de erros
-        window.onerror = function(msg, url, linha, coluna, erro) {
-            console.error('❌ Erro JavaScript:', {
-                mensagem: msg,
-                linha: linha,
-                coluna: coluna,
-                erro: erro
+            gruposInfo.forEach(g => {
+                html += `<div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 8px;">
+                    <strong>${g.nome} (${g.desc})</strong><br>
+                    <textarea id="grupo_${g.key}" rows="2" style="width: 100%; margin-top: 5px;">${grupos[g.key].join(', ')}</textarea>
+                </div>`;
             });
             
-            // Não mostrar alert para não irritar o usuário
-            // mostrarFeedback('Erro interno do sistema. Verifique o console.', 'erro');
-            return false; // Permitir que o erro seja tratado pelo navegador
-        };
+            html += '</div>';
+            
+            // Sequências especiais
+            html += '<div style="flex: 1; min-width: 300px;">';
+            html += '<h3>🔄 Sequências Especiais</h3>';
+            
+            const seqInfo = [
+                {key: 'rjm', nome: 'RJM', desc: '2 por domingo'},
+                {key: 'rSetor', nome: 'R. SETOR', desc: '1 por mês'},
+                {key: 'rLocal', nome: 'R. LOCAL', desc: 'trimestral'},
+                {key: 'ensaio', nome: 'ENSAIO', desc: '2 por mês'}
+            ];
+            
+            seqInfo.forEach(s => {
+                html += `<div style="margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 8px;">
+                    <strong>${s.nome} (${s.desc})</strong><br>
+                    <textarea id="seq_${s.key}" rows="3" style="width: 100%; margin-top: 5px;">${sequencias[s.key].join(', ')}</textarea>
+                </div>`;
+            });
+            
+            html += '</div></div>';
+            
+            // Controles
+            html += `<div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                <h4>🔧 Controles Avançados</h4>
+                <button onclick="reiniciarSequencias()" class="btn btn-warning" style="margin: 5px;">🎯 Reiniciar Sequências</button>
+                <button onclick="restaurarPadrao()" class="btn btn-danger" style="margin: 5px;">🔄 Restaurar Padrão</button>
+                <button onclick="limparEscalas()" class="btn" style="margin: 5px; background: #9c27b0; color: white;">🗑️ Limpar Escalas Salvas</button>
+            </div>`;
+            
+            conteudo.innerHTML = html;
+            modal.style.display = 'block';
+        }
 
-        // Fechar modal ao clicar fora
-        window.onclick = function(event) {
-            const modal = document.getElementById('modalGerenciador');
-            if (event.target === modal) {
-                fecharGerenciador();
-            }
-        };
-
-        // Adicionar atalhos de teclado
-        document.addEventListener('keydown', function(event) {
+        function salvarGrupos() {
             try {
-                // Ctrl + G = Gerar Escala
-                if (event.ctrlKey && event.key === 'g') {
-                    event.preventDefault();
-                    gerarEscala();
-                }
+                // Salvar grupos
+                ['terca', 'quinta', 'sabado', 'domingoOficial'].forEach(key => {
+                    const valor = document.getElementById('grupo_' + key).value;
+                    grupos[key] = valor.split(',').map(s => s.trim().toUpperCase()).filter(s => s);
+                });
+
+                // Salvar sequências
+                ['rjm', 'rSetor', 'rLocal', 'ensaio'].forEach(key => {
+                    const valor = document.getElementById('seq_' + key).value;
+                    sequencias[key] = valor.split(',').map(s => s.trim().toUpperCase()).filter(s => s);
+                });
+
+                salvarDados();
+                fecharModal();
+                mostrarFeedback('Configurações salvas com sucesso!');
                 
-                // Ctrl + P = Gerar PDF
-                if (event.ctrlKey && event.key === 'p') {
-                    event.preventDefault();
-                    gerarPDF();
-                }
+                // Limpar escalas para forçar regeneração
+                limparEscalas();
                 
-                // Ctrl + M = Abrir Gerenciador
-                if (event.ctrlKey && event.key === 'm') {
-                    event.preventDefault();
-                    abrirGerenciador();
-                }
-                
-                // Escape = Fechar Modal
-                if (event.key === 'Escape') {
-                    fecharGerenciador();
-                    if (editandoAtualmente) {
-                        cancelarEdicao();
-                    }
-                }
-                
-                // F1 = Ajuda
-                if (event.key === 'F1') {
-                    event.preventDefault();
-                    mostrarAjuda();
-                }
             } catch (error) {
-                console.error('Erro no evento de teclado:', error);
+                mostrarFeedback('Erro ao salvar: ' + error.message, 'erro');
             }
+        }
+
+        function reiniciarSequencias() {
+            if (confirm('Reiniciar todas as sequências do início?')) {
+                indices = {rjm:0, rSetor:0, rLocal:0, ensaio:0, terca:0, quinta:0, sabado:0, domingoOficial:0};
+                salvarDados();
+                limparEscalas();
+                mostrarFeedback('Sequências reiniciadas!');
+            }
+        }
+
+        function restaurarPadrao() {
+            if (confirm('Restaurar configurações padrão? Todas as alterações serão perdidas!')) {
+                grupos = JSON.parse(JSON.stringify(gruposPadrao));
+                sequencias = JSON.parse(JSON.stringify(sequenciasPadrao));
+                indices = {rjm:0, rSetor:0, rLocal:0, ensaio:0, terca:0, quinta:0, sabado:0, domingoOficial:0};
+                salvarDados();
+                limparEscalas();
+                fecharModal();
+                mostrarFeedback('Configurações restauradas!');
+            }
+        }
+
+        function limparEscalas() {
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('escala_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+        }
+
+        function fecharModal() {
+            document.getElementById('modalGerenciador').style.display = 'none';
+        }
+
+        // ==================== INICIALIZAÇÃO ====================
+        
+        document.getElementById('mesAno').addEventListener('change', function() {
+            atualizarMesTexto();
+            gerarEscala();
         });
 
-        // ==================== SISTEMA DE FEEDBACK v3.0 ====================
-        
-        function mostrarFeedback(mensagem, tipo = 'sucesso') {
-            // Criar elemento de feedback temporário
-            const feedback = document.createElement('div');
-            feedback.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 9999;
-                padding: 15px 20px;
-                border-radius: 8px;
-                color: white;
-                font-weight: bold;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                transition: all 0.3s ease;
-                max-width: 300px;
-            `;
-            
-            switch (tipo) {
-                case 'sucesso':
-                    feedback.style.backgroundColor = '#4caf50';
-                    feedback.innerHTML = '✅ ' + mensagem;
-                    break;
-                case 'erro':
-                    feedback.style.backgroundColor = '#f44336';
-                    feedback.innerHTML = '❌ ' + mensagem;
-                    break;
-                case 'aviso':
-                    feedback.style.backgroundColor = '#ff9800';
-                    feedback.innerHTML = '⚠️ ' + mensagem;
-                    break;
-                case 'info':
-                    feedback.style.backgroundColor = '#2196f3';
-                    feedback.innerHTML = 'ℹ️ ' + mensagem;
-                    break;
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalGerenciador');
+            if (event.target === modal) {
+                fecharModal();
             }
-            
-            document.body.appendChild(feedback);
-            
-            // Remover após 3 segundos
-            setTimeout(() => {
-                feedback.style.opacity = '0';
-                feedback.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (feedback.parentNode) {
-                        feedback.parentNode.removeChild(feedback);
-                    }
-                }, 300);
-            }, 3000);
-        }
+        };
 
-        // ==================== ANALYTICS E ESTATÍSTICAS v3.0 ====================
+        // Inicializar
+        window.onload = function() {
+            const hoje = new Date();
+            const mesAtual = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
+            document.getElementById('mesAno').value = mesAtual;
+            atualizarMesTexto();
+            
+            console.log('🎉 Sistema CCB v3.0 Carregado - Versão Otimizada');
+            mostrarFeedback('Sistema carregado com sucesso!');
+            
+            gerarEscala();
+        };
         
-        function gerarEstatisticasEscala() {
-            if (escalaAtual.length === 0) {
-                alert('Gere uma escala primeiro!');
-                return;
-            }
-            
-            const estatisticas = {};
-            const contadorServicos = {};
-            
-            // Contar participações por membro
-            escalaAtual.forEach(item => {
-                // Contar por pessoa
-                [item.pedOracao, item.principal, item.lateral].forEach(pessoa => {
-                    if (pessoa && pessoa !== '-' && pessoa !== 'MESCLAR') {
-                        if (!estatisticas[pessoa]) estatisticas[pessoa] = 0;
-                        estatisticas[pessoa]++;
-                    }
-                });
-                
-                // Contar por tipo de serviço
-                if (!contadorServicos[item.servico]) contadorServicos[item.servico] = 0;
-                contadorServicos[item.servico]++;
-            });
-            
-            // Montar relatório
-            let relatorio = '📊 ESTATÍSTICAS DA ESCALA ATUAL\n\n';
-            relatorio += '👥 PARTICIPAÇÕES POR MEMBRO:\n';
-            
-            const ordenados = Object.entries(estatisticas).sort((a, b) => b[1] - a[1]);
-            ordenados.forEach(([nome, count]) => {
-                relatorio += `${nome}: ${count} participações\n`;
-            });
-            
-            relatorio += '\n📋 SERVIÇOS DO MÊS:\n';
-            Object.entries(contadorServicos).forEach(([servico, count]) => {
-                relatorio += `${servico}: ${count} ocorrências\n`;
-            });
-            
-            alert(relatorio);
-        }
-
-        // ==================== FUNÇÕES AUXILIARES FINAIS v3.0 ====================
-        
-        // Função para verificar compatibilidade do navegador
-        function verificarCompatibilidade() {
-            try {
-                // Testar localStorage
-                localStorage.setItem('teste', 'teste');
-                localStorage.removeItem('teste');
-                
-                // Testar APIs necessárias
-                if (!Date || !JSON || !Array.prototype.forEach) {
-                    throw new Error('APIs básicas não suportadas');
-                }
-                
-                return true;
-            } catch (e) {
-                alert('⚠️ Seu navegador pode não ser totalmente compatível com este sistema.\n\nRecomendamos usar Chrome, Firefox ou Edge atualizados.');
-                return false;
-            }
-        }
-
-        // Verificar compatibilidade na inicialização
-        if (typeof window !== 'undefined') {
-            verificarCompatibilidade();
-        }
-
-        // ==================== SISTEMA DE AJUDA E DEBUG v3.0 ====================
-        
-        function mostrarAjuda() {
-            const ajuda = `
-🎯 SISTEMA DE ESCALAS CCB v3.0 - GUIA RÁPIDO
-
-📋 GERAR ESCALA:
-1. Selecione o mês clicando no ícone 📅
-2. Clique "🔄 Gerar Escala"
-3. Sistema mantém continuidade automática
-
-✏️ EDITAR:
-• Duplo clique OU botão direito em qualquer nome
-• Escolha substituto e clique ✓
-
-🔧 RESOLVER CONFLITOS:
-• Clique "🔧 Resolver Conflitos" (aparece automaticamente)
-• Sistema ajusta apenas RJM, mantém escalas oficiais
-
-⚙️ GERENCIAR:
-• Use "⚙️ Gerenciar Grupos" para configurar membros
-
-⌨️ ATALHOS:
-• Ctrl+G = Gerar Escala
-• Ctrl+P = PDF
-• Ctrl+M = Gerenciar
-• F1 = Esta ajuda
-
-🎉 SISTEMA v3.0 - 100% FUNCIONAL
-            `;
-            
-            alert(ajuda);
-        }
-
-        // Debug - verificar estado do sistema
-        function debugSistema() {
-            console.log('🔍 DEBUG DO SISTEMA:');
-            console.log('Grupos:', gruposPorDia);
+        // Debug global
+        window.debugSistema = function() {
+            console.log('=== DEBUG SISTEMA ===');
+            console.log('Grupos:', grupos);
             console.log('Sequências:', sequencias);
-            console.log('Membros:', todosMembros);
+            console.log('Índices:', indices);
             console.log('Escala atual:', escalaAtual);
-            console.log('Índices:', carregarIndices());
-            console.log('Substituições:', substituicoesRealizadas);
-        }
-
-        // Disponibilizar função debug globalmente para teste
-        window.debugSistema = debugSistema;
-
-        // ==================== FINALIZAÇÃO v3.0 ====================
-        
-        console.log(`
-        ╔══════════════════════════════════════════════════════════════╗
-        ║                                                              ║
-        ║     🎉 SISTEMA DE ESCALAS CCB v3.0 CARREGADO COM SUCESSO     ║
-        ║                                                              ║
-        ║  ✅ Continuidade Total Entre Meses Implementada              ║
-        ║  ✅ Edição Manual Aprimorada (Duplo Clique + Botão Direito) ║  
-        ║  ✅ Detecção Inteligente de Conflitos                       ║
-        ║  ✅ Gerenciamento Completo de Grupos e Sequências           ║
-        ║  ✅ PDF Colorido Profissional                               ║
-        ║  ✅ Persistência Total de Configurações                     ║
-        ║  ✅ Sistema 100% Funcional e Robusto                        ║
-        ║                                                              ║
-        ║  📋 Desenvolvido para CCB Santa Amélia - Curitiba PR        ║
-        ║  🙏 Para a obra de Deus com excelência técnica              ║
-        ║                                                              ║
-        ╚══════════════════════════════════════════════════════════════╝
-        `);
+            console.log('Substituições:', substituicoes);
+        };
 
     </script>
 </body>
