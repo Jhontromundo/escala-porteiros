@@ -510,6 +510,7 @@
             <div class="tabs">
                 <button class="tab active" onclick="mostrarTab('grupos')">👥 Grupos Semanais</button>
                 <button class="tab" onclick="mostrarTab('sequencias')">🔄 Sequências Especiais</button>
+                <button class="tab" onclick="mostrarTab('membros')">👤 Gerenciar Membros</button>
             </div>
             
             <!-- Tab Grupos Semanais -->
@@ -590,6 +591,34 @@
                 </div>
             </div>
             
+            <!-- Tab Gerenciar Membros (NOVA ABA) -->
+            <div id="tab-membros" class="tab-content">
+                <div class="grupo-editor">
+                    <div class="grupo-titulo">👤 Lista de Membros do Sistema</div>
+                    <div id="lista-membros" class="membros-lista"></div>
+                    
+                    <div style="border-top: 1px solid #ddd; padding-top: 15px; margin-top: 15px;">
+                        <h4 style="color: #1976d2; margin-bottom: 10px;">➕ Adicionar Novo Membro</h4>
+                        <div class="btn-adicionar-membro">
+                            <input type="text" id="input-novo-membro" placeholder="Digite o nome do novo membro..." class="select-membro" style="flex: 2;">
+                            <button class="btn-add" onclick="adicionarNovoMembro()">+ Adicionar ao Sistema</button>
+                        </div>
+                        <p style="font-size: 12px; color: #666; margin-top: 8px;">
+                            <strong>Dica:</strong> Após adicionar, você poderá incluir o membro nos grupos e sequências desejados.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="grupo-editor" style="background: #f0f8ff; border: 1px solid #1976d2;">
+                    <div class="grupo-titulo">⚠️ Atenção</div>
+                    <p style="color: #1976d2; font-size: 14px; line-height: 1.5;">
+                        • <strong>Adicionar membro:</strong> Inclui na lista geral do sistema<br>
+                        • <strong>Remover membro:</strong> Remove completamente do sistema<br>
+                        • <strong>Lembre-se:</strong> Após alterações, atualize os grupos e sequências conforme necessário
+                    </p>
+                </div>
+            </div>
+            
             <div class="modal-footer">
                 <button class="btn-modal btn-salvar" onclick="salvarAlteracoes()">💾 Salvar e Regenerar</button>
                 <button class="btn-modal btn-restaurar" onclick="restaurarPadrao()">🔄 Restaurar Padrão</button>
@@ -625,8 +654,8 @@
         let membroDestacadoAtual = null;
         let editandoAtualmente = null;
 
-        // Lista de todos os membros para edição
-        const todosMembros = [
+        // Lista de todos os membros para edição (agora dinâmica)
+        let todosMembros = carregarConfiguracoes('membros') || [
             'AFONSO', 'ALGACIR', 'JONAS', 'ZANIN', 'EDI', 'MARCOS', 'SAULO',
             'JOSÉ CARLOS', 'RODINEI', 'VANDERLEI', 'ELIZEU', 'JOSÉ CARDOSO',
             'ODEMIR', 'SAMUEL', 'EDIVAN', 'CÉLIO'
@@ -729,6 +758,9 @@
                 atualizarListaMembros(seq, sequencias[seq], 'sequencia');
                 atualizarSelectMembros(seq);
             });
+            
+            // Atualizar lista de membros (NOVA FUNCIONALIDADE)
+            atualizarListaTodosMembros();
         }
 
         function atualizarListaMembros(nomeGrupo, membros, tipo) {
@@ -808,6 +840,7 @@
             // Salvar no localStorage
             salvarConfiguracoes('grupos', gruposPorDia);
             salvarConfiguracoes('sequencias', sequencias);
+            salvarConfiguracoes('membros', todosMembros); // NOVA: Salvar lista de membros
 
             // Fechar modal
             fecharGerenciador();
@@ -855,6 +888,104 @@
             
             localStorage.removeItem('escalas_indices');
             alert('✅ Sequências reiniciadas! Próxima escala começará do início de cada sequência.');
+        }
+        
+        // NOVAS FUNÇÕES para gerenciar membros
+        function atualizarListaTodosMembros() {
+            const container = document.getElementById('lista-membros');
+            container.innerHTML = '';
+
+            todosMembros.forEach((membro, index) => {
+                const item = document.createElement('div');
+                item.className = 'membro-item';
+                item.innerHTML = `
+                    <span class="membro-nome">${membro}</span>
+                    <button class="btn-mover" onclick="moverMembroGeral(${index}, -1)">↑</button>
+                    <button class="btn-mover" onclick="moverMembroGeral(${index}, 1)">↓</button>
+                    <button class="btn-remover" onclick="removerMembroGeral(${index})">🗑️</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function adicionarNovoMembro() {
+            const input = document.getElementById('input-novo-membro');
+            const novoMembro = input.value.trim().toUpperCase();
+
+            if (!novoMembro) {
+                alert('Digite o nome do novo membro!');
+                return;
+            }
+
+            if (todosMembros.includes(novoMembro)) {
+                alert('Este membro já existe no sistema!');
+                return;
+            }
+
+            // Adicionar à lista de membros
+            todosMembros.push(novoMembro);
+            
+            // Atualizar interface
+            atualizarListaTodosMembros();
+            atualizarTodosSelects();
+            
+            // Limpar input
+            input.value = '';
+            
+            alert(`✅ Membro "${novoMembro}" adicionado com sucesso!\nAgora você pode incluí-lo nos grupos e sequências desejados.`);
+        }
+
+        function removerMembroGeral(index) {
+            const membro = todosMembros[index];
+            
+            if (!confirm(`Tem certeza que deseja remover "${membro}" completamente do sistema?\n\nEle será removido de todos os grupos e sequências automaticamente.`)) return;
+
+            // Remover da lista principal
+            todosMembros.splice(index, 1);
+            
+            // Remover de todos os grupos e sequências
+            Object.keys(gruposPorDia).forEach(grupo => {
+                const indiceNoGrupo = gruposPorDia[grupo].indexOf(membro);
+                if (indiceNoGrupo !== -1) {
+                    gruposPorDia[grupo].splice(indiceNoGrupo, 1);
+                }
+            });
+            
+            Object.keys(sequencias).forEach(seq => {
+                const indiceNaSeq = sequencias[seq].indexOf(membro);
+                if (indiceNaSeq !== -1) {
+                    sequencias[seq].splice(indiceNaSeq, 1);
+                }
+            });
+            
+            // Atualizar toda a interface
+            atualizarInterfaceGerenciador();
+            
+            alert(`✅ Membro "${membro}" removido de todo o sistema!`);
+        }
+
+        function moverMembroGeral(index, direcao) {
+            const novoIndex = index + direcao;
+
+            if (novoIndex < 0 || novoIndex >= todosMembros.length) return;
+
+            // Trocar posições
+            [todosMembros[index], todosMembros[novoIndex]] = [todosMembros[novoIndex], todosMembros[index]];
+            atualizarListaTodosMembros();
+        }
+        
+        function atualizarTodosSelects() {
+            // Atualizar todos os selects com a nova lista de membros
+            const gruposSemanais = ['terca', 'quinta', 'sabado', 'domingoOficial'];
+            const sequenciasEspeciais = ['rjm', 'rSetor', 'rLocal', 'ensaio'];
+            
+            gruposSemanais.forEach(grupo => {
+                atualizarSelectMembros(grupo);
+            });
+            
+            sequenciasEspeciais.forEach(seq => {
+                atualizarSelectMembros(seq);
+            });
         }
 
         // Inicializar com mês atual
