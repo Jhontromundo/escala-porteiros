@@ -11,7 +11,41 @@
             box-sizing: border-box;
         }
 
-        // ========== GERENCIADOR DE PESSOAS ==========
+        // ========== FUNÇÕES DE GERENCIAMENTO SIMPLIFICADAS ==========
+        
+        // Função para abrir gerenciador de pessoas
+        function abrirGerenciadorPessoas() {
+            console.log('📝 Abrindo gerenciador de pessoas...');
+            carregarListaPessoas();
+            document.getElementById('modalPessoas').style.display = 'block';
+            console.log('✅ Modal de pessoas aberto');
+        }
+
+        // Função para fechar gerenciador de pessoas  
+        function fecharGerenciadorPessoas() {
+            console.log('📝 Fechando gerenciador de pessoas...');
+            document.getElementById('modalPessoas').style.display = 'none';
+            const input = document.getElementById('novaPessoa');
+            if (input) input.value = '';
+            console.log('✅ Modal de pessoas fechado');
+        }
+
+        // Função para abrir gerenciador de grupos
+        function abrirGerenciadorGrupos() {
+            console.log('📝 Abrindo gerenciador de grupos...');
+            carregarGerenciador();
+            document.getElementById('modalGrupos').style.display = 'block';
+            console.log('✅ Modal de grupos aberto');
+        }
+
+        // Função para fechar gerenciador de grupos
+        function fecharGerenciadorGrupos() {
+            console.log('📝 Fechando gerenciador de grupos...');
+            document.getElementById('modalGrupos').style.display = 'none';
+            console.log('✅ Modal de grupos fechado');
+        }
+
+        // ========== GERENCIADOR DE PESSOAS COMPLETO ==========
         function abrirGerenciadorPessoas() {
             carregarListaPessoas();
             document.getElementById('modalPessoas').style.display = 'block';
@@ -23,11 +57,19 @@
         }
 
         function carregarListaPessoas() {
+            console.log('📋 Carregando lista de pessoas...');
             const lista = document.getElementById('listaPessoas');
             const total = document.getElementById('totalPessoas');
             
+            if (!lista || !total) {
+                console.log('❌ Elementos da lista não encontrados');
+                return;
+            }
+            
             lista.innerHTML = '';
             total.textContent = todosMembrosAtuais.length;
+            
+            console.log('👥 Total de pessoas:', todosMembrosAtuais.length);
             
             todosMembrosAtuais.sort().forEach((pessoa, index) => {
                 const card = document.createElement('div');
@@ -49,12 +91,17 @@
                 btnRemover.className = 'btn-remove-pessoa';
                 btnRemover.innerHTML = '✕';
                 btnRemover.title = 'Remover ' + pessoa;
-                btnRemover.onclick = function() { removerPessoa(index); };
+                btnRemover.onclick = function() { 
+                    console.log('🗑️ Removendo pessoa:', pessoa);
+                    removerPessoa(index); 
+                };
                 
                 card.appendChild(infoDiv);
                 card.appendChild(btnRemover);
                 lista.appendChild(card);
             });
+            
+            console.log('✅ Lista de pessoas carregada');
         }
 
         function verificarUsosPessoa(pessoa) {
@@ -78,8 +125,17 @@
         }
 
         function adicionarNovaPessoa() {
+            console.log('➕ Tentando adicionar nova pessoa...');
             const input = document.getElementById('novaPessoa');
+            
+            if (!input) {
+                console.log('❌ Campo de input não encontrado');
+                alert('Erro: Campo de texto não encontrado!');
+                return;
+            }
+            
             const nome = input.value.trim().toUpperCase();
+            console.log('📝 Nome digitado:', nome);
             
             if (!nome) {
                 alert('Digite um nome!');
@@ -95,6 +151,9 @@
             
             todosMembrosAtuais.push(nome);
             todosMembrosAtuais.sort();
+            console.log('✅ Pessoa adicionada:', nome);
+            console.log('👥 Total atual:', todosMembrosAtuais.length);
+            
             carregarListaPessoas();
             input.value = '';
             input.focus();
@@ -1690,25 +1749,25 @@
             
             let linhasHTML = '';
             escalaAtual.forEach(item => {
-                const corFundo = getCoresServico(item.classe);
+                const classeCorPDF = 'cor-' + item.classe;
                 
                 if (item.mesclar) {
                     linhasHTML += 
                         '<tr>' +
-                        '<td style="border: 1px solid #333; padding: 8px; text-align: center;">' + item.dia + '</td>' +
-                        '<td style="border: 1px solid #333; padding: 8px; text-align: center;">' + item.diaSemana + '</td>' +
-                        '<td style="border: 1px solid #333; padding: 8px; text-align: center; background-color: ' + corFundo + '; font-weight: bold;">' + item.servico + '</td>' +
-                        '<td colspan="3" style="border: 1px solid #333; padding: 8px; text-align: center; background-color: #f5f5f5; font-weight: bold;">' + item.pedOracao + '</td>' +
+                        '<td>' + item.dia + '</td>' +
+                        '<td>' + item.diaSemana + '</td>' +
+                        '<td class="' + classeCorPDF + '">' + item.servico + '</td>' +
+                        '<td colspan="3" class="mesclar-pdf">' + item.pedOracao + '</td>' +
                         '</tr>';
                 } else {
                     linhasHTML += 
                         '<tr>' +
-                        '<td style="border: 1px solid #333; padding: 8px; text-align: center;">' + item.dia + '</td>' +
-                        '<td style="border: 1px solid #333; padding: 8px; text-align: center;">' + item.diaSemana + '</td>' +
-                        '<td style="border: 1px solid #333; padding: 8px; text-align: center; background-color: ' + corFundo + '; font-weight: bold;">' + item.servico + '</td>' +
-                        '<td style="border: 1px solid #333; padding: 8px; text-align: center;">' + item.pedOracao + '</td>' +
-                        '<td style="border: 1px solid #333; padding: 8px; text-align: center;">' + item.principal + '</td>' +
-                        '<td style="border: 1px solid #333; padding: 8px; text-align: center;">' + item.lateral + '</td>' +
+                        '<td>' + item.dia + '</td>' +
+                        '<td>' + item.diaSemana + '</td>' +
+                        '<td class="' + classeCorPDF + '">' + item.servico + '</td>' +
+                        '<td>' + item.pedOracao + '</td>' +
+                        '<td>' + item.principal + '</td>' +
+                        '<td>' + item.lateral + '</td>' +
                         '</tr>';
                 }
             });
@@ -1776,11 +1835,18 @@
             const novaJanela = window.open('', '_blank');
             novaJanela.document.write(htmlContent);
             novaJanela.document.close();
-            setTimeout(function() { 
+            
+            // Mostrar alerta com instruções antes de imprimir
+            setTimeout(function() {
+                alert('📄 PDF GERADO COM SUCESSO!\n\n🎨 PARA IMPRIMIR COM CORES:\n\n' +
+                      '✅ Chrome: Ctrl+P → Mais configurações → Marcar "Elementos gráficos de fundo"\n' +
+                      '✅ Firefox: Ctrl+P → Mais configurações → Marcar "Imprimir fundos"\n' +
+                      '✅ Edge: Ctrl+P → Mais configurações → Marcar "Gráficos de fundo"\n\n' +
+                      '💡 As cores aparecerão tanto na visualização quanto na impressão!');
                 novaJanela.print(); 
             }, 1000);
             
-            atualizarStatus('PDF gerado com sucesso!', 'success');
+            atualizarStatus('PDF gerado com sucesso! Veja instruções para imprimir com cores.', 'success');
         }
 
         function getCoresServico(classe) {
@@ -1852,6 +1918,24 @@
         console.log('- listarEscalasSalvas(): Ver escalas geradas');
         console.log('- apagarEscalaMes("2025-08"): Apagar escala específica');
         console.log('- apagarTodasEscalas(): Apagar todas');
+
+        // Teste das funções (para debug)
+        window.testarGerenciadores = function() {
+            console.log('🧪 Testando funções de gerenciamento...');
+            console.log('- abrirGerenciadorPessoas:', typeof abrirGerenciadorPessoas);
+            console.log('- abrirGerenciadorGrupos:', typeof abrirGerenciadorGrupos);
+            console.log('- todosMembrosAtuais:', todosMembrosAtuais.length, 'pessoas');
+        };
+
+        // Executar teste
+        console.log('🧪 Executando teste automático...');
+        setTimeout(function() {
+            if (typeof abrirGerenciadorPessoas === 'function') {
+                console.log('✅ Funções de gerenciamento carregadas corretamente');
+            } else {
+                console.log('❌ Erro: Funções de gerenciamento não encontradas');
+            }
+        }, 1000);
     </script>
 </body>
 </html>
