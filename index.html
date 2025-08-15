@@ -194,6 +194,46 @@
         
         .pessoa-disponivel:hover { background: #4caf50; color: white; }
         
+        .nome-destacado {
+            background: #ffeb3b !important;
+            color: #f57f17 !important;
+            font-weight: bold !important;
+            box-shadow: 0 0 8px rgba(255, 235, 59, 0.8) !important;
+            transform: scale(1.05) !important;
+        }
+        
+        .conflito-alert {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .conflito-item {
+            background: white;
+            border-left: 4px solid #f44336;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+        }
+        
+        .btn-resolver {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .btn-resolver:hover {
+            background: #45a049;
+        }
+        
         .pessoas-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -244,6 +284,11 @@
             <button class="btn btn-secondary" onclick="gerarPDF()">📄 PDF</button>
             <button class="btn btn-manager" onclick="abrirModalPessoas()">👥 Pessoas</button>
             <button class="btn btn-groups" onclick="abrirModalGrupos()">⚙️ Grupos</button>
+        </div>
+        
+        <div class="conflito-alert" id="conflitoAlert">
+            <h4 style="color: #d32f2f; margin-bottom: 10px;">🚨 Conflitos Detectados!</h4>
+            <div id="listaConflitos"></div>
         </div>
         
         <div class="table-container">
@@ -429,6 +474,7 @@
             if (escalas[mesAno]) {
                 escalaAtual = escalas[mesAno];
                 exibirEscala();
+                detectarConflitos();
                 return;
             }
 
@@ -545,6 +591,7 @@
             escalas[mesAno] = [...escalaAtual];
             salvarDados();
             exibirEscala();
+            detectarConflitos();
         }
 
         // ========== EXIBIÇÃO ==========
@@ -576,9 +623,16 @@
                 tbody.appendChild(row);
             });
 
-            // Event listeners para edição
+            // Event listeners para edição e destaque
             document.querySelectorAll('.nome-editavel').forEach(span => {
-                span.addEventListener('dblclick', function() {
+                // Clique simples para destacar
+                span.addEventListener('click', function() {
+                    destacarPessoa(this.textContent);
+                });
+                
+                // Duplo clique para editar
+                span.addEventListener('dblclick', function(e) {
+                    e.stopPropagation();
                     const atual = this.textContent;
                     const select = document.createElement('select');
                     pessoas.forEach(p => {
@@ -600,6 +654,7 @@
                         const mesAno = document.getElementById('mesAno').value;
                         escalas[mesAno] = [...escalaAtual];
                         salvarDados();
+                        detectarConflitos();
                     };
                     
                     this.innerHTML = '';
@@ -608,6 +663,152 @@
                     select.focus();
                 });
             });
+        }
+
+        // ========== SISTEMA DE DESTAQUE ==========
+        function destacarPessoa(pessoa) {
+            // Remove destaques anteriores
+            document.querySelectorAll('.nome-destacado').forEach(el => {
+                el.classList.remove('nome-destacado');
+            });
+            
+            // Destaca todas as ocorrências da pessoa
+            document.querySelectorAll('.nome-editavel').forEach(span => {
+                if (span.textContent === pessoa) {
+                    span.classList.add('nome-destacado');
+                }
+            });
+            
+            // Remove destaque após 5 segundos
+            setTimeout(() => {
+                document.querySelectorAll('.nome-destacado').forEach(el => {
+                    el.classList.remove('nome-destacado');
+                });
+            }, 5000);
+        }
+
+        // ========== DETECÇÃO E RESOLUÇÃO DE CONFLITOS ==========
+        function detectarConflitos() {
+            const conflitos = [];
+            const servicosPorDia = {};
+
+            // Agrupa serviços por dia
+            escalaAtual.forEach((item, index) => {
+                if (!servicosPorDia[item.dia]) {
+                    servicosPorDia[item.dia] = [];
+                }
+                servicosPorDia[item.dia].push({...item, index: index});
+            });
+
+            // Detecta conflitos
+            Object.entries(servicosPorDia).forEach(([dia, servicos]) => {
+                const pessoasNoDia = {};
+                
+                servicos.forEach((servico, servicoIndex) => {
+                    [servico.pedOracao, servico.principal, servico.lateral].forEach((pessoa, posicao) => {
+                        if (pessoa && pessoa !== '-' && pessoa !== 'MESCLAR') {
+                            if (!pessoasNoDia[pessoa]) {
+                                pessoasNoDia[pessoa] = [];
+                            }
+                            pessoasNoDia[pessoa].push({
+                                servico: servico.servico,
+                                posicao: ['pedOracao', 'principal', 'lateral'][posicao],
+                                index: servico.index,
+                                servicoIndex: servicoIndex
+                            });
+                        }
+                    });
+                });
+
+                // Identifica pessoas com múltiplas escalações no mesmo dia
+                Object.entries(pessoasNoDia).forEach(([pessoa, escalacoes]) => {
+                    if (escalacoes.length > 1) {
+                        const temRJM = escalacoes.some(e => e.servico === 'RJM');
+                        const temOficial = escalacoes.some(e => e.servico === 'OFICIAL');
+                        
+                        if (temRJM && temOficial) {
+                            conflitos.push({
+                                dia: parseInt(dia),
+                                pessoa: pessoa,
+                                escalacoes: escalacoes,
+                                tipo: 'RJM_OFICIAL'
+                            });
+                        }
+                    }
+                });
+            });
+
+            exibirConflitos(conflitos);
+        }
+
+        function exibirConflitos(conflitos) {
+            const alertDiv = document.getElementById('conflitoAlert');
+            const listaDiv = document.getElementById('listaConflitos');
+            
+            if (conflitos.length === 0) {
+                alertDiv.style.display = 'none';
+                return;
+            }
+
+            alertDiv.style.display = 'block';
+            listaDiv.innerHTML = '';
+
+            conflitos.forEach((conflito, i) => {
+                const item = document.createElement('div');
+                item.className = 'conflito-item';
+                
+                const escalacaoRJM = conflito.escalacoes.find(e => e.servico === 'RJM');
+                const sugestao = obterSugestaoSubstituicao(conflito.dia, conflito.pessoa, escalacaoRJM);
+                
+                item.innerHTML = `
+                    <strong>Dia ${conflito.dia}:</strong> ${conflito.pessoa} está escalado(a) em RJM e OFICIAL
+                    ${sugestao ? `
+                        <br><span style="color: #2e7d32;">💡 Sugestão: Substituir por <strong>${sugestao}</strong> na RJM</span>
+                        <button class="btn-resolver" onclick="aplicarSugestao(${conflito.dia}, '${conflito.pessoa}', '${sugestao}', ${escalacaoRJM.index}, '${escalacaoRJM.posicao}')">
+                            ✅ Aplicar Sugestão
+                        </button>
+                    ` : '<br><span style="color: #d32f2f;">❌ Nenhuma substituição disponível</span>'}
+                `;
+                
+                listaDiv.appendChild(item);
+            });
+        }
+
+        function obterSugestaoSubstituicao(diaConflito, pessoaConflito, escalacaoRJM) {
+            // Busca pessoas da sequência RJM que não estão escaladas no domingo oficial do mesmo dia
+            const servicosDoDia = escalaAtual.filter(s => s.dia === diaConflito);
+            const pessoasOcupadasNoDia = new Set();
+            
+            servicosDoDia.forEach(s => {
+                if (s.servico === 'OFICIAL') {
+                    [s.pedOracao, s.principal, s.lateral].forEach(p => {
+                        if (p && p !== '-') pessoasOcupadasNoDia.add(p);
+                    });
+                }
+            });
+
+            // Encontra candidatos da sequência RJM
+            const candidatos = sequencias.rjm.filter(pessoa => 
+                pessoa !== pessoaConflito && 
+                !pessoasOcupadasNoDia.has(pessoa)
+            );
+
+            return candidatos.length > 0 ? candidatos[0] : null;
+        }
+
+        function aplicarSugestao(dia, pessoaOriginal, pessoaSugestao, index, posicao) {
+            if (confirm(`Substituir ${pessoaOriginal} por ${pessoaSugestao} na RJM do dia ${dia}?`)) {
+                escalaAtual[index][posicao] = pessoaSugestao;
+                
+                const mesAno = document.getElementById('mesAno').value;
+                escalas[mesAno] = [...escalaAtual];
+                salvarDados();
+                
+                exibirEscala();
+                detectarConflitos();
+                
+                alert(`✅ Substituição aplicada com sucesso!\n${pessoaOriginal} → ${pessoaSugestao}`);
+            }
         }
 
         // ========== GERENCIAMENTO DE PESSOAS ==========
