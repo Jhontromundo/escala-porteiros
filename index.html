@@ -287,6 +287,317 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 3% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            background: linear-gradient(45deg, #1976d2, #42a5f5);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+        
+        .close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .modal-body {
+            padding: 30px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .modal-footer {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .modal-footer button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .add-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .add-section h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .add-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .add-form input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .add-form button {
+            padding: 10px 20px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .add-form button:hover {
+            background: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .pessoas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .pessoa-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .pessoa-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .pessoa-nome {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .pessoa-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .btn-remove-pessoa {
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-remove-pessoa:hover {
+            background: #d32f2f;
+            transform: scale(1.1);
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+            background: #e3f2fd;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .grupo-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            background: #fafafa;
+        }
+        
+        .grupo-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .grupo-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .membros-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .membro-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        
+        .btn-move {
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 6px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 0 2px;
+        }
+
+        .btn-remove {
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .add-member {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .add-member select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .add-member button {
+            padding: 8px 16px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
         
         @media (max-width: 768px) {
             .container {
@@ -311,6 +622,24 @@
                 padding: 8px 4px;
                 font-size: 11px;
             }
+
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+
+            .pessoas-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .add-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .add-form input, .add-form button {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -328,6 +657,8 @@
             <span id="exibicaoMes" style="font-weight: 600; color: #1976d2; margin-left: 10px;"></span>
             <button class="btn-primary" onclick="gerarEscala()">🔄 Gerar Escala</button>
             <button class="btn-secondary" onclick="gerarPDF()">📄 Gerar PDF</button>
+            <button class="btn-manager" onclick="abrirGerenciadorPessoas()">👥 Gerenciar Pessoas</button>
+            <button class="btn-manager" onclick="abrirGerenciadorGrupos()" style="background: linear-gradient(45deg, #ff9800, #ffb74d);">⚙️ Gerenciar Grupos</button>
         </div>
         
         <div class="status-bar">
@@ -371,6 +702,141 @@
         </div>
     </div>
 
+    <!-- Modal Gerenciador de Pessoas -->
+    <div id="modalPessoas" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👥 Gerenciador de Pessoas</h2>
+                <button class="close" onclick="fecharGerenciadorPessoas()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="add-section">
+                    <h3>➕ Adicionar Nova Pessoa</h3>
+                    <div class="add-form">
+                        <input type="text" id="novaPessoa" placeholder="Digite o nome da pessoa..." maxlength="30">
+                        <button onclick="adicionarNovaPessoa()">Adicionar</button>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 style="color: #1976d2; margin-bottom: 15px;">📋 Pessoas Cadastradas (<span id="totalPessoas">0</span>)</h3>
+                    <div class="pessoas-grid" id="listaPessoas">
+                        <!-- Lista será preenchida dinamicamente -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="salvarPessoas()" style="background: #4caf50; color: white;">💾 Salvar Alterações</button>
+                <button onclick="fecharGerenciadorPessoas()" style="background: #666; color: white;">❌ Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gerenciador de Grupos -->
+    <div id="modalGrupos" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Gerenciador de Grupos e Sequências</h2>
+                <button class="close" onclick="fecharGerenciadorGrupos()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="tabs">
+                    <button class="tab active" onclick="trocarTab('grupos')">👥 Grupos Semanais</button>
+                    <button class="tab" onclick="trocarTab('sequencias')">🔄 Sequências Especiais</button>
+                </div>
+                
+                <div id="tabGrupos" class="tab-content active">
+                    <div class="grupo-section">
+                        <div class="grupo-title">🗓️ 3ª Feira</div>
+                        <div class="grupo-info">4 pessoas → 3 postos (1 folga rotativa)</div>
+                        <div class="membros-list" id="listaTerca"></div>
+                        <div class="add-member">
+                            <select id="addTerca"></select>
+                            <button onclick="adicionarMembro('terca')">Adicionar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="grupo-section">
+                        <div class="grupo-title">🗓️ 5ª Feira</div>
+                        <div class="grupo-info">3 pessoas → 3 postos (sem folga)</div>
+                        <div class="membros-list" id="listaQuinta"></div>
+                        <div class="add-member">
+                            <select id="addQuinta"></select>
+                            <button onclick="adicionarMembro('quinta')">Adicionar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="grupo-section">
+                        <div class="grupo-title">🗓️ Sábado</div>
+                        <div class="grupo-info">4 pessoas → 3 postos (1 folga rotativa)</div>
+                        <div class="membros-list" id="listaSabado"></div>
+                        <div class="add-member">
+                            <select id="addSabado"></select>
+                            <button onclick="adicionarMembro('sabado')">Adicionar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="grupo-section">
+                        <div class="grupo-title">🗓️ Domingo Oficial</div>
+                        <div class="grupo-info">4 pessoas → 3 postos (1 folga rotativa)</div>
+                        <div class="membros-list" id="listaDomingoOficial"></div>
+                        <div class="add-member">
+                            <select id="addDomingoOficial"></select>
+                            <button onclick="adicionarMembro('domingoOficial')">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="tabSequencias" class="tab-content">
+                    <div class="grupo-section">
+                        <div class="grupo-title">🎵 RJM</div>
+                        <div class="grupo-info">15 pessoas, 2 por domingo (rotação contínua)</div>
+                        <div class="membros-list" id="listaRjm"></div>
+                        <div class="add-member">
+                            <select id="addRjm"></select>
+                            <button onclick="adicionarMembro('rjm')">Adicionar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="grupo-section">
+                        <div class="grupo-title">🏢 R. SETOR</div>
+                        <div class="grupo-info">15 pessoas, 1 por mês (3ª segunda-feira)</div>
+                        <div class="membros-list" id="listaRSetor"></div>
+                        <div class="add-member">
+                            <select id="addRSetor"></select>
+                            <button onclick="adicionarMembro('rSetor')">Adicionar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="grupo-section">
+                        <div class="grupo-title">🌍 R. LOCAL</div>
+                        <div class="grupo-info">15 pessoas, trimestral (4ª segunda-feira jan/abr/jul/out)</div>
+                        <div class="membros-list" id="listaRLocal"></div>
+                        <div class="add-member">
+                            <select id="addRLocal"></select>
+                            <button onclick="adicionarMembro('rLocal')">Adicionar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="grupo-section">
+                        <div class="grupo-title">🎼 ENSAIO</div>
+                        <div class="grupo-info">15 pessoas, 2 por mês (4ª sexta-feira)</div>
+                        <div class="membros-list" id="listaEnsaio"></div>
+                        <div class="add-member">
+                            <select id="addEnsaio"></select>
+                            <button onclick="adicionarMembro('ensaio')">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="salvarGrupos()" style="background: #4caf50; color: white;">💾 Salvar e Regenerar</button>
+                <button onclick="restaurarPadrao()" style="background: #ff9800; color: white;">🔄 Restaurar Padrão</button>
+                <button onclick="fecharGerenciadorGrupos()" style="background: #666; color: white;">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Configurações padrão
         const GRUPOS_PADRAO = {
@@ -398,16 +864,43 @@
         let indices = { rjm: 0, rSetor: 0, rLocal: 0, ensaio: 0, terca: 0, quinta: 0, sabado: 0, domingoOficial: 0 };
         let escalaAtual = [];
         let escalasSalvas = {};
+        let todosMembrosAtuais = [
+            'AFONSO', 'ALGACIR', 'CÉLIO', 'EDI', 'EDIVAN', 'ELIZEU', 
+            'JONAS', 'JOSÉ CARDOSO', 'JOSÉ CARLOS', 'MARCOS', 'ODEMIR', 
+            'RODINEI', 'SAMUEL', 'SAULO', 'VANDERLEI', 'ZANIN'
+        ];
 
         // Inicialização
         window.onload = function() {
             carregarConfiguracoes();
+            carregarPessoas();
             const hoje = new Date();
             const mesAtual = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
             document.getElementById('mesAno').value = mesAtual;
             atualizarExibicaoMes();
             document.getElementById('mesAno').addEventListener('change', atualizarExibicaoMes);
             atualizarStatus('Sistema carregado com sucesso', 'success');
+            
+            // Event listeners para fechar modais
+            window.addEventListener('click', function(event) {
+                if (event.target.id === 'modalPessoas') {
+                    fecharGerenciadorPessoas();
+                }
+                if (event.target.id === 'modalGrupos') {
+                    fecharGerenciadorGrupos();
+                }
+            });
+
+            // Event listener para Enter no campo de nova pessoa
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter' && event.target.id === 'novaPessoa') {
+                    adicionarNovaPessoa();
+                }
+                if (event.key === 'Escape') {
+                    fecharGerenciadorPessoas();
+                    fecharGerenciadorGrupos();
+                }
+            });
             
             setTimeout(() => {
                 gerarEscala();
@@ -437,8 +930,29 @@
                 if (indicesSalvos) {
                     indices = JSON.parse(indicesSalvos);
                 }
+
+                const gruposSalvos = localStorage.getItem('escalas_grupos');
+                if (gruposSalvos) {
+                    gruposAtuais = JSON.parse(gruposSalvos);
+                }
+
+                const sequenciasSalvas = localStorage.getItem('escalas_sequencias');
+                if (sequenciasSalvas) {
+                    sequenciasAtuais = JSON.parse(sequenciasSalvas);
+                }
             } catch (e) {
                 console.log('Erro ao carregar configurações:', e);
+            }
+        }
+
+        function carregarPessoas() {
+            try {
+                const pessoasSalvas = localStorage.getItem('escalas_pessoas');
+                if (pessoasSalvas) {
+                    todosMembrosAtuais = JSON.parse(pessoasSalvas);
+                }
+            } catch (e) {
+                console.log('Erro ao carregar pessoas:', e);
             }
         }
 
@@ -447,6 +961,9 @@
             try {
                 localStorage.setItem('escalas_salvas', JSON.stringify(escalasSalvas));
                 localStorage.setItem('escalas_indices', JSON.stringify(indices));
+                localStorage.setItem('escalas_grupos', JSON.stringify(gruposAtuais));
+                localStorage.setItem('escalas_sequencias', JSON.stringify(sequenciasAtuais));
+                localStorage.setItem('escalas_pessoas', JSON.stringify(todosMembrosAtuais));
             } catch (e) {
                 console.log('Erro ao salvar configurações:', e);
             }
@@ -811,16 +1328,12 @@
             const campo = elemento.dataset.campo;
 
             // Lista de todos os membros
-            const todosMembros = [
-                'AFONSO', 'ALGACIR', 'CÉLIO', 'EDI', 'EDIVAN', 'ELIZEU', 
-                'JONAS', 'JOSÉ CARDOSO', 'JOSÉ CARLOS', 'MARCOS', 'ODEMIR', 
-                'RODINEI', 'SAMUEL', 'SAULO', 'VANDERLEI', 'ZANIN'
-            ];
+            const todosMembros = todosMembrosAtuais;
 
             const select = document.createElement('select');
             select.style.cssText = 'padding: 4px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;';
             
-            todosMembros.forEach(membro => {
+            todosMembrosAtuais.forEach(membro => {
                 const option = document.createElement('option');
                 option.value = membro;
                 option.textContent = membro;
