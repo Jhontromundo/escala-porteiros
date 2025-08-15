@@ -468,7 +468,19 @@
         let grupos = JSON.parse(JSON.stringify(GRUPOS_PADRAO));
         let sequencias = JSON.parse(JSON.stringify(SEQUENCIAS_PADRAO));
         let pessoas = ['AFONSO', 'ALGACIR', 'CÉLIO', 'EDI', 'EDIVAN', 'ELIZEU', 'JONAS', 'JOSÉ CARDOSO', 'JOSÉ CARLOS', 'MARCOS', 'ODEMIR', 'RODINEI', 'SAMUEL', 'SAULO', 'VANDERLEI', 'ZANIN'];
-        let indices = { rjm: 0, rSetor: 0, rLocal: 0, ensaio: 0, terca: 0, quinta: 0, sabado: 0, domingoOficial: 0 };
+        
+        // ========== ÍNDICES AJUSTADOS PARA CONTINUIDADE AGOSTO → SETEMBRO ==========
+        let indices = { 
+            rjm: 10,          // Próximo: RODINEI (após SAULO que foi último em agosto)
+            rSetor: 8,        // Próximo: CÉLIO (seguindo sequência R.Setor)
+            rLocal: 1,        // Próximo: SAMUEL (R.Local só em Jan/Abr/Jul/Out - próximo será Jan/2026)
+            ensaio: 4,        // Próximos: CÉLIO + EDI (após AFONSO + MARCOS em agosto)
+            terca: 0,         // Continua rotação normal grupos
+            quinta: 0,        // Continua rotação normal grupos  
+            sabado: 2,        // Continua rotação normal grupos
+            domingoOficial: 1 // Continua rotação normal grupos
+        };
+        
         let escalaAtual = [];
         let escalas = {};
 
