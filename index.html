@@ -475,6 +475,15 @@
                 escalaAtual = escalas[mesAno];
                 exibirEscala();
                 detectarConflitos();
+                
+                // Exibe mensagem informativa
+                const ano = mesAno.split('-')[0];
+                const mes = parseInt(mesAno.split('-')[1]);
+                const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+                const mesNome = meses[mes - 1];
+                
+                alert(`📋 Escala já existe!\n\nA escala de ${mesNome} de ${ano} já foi gerada anteriormente e foi carregada.\n\n✅ Total: ${escalaAtual.length} serviços programados\n\n💡 Para gerar uma nova escala, delete a atual primeiro ou edite manualmente.`);
+                
                 return;
             }
 
