@@ -1,4 +1,20 @@
-<!DOCTYPE html>
+<!-- Modal Grupos -->
+    <div id="modalGrupos" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚙️ Gerenciar Grupos</h3>
+                <button class="close" onclick="fecharModalGrupos()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="grupos-grid" id="gruposContainer"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="salvarGrupos()" style="background: #4caf50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">💾 Salvar</button>
+                <button onclick="resetarGrupos()" style="background: #ff9800; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">🔄 Resetar</button>
+                <button onclick="fecharModalGrupos()" style="background: #666; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">❌ Fechar</button>
+            </div>
+        </div>
+    </div><!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -262,6 +278,55 @@
             font-size: 12px;
         }
         
+        .escala-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .escala-card:hover {
+            border-color: #1976d2;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.1);
+        }
+        
+        .escala-info h4 {
+            color: #1976d2;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+        
+        .escala-info p {
+            color: #666;
+            margin: 2px 0;
+            font-size: 14px;
+        }
+        
+        .escala-acoes {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-escala {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-carregar { background: #4caf50; color: white; }
+        .btn-deletar { background: #f44336; color: white; }
+        
+        .btn-escala:hover { transform: translateY(-1px); opacity: 0.9; }
+        
         @media (max-width: 768px) {
             .controls { flex-direction: column; align-items: stretch; }
             .controls input, .controls button { width: 100%; margin-bottom: 10px; }
@@ -284,6 +349,7 @@
             <button class="btn btn-secondary" onclick="gerarPDF()">📄 PDF</button>
             <button class="btn btn-manager" onclick="abrirModalPessoas()">👥 Pessoas</button>
             <button class="btn btn-groups" onclick="abrirModalGrupos()">⚙️ Grupos</button>
+            <button class="btn" style="background: #795548; color: white;" onclick="abrirModalEscalas()">📋 Escalas</button>
         </div>
         
         <div class="conflito-alert" id="conflitoAlert">
@@ -329,8 +395,32 @@
         </div>
     </div>
 
-    <!-- Modal Grupos -->
-    <div id="modalGrupos" class="modal">
+    <!-- Modal Escalas -->
+    <div id="modalEscalas" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 Gerenciador de Escalas</h3>
+                <button class="close" onclick="fecharModalEscalas()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #1976d2;">
+                    <strong>💡 Informações:</strong><br>
+                    • <strong>Visualizar:</strong> Veja quantos serviços cada escala possui<br>
+                    • <strong>Deletar:</strong> Remove a escala para poder gerar uma nova<br>
+                    • <strong>Carregar:</strong> Seleciona o mês e carrega a escala
+                </div>
+                <div id="listaEscalasSalvas"></div>
+                <div id="nenhumaEscala" style="text-align: center; color: #666; padding: 40px; display: none;">
+                    <h3>📭 Nenhuma escala salva</h3>
+                    <p>Gere sua primeira escala selecionando um mês!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="limparTodasEscalas()" style="background: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">🗑️ Limpar Todas</button>
+                <button onclick="fecharModalEscalas()" style="background: #666; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">❌ Fechar</button>
+            </div>
+        </div>
+    </div>
         <div class="modal-content">
             <div class="modal-header">
                 <h3>⚙️ Gerenciar Grupos</h3>
@@ -915,6 +1005,113 @@
             }
         }
 
+        // ========== GERENCIADOR DE ESCALAS ==========
+        function abrirModalEscalas() {
+            carregarListaEscalas();
+            document.getElementById('modalEscalas').style.display = 'block';
+        }
+
+        function fecharModalEscalas() {
+            document.getElementById('modalEscalas').style.display = 'none';
+        }
+
+        function carregarListaEscalas() {
+            const lista = document.getElementById('listaEscalasSalvas');
+            const nenhumaDiv = document.getElementById('nenhumaEscala');
+            
+            const escalasArray = Object.entries(escalas).sort((a, b) => a[0].localeCompare(b[0]));
+            
+            if (escalasArray.length === 0) {
+                lista.style.display = 'none';
+                nenhumaDiv.style.display = 'block';
+                return;
+            }
+            
+            lista.style.display = 'block';
+            nenhumaDiv.style.display = 'none';
+            lista.innerHTML = '';
+            
+            escalasArray.forEach(([mesAno, escala]) => {
+                const [ano, mes] = mesAno.split('-');
+                const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+                const mesNome = meses[parseInt(mes) - 1];
+                
+                const servicosOficiais = escala.filter(s => s.servico === 'OFICIAL').length;
+                const servicosRJM = escala.filter(s => s.servico === 'RJM').length;
+                const outrosServicos = escala.filter(s => !['OFICIAL', 'RJM'].includes(s.servico)).length;
+                
+                const card = document.createElement('div');
+                card.className = 'escala-card';
+                
+                card.innerHTML = `
+                    <div class="escala-info">
+                        <h4>📅 ${mesNome} de ${ano}</h4>
+                        <p><strong>Total:</strong> ${escala.length} serviços</p>
+                        <p><strong>Detalhes:</strong> ${servicosOficiais} Oficiais • ${servicosRJM} RJM • ${outrosServicos} Especiais</p>
+                    </div>
+                    <div class="escala-acoes">
+                        <button class="btn-escala btn-carregar" onclick="carregarEscala('${mesAno}')">📂 Carregar</button>
+                        <button class="btn-escala btn-deletar" onclick="deletarEscala('${mesAno}', '${mesNome} de ${ano}')">🗑️ Deletar</button>
+                    </div>
+                `;
+                
+                lista.appendChild(card);
+            });
+        }
+
+        function carregarEscala(mesAno) {
+            document.getElementById('mesAno').value = mesAno;
+            escalaAtual = escalas[mesAno];
+            exibirEscala();
+            detectarConflitos();
+            fecharModalEscalas();
+            
+            const [ano, mes] = mesAno.split('-');
+            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            const mesNome = meses[parseInt(mes) - 1];
+            
+            alert(`✅ Escala carregada!\n\n📅 ${mesNome} de ${ano}\n📊 ${escalaAtual.length} serviços programados`);
+        }
+
+        function deletarEscala(mesAno, nomeCompleto) {
+            if (confirm(`🗑️ Deletar Escala?\n\n📅 ${nomeCompleto}\n📊 ${escalas[mesAno].length} serviços\n\n⚠️ Esta ação não pode ser desfeita!`)) {
+                delete escalas[mesAno];
+                salvarDados();
+                carregarListaEscalas();
+                
+                // Se era a escala atual, limpa a tela
+                const mesAtual = document.getElementById('mesAno').value;
+                if (mesAtual === mesAno) {
+                    escalaAtual = [];
+                    document.getElementById('corpoTabela').innerHTML = '';
+                    document.getElementById('conflitoAlert').style.display = 'none';
+                }
+                
+                alert(`✅ Escala deletada!\n\n${nomeCompleto} foi removida com sucesso.`);
+            }
+        }
+
+        function limparTodasEscalas() {
+            const total = Object.keys(escalas).length;
+            
+            if (total === 0) {
+                alert('📭 Não há escalas para deletar!');
+                return;
+            }
+            
+            if (confirm(`🗑️ DELETAR TODAS AS ESCALAS?\n\n📊 Total: ${total} escalas salvas\n\n⚠️ ESTA AÇÃO NÃO PODE SER DESFEITA!\n\nTem certeza absoluta?`)) {
+                escalas = {};
+                indices = { rjm: 0, rSetor: 0, rLocal: 0, ensaio: 0, terca: 0, quinta: 0, sabado: 0, domingoOficial: 0 };
+                salvarDados();
+                carregarListaEscalas();
+                
+                escalaAtual = [];
+                document.getElementById('corpoTabela').innerHTML = '';
+                document.getElementById('conflitoAlert').style.display = 'none';
+                
+                alert(`✅ Todas as escalas foram deletadas!\n\n🔄 Os índices de continuidade também foram resetados.`);
+            }
+        }
         // ========== GERENCIAMENTO DE PESSOAS ==========
         function abrirModalPessoas() {
             carregarListaPessoas();
@@ -1153,6 +1350,7 @@ tr:nth-child(even) { background: #f9f9f9; }
             if (e.target.classList.contains('modal')) {
                 fecharModalPessoas();
                 fecharModalGrupos();
+                fecharModalEscalas();
             }
             
             // Remove destaque quando clica em área neutra
@@ -1165,6 +1363,7 @@ tr:nth-child(even) { background: #f9f9f9; }
             if (e.key === 'Escape') {
                 fecharModalPessoas();
                 fecharModalGrupos();
+                fecharModalEscalas();
                 removerDestaque();
             }
         });
