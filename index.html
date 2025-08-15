@@ -10,6 +10,49 @@
             padding: 0;
             box-sizing: border-box;
         }
+
+        // ========== APLICAR SUGESTÕES DE CONFLITO ==========
+        function aplicarSugestao(index) {
+            if (!window.sugestoesAtuais || !window.sugestoesAtuais[index]) {
+                alert('Sugestão não encontrada!');
+                return;
+            }
+
+            const sugestao = window.sugestoesAtuais[index];
+            const acao = sugestao.acao;
+            
+            if (!acao) {
+                alert('Esta sugestão não pode ser aplicada automaticamente.');
+                return;
+            }
+
+            // Encontrar o serviço RJM do dia específico
+            const servicoRJM = escalаAtual.find(item => 
+                item.dia == acao.dia && item.classe === 'rjm'
+            );
+
+            if (!servicoRJM) {
+                alert('Serviço RJM não encontrado para este dia!');
+                return;
+            }
+
+            // Aplicar a troca
+            const nomeAntigo = servicoRJM[acao.posicao];
+            servicoRJM[acao.posicao] = acao.membroNovo;
+
+            // Salvar a escala atualizada
+            const mesAnoValue = document.getElementById('mesAno').value;
+            if (mesAnoValue) {
+                escalasSalvas[mesAnoValue] = JSON.parse(JSON.stringify(escalаAtual));
+                salvarConfiguracoes();
+            }
+
+            // Atualizar a exibição
+            exibirEscala();
+            detectarConflitos();
+
+            atualizarStatus(`Troca aplicada: ${nomeAntigo} → ${acao.membroNovo} na RJM do dia ${acao.dia}`, 'success');
+        }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -872,7 +915,7 @@
         let escalаAtual = [];
         let membroDestacado = null;
         let todosMembrosAtuais = [...TODOS_MEMBROS]; // Lista dinâmica
-        let escalаsSalvas = {}; // Cache de escalas por mês
+        let escalasSalvas = {}; // Cache de escalas por mês
 
         // Inicialização
         window.onload = function() {
@@ -936,9 +979,9 @@
         function carregarEscalasSalvas() {
             const escalasSalvasStorage = localStorage.getItem('escalas_salvas');
             if (escalasSalvasStorage) {
-                escalаsSalvas = JSON.parse(escalasSalvasStorage);
+                escalasSalvas = JSON.parse(escalasSalvasStorage);
             } else {
-                escalаsSalvas = {};
+                escalasSalvas = {};
             }
         }
 
@@ -947,7 +990,7 @@
             localStorage.setItem('escalas_sequencias', JSON.stringify(sequenciasAtuais));
             localStorage.setItem('escalas_indices', JSON.stringify(indices));
             localStorage.setItem('escalas_pessoas', JSON.stringify(todosMembrosAtuais));
-            localStorage.setItem('escalas_salvas', JSON.stringify(escalаsSalvas));
+            localStorage.setItem('escalas_salvas', JSON.stringify(escalasSalvas));
         }
 
         // ========== UTILITÁRIOS DE DATA ==========
@@ -1056,8 +1099,8 @@
             const chaveEscala = mesAnoValue; // "2025-08" formato
 
             // Verificar se já existe escala salva para este mês
-            if (escalаsSalvas[chaveEscala]) {
-                escalаAtual = escalаsSalvas[chaveEscala];
+            if (escalasSalvas[chaveEscala]) {
+                escalаAtual = escalasSalvas[chaveEscala];
                 exibirEscala();
                 detectarConflitos();
                 
@@ -1088,7 +1131,7 @@
             const chaveEscala = mesAnoValue;
             
             // Remover escala salva
-            delete escalаsSalvas[chaveEscala];
+            delete escalasSalvas[chaveEscala];
             
             // Gerar nova escala
             gerarNovaEscala(mesAnoValue, chaveEscala);
@@ -1271,7 +1314,7 @@
             escalаAtual.sort((a, b) => a.dia - b.dia);
 
             // Salvar escala gerada
-            escalаsSalvas[chaveEscala] = JSON.parse(JSON.stringify(escalаAtual));
+            escalasSalvas[chaveEscala] = JSON.parse(JSON.stringify(escalаAtual));
 
             // Atualizar índices para próximo mês
             indices.terca = resultTerca.proximoIndice;
@@ -1301,7 +1344,7 @@
         // Calcular índices baseados na ordem cronológica
         function calcularIndicesParaMes(anoAlvo, mesAlvo) {
             // Obter lista de meses já gerados, ordenados cronologicamente
-            const mesesGerados = Object.keys(escalаsSalvas).sort();
+            const mesesGerados = Object.keys(escalasSalvas).sort();
             
             if (mesesGerados.length === 0) {
                 // Primeiro mês sendo gerado, usar índices padrão
@@ -1551,7 +1594,7 @@
             // Atualizar escala salva
             const mesAnoValue = document.getElementById('mesAno').value;
             if (mesAnoValue) {
-                escalаsSalvas[mesAnoValue] = JSON.parse(JSON.stringify(escalаAtual));
+                escalasSalvas[mesAnoValue] = JSON.parse(JSON.stringify(escalаAtual));
                 salvarConfiguracoes();
             }
             
@@ -1604,7 +1647,7 @@
                                 if (!conflitos.includes(conflito)) {
                                     conflitos.push(conflito);
                                     
-                                    // Gerar sugestão para conflitos com RJM
+                    // Gerar sugestão para conflitos com RJM
                                     const sugestao = gerarSugestaoConflito(dia, membro, servicosComMembros, servicos);
                                     if (sugestao) {
                                         sugestoes.push(sugestao);
@@ -1628,7 +1671,20 @@
                 
                 if (sugestoes.length > 0) {
                     htmlConflitos += '<br><br><strong>💡 SUGESTÕES PARA RESOLVER:</strong><br>';
-                    htmlConflitos += sugestoes.map(s => `• ${s}`).join('<br>');
+                    sugestoes.forEach((sugestao, index) => {
+                        htmlConflitos += `• ${sugestao.texto}`;
+                        if (sugestao.acao) {
+                            htmlConflitos += ` <button onclick="aplicarSugestao(${index})" 
+                                style="background: #4caf50; color: white; border: none; padding: 4px 8px; 
+                                       border-radius: 4px; cursor: pointer; font-size: 12px; margin-left: 5px;">
+                                ✓ Aplicar
+                            </button>`;
+                        }
+                        htmlConflitos += '<br>';
+                    });
+                    
+                    // Salvar sugestões para uso posterior
+                    window.sugestoesAtuais = sugestoes;
                 }
                 
                 listDiv.innerHTML = htmlConflitos;
@@ -1649,11 +1705,6 @@
             const membroEstaNoRJM = [rjmNoDia.pedOracao, rjmNoDia.lateral].includes(membroConflito);
             if (!membroEstaNoRJM) return null;
 
-            // Encontrar domingos com RJM no mês para sugestão de troca
-            const domingosMesAtual = escalаAtual.filter(item => 
-                item.diaSemana === 'DOMINGO' && item.classe === 'rjm'
-            );
-
             // Buscar alternativas na sequência RJM
             const membrosRJMDisponiveis = sequenciasAtuais.rjm.filter(membro => {
                 // Verificar se este membro não tem conflito no dia específico
@@ -1668,10 +1719,21 @@
                 const alternativa = membrosRJMDisponiveis[0];
                 const posicaoConflito = rjmNoDia.pedOracao === membroConflito ? 'Ped Oração' : 'Lateral';
                 
-                return `Trocar ${membroConflito} por ${alternativa} no RJM do domingo ${dia} (posição: ${posicaoConflito})`;
+                return {
+                    texto: `Trocar ${membroConflito} por ${alternativa} na RJM do domingo ${dia} (posição: ${posicaoConflito})`,
+                    acao: {
+                        dia: dia,
+                        membroOriginal: membroConflito,
+                        membroNovo: alternativa,
+                        posicao: posicaoConflito === 'Ped Oração' ? 'pedOracao' : 'lateral'
+                    }
+                };
             }
 
-            return `Verificar possível troca no RJM do domingo ${dia} - ${membroConflito} está em conflito`;
+            return {
+                texto: `Verificar possível troca na RJM do domingo ${dia} - ${membroConflito} está em conflito`,
+                acao: null
+            };
         }
 
         // ========== GERENCIADOR DE PESSOAS ==========
@@ -1901,7 +1963,7 @@
             
             // Limpar escalas salvas pois os grupos mudaram
             if (confirm('Os grupos foram alterados. Isso irá invalidar todas as escalas já geradas. Confirma?')) {
-                escalаsSalvas = {};
+                escalasSalvas = {};
                 salvarConfiguracoes();
                 atualizarStatus('Configurações salvas. Escalas anteriores foram invalidadas.', 'warning');
             } else {
@@ -1914,7 +1976,7 @@
                 gruposAtuais = JSON.parse(JSON.stringify(GRUPOS_PADRAO));
                 sequenciasAtuais = JSON.parse(JSON.stringify(SEQUENCIAS_PADRAO));
                 indices = JSON.parse(JSON.stringify(INDICES_PADRAO));
-                escalаsSalvas = {};
+                escalasSalvas = {};
                 salvarConfiguracoes();
                 carregarGerenciador();
                 atualizarStatus('Configurações restauradas para o padrão. Todas as escalas foram apagadas.', 'success');
@@ -1924,7 +1986,7 @@
         function reiniciarSequencias() {
             if (confirm('Isso irá reiniciar apenas as sequências de continuidade e apagar todas as escalas salvas (mantém grupos customizados). Confirma?')) {
                 indices = JSON.parse(JSON.stringify(INDICES_PADRAO));
-                escalаsSalvas = {};
+                escalasSalvas = {};
                 salvarConfiguracoes();
                 atualizarStatus('Sequências reiniciadas. Todas as escalas foram apagadas.', 'success');
             }
@@ -2195,6 +2257,31 @@
             }, 500);
         });
 
+        // ========== FUNÇÕES DE DEBUG E UTILITÁRIOS ==========
+        function listarEscalasSalvas() {
+            console.log('📋 Escalas salvas:', Object.keys(escalasSalvas).sort());
+            return Object.keys(escalasSalvas).sort();
+        }
+
+        function apagarEscalaMes(mesAno) {
+            if (escalasSalvas[mesAno]) {
+                delete escalasSalvas[mesAno];
+                salvarConfiguracoes();
+                console.log(`🗑️ Escala ${mesAno} apagada`);
+                return true;
+            }
+            return false;
+        }
+
+        function apagarTodasEscalas() {
+            if (confirm('Apagar TODAS as escalas salvas?')) {
+                escalasSalvas = {};
+                salvarConfiguracoes();
+                console.log('🗑️ Todas as escalas foram apagadas');
+                atualizarStatus('Todas as escalas foram apagadas', 'warning');
+            }
+        }
+
         // ========== FUNÇÕES DE DEBUG (DESENVOLVIMENTO) ==========
         function exportarConfiguracoes() {
             const config = {
@@ -2243,6 +2330,7 @@
         console.log('🎉 Sistema de Escalas CCB Santa Amélia v3.0 carregado!');
         console.log('💡 Funcionalidades disponíveis:');
         console.log('- Continuidade total entre meses');
+        console.log('- Persistência de escalas geradas');
         console.log('- Edição manual (duplo clique ou botão direito)');
         console.log('- Gerenciador visual de grupos');
         console.log('- Detecção inteligente de conflitos');
@@ -2256,6 +2344,9 @@
         console.log('- ESC: Fechar modal/limpar destaque');
         console.log('');
         console.log('⚙️ Funções avançadas (console):');
+        console.log('- listarEscalasSalvas(): Ver escalas já geradas');
+        console.log('- apagarEscalaMes("2025-08"): Apagar escala específica');
+        console.log('- apagarTodasEscalas(): Apagar todas as escalas');
         console.log('- exportarConfiguracoes(): Backup das configurações');
         console.log('- regenerarEscala(): Regerar escala atual');
     </script>
