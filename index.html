@@ -527,7 +527,7 @@
                 rLocal: 1,            // Próximo: SAMUEL (outubro)
                 ensaio: 4,            // Próximos: CÉLIO + EDI
                 terca: 0,             // AFONSO (Zanin folga após ser lateral)
-                quinta: 0,            // EDI 
+                quinta: 2,            // SAULO (foi lateral em agosto, agora pedOracao)
                 sabado: 2,            // VANDERLEI 
                 domingoOficial: 2     // SAMUEL (após EDIVAN)
             };
@@ -1238,9 +1238,13 @@
             // Último índice foi 3 (EDIVAN ped), próximo deve ser 2 (SAMUEL ped)
             indices.domingoOficial = 2; // SAMUEL como próximo pedOracao
             
+            // 5ª feira: último serviço agosto foi EDI (ped), MARCOS (prin), SAULO (lat)
+            // SAULO foi lateral, então próximo mês ele deve ser pedOracao
+            const posicaoSauloQuinta = grupos.quinta.indexOf('SAULO');
+            indices.quinta = posicaoSauloQuinta; // SAULO como próximo pedOracao
+            
             // Outros grupos
             indices.terca = 0;
-            indices.quinta = 0; 
             indices.sabado = 2;
         }
         // ========== GERENCIAMENTO DE PESSOAS ==========
