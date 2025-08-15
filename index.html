@@ -3,264 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Escalas v3.0 - CCB Santa Amélia</title>
+    <title>Sistema de Escalas CCB - Santa Amélia</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
         }
         
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1200px; margin: 0 auto; }
         
         .header {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
             text-align: center;
         }
         
-        .header h1 {
-            color: #1976d2;
-            font-size: 32px;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        
-        .header p {
-            color: #666;
-            font-size: 16px;
-        }
-        
-        .version-badge {
-            display: inline-block;
-            background: linear-gradient(45deg, #4caf50, #66bb6a);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
+        .header h1 { color: #1976d2; font-size: 28px; margin-bottom: 5px; }
+        .header p { color: #666; }
         
         .controls {
             background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
             display: flex;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
             flex-wrap: wrap;
         }
         
         .controls input, .controls button {
-            padding: 12px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .btn { 
+            cursor: pointer; 
+            font-weight: 600; 
+            border: none;
             transition: all 0.3s ease;
         }
         
-        .controls input:focus {
-            outline: none;
-            border-color: #1976d2;
-            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
-        }
+        .btn-primary { background: #1976d2; color: white; }
+        .btn-secondary { background: #ff5722; color: white; }
+        .btn-manager { background: #9c27b0; color: white; }
+        .btn-groups { background: #2e7d32; color: white; }
         
-        .btn-primary {
-            background: linear-gradient(45deg, #1976d2, #42a5f5);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
-        }
+        .btn:hover { transform: translateY(-1px); opacity: 0.9; }
         
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(45deg, #ff5722, #ff7043);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.3);
-        }
-        
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 87, 34, 0.4);
-        }
-        
-        .btn-manager {
-            background: linear-gradient(45deg, #9c27b0, #ba68c8);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
-        }
-        
-        .btn-manager:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
-        }
-        
-        .status-bar {
+        .table-container {
             background: white;
-            padding: 15px 25px;
             border-radius: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
-        
-        .status-success { color: #4caf50; }
-        .status-warning { color: #ff9800; }
-        .status-error { color: #f44336; }
-        
-        .conflicts-alert {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-        
-        .conflicts-list {
-            margin-top: 10px;
-            font-size: 14px;
-        }
-        
-        .tabela-container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             overflow: hidden;
         }
         
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid #e0e0e0;
-        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background: #f5f5f5; font-weight: bold; }
+        tr:nth-child(even) { background: #fafafa; }
         
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px 8px;
-            text-align: center;
-            vertical-align: middle;
-        }
-        
-        th {
-            background: linear-gradient(45deg, #f5f5f5, #fafafa);
-            font-weight: 700;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        td {
-            font-size: 14px;
+        .nome-editavel { 
+            cursor: pointer; 
+            padding: 4px;
+            border-radius: 4px;
             transition: all 0.2s ease;
         }
-        
-        tr:nth-child(even) {
-            background: #fafafa;
-        }
-        
-        tr:hover {
-            background: #e3f2fd !important;
-            transform: scale(1.01);
-        }
-        
-        .nome-editavel {
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-        
-        .nome-editavel:hover {
-            background: #e3f2fd;
-            color: #1976d2;
-            font-weight: 600;
-        }
+        .nome-editavel:hover { background: #e3f2fd; color: #1976d2; }
         
         .servico-badge {
-            padding: 8px 16px;
-            border-radius: 25px;
-            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
             font-weight: bold;
-            text-align: center;
-            white-space: nowrap;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         
-        .oficial { 
-            background: linear-gradient(45deg, #e3f2fd, #bbdefb); 
-            color: #0d47a1; 
-            border: 1px solid #90caf9;
-        }
-        .rjm { 
-            background: linear-gradient(45deg, #e8f5e8, #c8e6c9); 
-            color: #1b5e20; 
-            border: 1px solid #a5d6a7;
-        }
-        .rsetor { 
-            background: linear-gradient(45deg, #fff3e0, #ffe0b2); 
-            color: #e65100; 
-            border: 1px solid #ffcc02;
-        }
-        .rlocal { 
-            background: linear-gradient(45deg, #f3e5f5, #e1bee7); 
-            color: #4a148c; 
-            border: 1px solid #ce93d8;
-        }
-        .ensaio { 
-            background: linear-gradient(45deg, #e8eaf6, #c5cae9); 
-            color: #1a237e; 
-            border: 1px solid #9fa8da;
-        }
+        .oficial { background: #e3f2fd; color: #0d47a1; }
+        .rjm { background: #e8f5e8; color: #1b5e20; }
+        .rsetor { background: #fff3e0; color: #e65100; }
+        .rlocal { background: #f3e5f5; color: #4a148c; }
+        .ensaio { background: #e8eaf6; color: #1a237e; }
         
-        .mesclar {
-            text-align: center;
-            font-weight: normal;
-            background: linear-gradient(45deg, #f0f0f0, #e8e8e8);
-            color: #555;
-        }
-        
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -270,275 +104,150 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
         }
         
         .modal-content {
             background-color: white;
-            margin: 3% auto;
+            margin: 5% auto;
             padding: 0;
-            border-radius: 15px;
+            border-radius: 10px;
             width: 90%;
-            max-width: 900px;
-            max-height: 85vh;
+            max-width: 800px;
+            max-height: 80vh;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         
         .modal-header {
-            background: linear-gradient(45deg, #1976d2, #42a5f5);
+            background: #1976d2;
             color: white;
-            padding: 20px 30px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
-        .modal-header h2 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-        }
+        .modal-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
+        .modal-footer { padding: 15px 20px; background: #f8f9fa; text-align: center; }
         
         .close {
             color: white;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
             cursor: pointer;
-            border: none;
             background: none;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.3s ease;
-        }
-        
-        .close:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        
-        .modal-body {
-            padding: 30px;
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-        
-        .modal-footer {
-            padding: 20px 30px;
-            background: #f8f9fa;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .modal-footer button {
-            padding: 12px 24px;
             border: none;
+        }
+        
+        .grupos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .grupo-card {
+            background: white;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            padding: 15px;
         }
-
-        .add-section {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
+        
+        .grupo-titulo {
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
         }
-
-        .add-section h3 {
-            color: #1976d2;
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-
-        .add-form {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .add-form input {
-            flex: 1;
-            min-width: 200px;
+        
+        .membros-lista {
+            min-height: 80px;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
             padding: 10px;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+        
+        .membro-item {
+            display: inline-block;
+            background: white;
+            padding: 5px 8px;
+            margin: 2px;
+            border-radius: 15px;
             border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .add-form button {
-            padding: 10px 20px;
-            background: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 8px;
+            font-size: 12px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
         }
-
-        .add-form button:hover {
-            background: #45a049;
-            transform: translateY(-1px);
+        
+        .membro-item:hover { background: #f44336; color: white; }
+        
+        .pessoa-disponivel {
+            display: inline-block;
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 4px 8px;
+            margin: 2px;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
         }
-
+        
+        .pessoa-disponivel:hover { background: #4caf50; color: white; }
+        
         .pessoas-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
         }
-
+        
         .pessoa-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: white;
-            padding: 15px;
+            padding: 10px;
             border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .pessoa-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        }
-
-        .pessoa-nome {
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-
-        .pessoa-info {
-            font-size: 12px;
-            color: #666;
-            margin-top: 4px;
-        }
-
-        .btn-remove-pessoa {
-            background: #f44336;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .btn-remove-pessoa:hover {
-            background: #d32f2f;
-            transform: scale(1.1);
+            border-radius: 5px;
         }
         
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            color: #666;
-            font-size: 14px;
-            padding: 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        .btn-remove { 
+            background: #f44336; 
+            color: white; 
+            border: none; 
+            border-radius: 50%; 
+            width: 25px; 
+            height: 25px; 
+            cursor: pointer;
+            font-size: 12px;
         }
         
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .controls input, .controls button {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-            
-            table {
-                font-size: 12px;
-            }
-            
-            th, td {
-                padding: 8px 4px;
-                font-size: 11px;
-            }
-
-            .modal-content {
-                width: 95%;
-                margin: 5% auto;
-            }
-
-            .pessoas-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .add-form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .add-form input, .add-form button {
-                width: 100%;
-            }
+            .controls { flex-direction: column; align-items: stretch; }
+            .controls input, .controls button { width: 100%; margin-bottom: 10px; }
+            table { font-size: 12px; }
+            th, td { padding: 6px 4px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📋 Sistema de Escalas de Serviço</h1>
-            <p>Congregação Cristã no Brasil - Santa Amélia - Curitiba PR</p>
-            <div class="version-badge">v3.0 COMPLETO COM CONTINUIDADE</div>
+            <h1>📋 Sistema de Escalas CCB</h1>
+            <p>Santa Amélia - Curitiba PR</p>
         </div>
         
         <div class="controls">
-            <label for="mesAno">📅 Selecionar Mês:</label>
+            <label for="mesAno">📅 Mês:</label>
             <input type="month" id="mesAno">
-            <span id="exibicaoMes" style="font-weight: 600; color: #1976d2; margin-left: 10px;"></span>
-            <button class="btn-primary" onclick="gerarEscala()">🔄 Gerar Escala</button>
-            <button class="btn-secondary" onclick="gerarPDF()">📄 Gerar PDF</button>
-            <button class="btn-manager" onclick="abrirModalPessoas()">👥 Gerenciar Pessoas</button>
+            <button class="btn btn-primary" onclick="gerarEscala()">🔄 Gerar Escala</button>
+            <button class="btn btn-secondary" onclick="gerarPDF()">📄 PDF</button>
+            <button class="btn btn-manager" onclick="abrirModalPessoas()">👥 Pessoas</button>
+            <button class="btn btn-groups" onclick="abrirModalGrupos()">⚙️ Grupos</button>
         </div>
         
-        <div class="status-bar">
-            <div class="status-item status-success">
-                <span>✅</span>
-                <span id="statusGeral">Sistema Carregado</span>
-            </div>
-            <div class="status-item">
-                <span>📊</span>
-                <span id="statusEscala">Selecione um mês para gerar</span>
-            </div>
-        </div>
-        
-        <div class="conflicts-alert" id="conflictsAlert">
-            <strong>🚫 CONFLITOS DETECTADOS!</strong>
-            <div class="conflicts-list" id="conflictsList"></div>
-            <small>💡 Use a edição manual (duplo clique) para resolver os conflitos.</small>
-        </div>
-        
-        <div class="tabela-container">
-            <table id="tabelaEscala">
+        <div class="table-container">
+            <table>
                 <thead>
                     <tr>
                         <th>Dia</th>
@@ -549,50 +258,52 @@
                         <th>Lateral</th>
                     </tr>
                 </thead>
-                <tbody id="corpoTabela">
-                    <!-- Dados serão inseridos aqui -->
-                </tbody>
+                <tbody id="corpoTabela"></tbody>
             </table>
-        </div>
-        
-        <div class="footer">
-            <p>✅ Sistema de Escalas v3.0 - 100% Funcional</p>
-            <p>🎯 Continuidade Perfeita Entre Meses • Edição Manual Intuitiva</p>
         </div>
     </div>
 
-    <!-- Modal Gerenciador de Pessoas -->
+    <!-- Modal Pessoas -->
     <div id="modalPessoas" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>👥 Gerenciador de Pessoas</h2>
+                <h3>👥 Gerenciar Pessoas</h3>
                 <button class="close" onclick="fecharModalPessoas()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="add-section">
-                    <h3>➕ Adicionar Nova Pessoa</h3>
-                    <div class="add-form">
-                        <input type="text" id="novaPessoa" placeholder="Digite o nome da pessoa..." maxlength="30">
-                        <button onclick="adicionarPessoa()">Adicionar</button>
-                    </div>
+                <div style="margin-bottom: 20px;">
+                    <input type="text" id="novaPessoa" placeholder="Nome da pessoa..." style="width: 70%; padding: 8px;">
+                    <button onclick="adicionarPessoa()" style="padding: 8px 15px; background: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer;">Adicionar</button>
                 </div>
-                
-                <div>
-                    <h3 style="color: #1976d2; margin-bottom: 15px;">📋 Pessoas Cadastradas (<span id="totalPessoas">0</span>)</h3>
-                    <div class="pessoas-grid" id="listaPessoas">
-                        <!-- Lista será preenchida dinamicamente -->
-                    </div>
-                </div>
+                <div class="pessoas-grid" id="listaPessoas"></div>
             </div>
             <div class="modal-footer">
-                <button onclick="salvarPessoas()" style="background: #4caf50; color: white;">💾 Salvar Alterações</button>
-                <button onclick="fecharModalPessoas()" style="background: #666; color: white;">❌ Fechar</button>
+                <button onclick="salvarPessoas()" style="background: #4caf50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">💾 Salvar</button>
+                <button onclick="fecharModalPessoas()" style="background: #666; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">❌ Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Grupos -->
+    <div id="modalGrupos" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚙️ Gerenciar Grupos</h3>
+                <button class="close" onclick="fecharModalGrupos()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="grupos-grid" id="gruposContainer"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="salvarGrupos()" style="background: #4caf50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">💾 Salvar</button>
+                <button onclick="resetarGrupos()" style="background: #ff9800; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">🔄 Resetar</button>
+                <button onclick="fecharModalGrupos()" style="background: #666; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">❌ Fechar</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ========== CONFIGURAÇÕES E DADOS ==========
+        // ========== DADOS PADRÃO ==========
         const GRUPOS_PADRAO = {
             terca: ['AFONSO', 'ALGACIR', 'JONAS', 'ZANIN'],
             quinta: ['EDI', 'MARCOS', 'SAULO'],
@@ -601,717 +312,540 @@
         };
 
         const SEQUENCIAS_PADRAO = {
-            rjm: ['MARCOS', 'JOSÉ CARDOSO', 'EDI', 'EDIVAN', 'JOSÉ CARLOS', 'VANDERLEI', 'ELIZEU', 'ZANIN', 'ALGACIR', 'SAULO', 'RODINEI', 'SAMUEL', 'CÉLIO', 'JONAS', 'AFONSO'],
-            rSetor: ['ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'JONAS', 'CÉLIO', 'EDI', 'SAMUEL', 'JOSÉ CARLOS', 'MARCOS', 'EDIVAN', 'SAULO'],
-            rLocal: ['EDI', 'SAMUEL', 'EDIVAN', 'JONAS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI', 'CÉLIO', 'SAULO', 'MARCOS'],
-            ensaio: ['RODINEI', 'ALGACIR', 'VANDERLEI', 'SAULO', 'CÉLIO', 'EDI', 'SAMUEL', 'EDIVAN', 'MARCOS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'JONAS']
+            rjm: ['MARCOS', 'JOSÉ CARDOSO', 'EDI', 'EDIVAN', 'JOSÉ CARLOS', 'VANDERLEI', 'ELIZEU', 'ZANIN'],
+            rSetor: ['ELIZEU', 'ZANIN', 'JOSÉ CARDOSO', 'AFONSO', 'RODINEI', 'ALGACIR', 'VANDERLEI'],
+            rLocal: ['EDI', 'SAMUEL', 'EDIVAN', 'JONAS', 'JOSÉ CARLOS', 'ELIZEU', 'ZANIN'],
+            ensaio: ['RODINEI', 'ALGACIR', 'VANDERLEI', 'SAULO', 'CÉLIO', 'EDI', 'SAMUEL']
         };
 
-        const mesesPortugues = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+        const GRUPOS_INFO = {
+            terca: { nome: '3ª FEIRAS', classe: 'oficial' },
+            quinta: { nome: '5ª FEIRAS', classe: 'oficial' },
+            sabado: { nome: 'SÁBADOS', classe: 'oficial' },
+            domingoOficial: { nome: 'DOMINGOS', classe: 'oficial' },
+            rjm: { nome: 'RJM', classe: 'rjm' },
+            rSetor: { nome: 'R. SETOR', classe: 'rsetor' },
+            rLocal: { nome: 'R. LOCAL', classe: 'rlocal' },
+            ensaio: { nome: 'ENSAIO', classe: 'ensaio' }
+        };
 
         // ========== VARIÁVEIS GLOBAIS ==========
-        let gruposAtuais = JSON.parse(JSON.stringify(GRUPOS_PADRAO));
-        let sequenciasAtuais = JSON.parse(JSON.stringify(SEQUENCIAS_PADRAO));
+        let grupos = JSON.parse(JSON.stringify(GRUPOS_PADRAO));
+        let sequencias = JSON.parse(JSON.stringify(SEQUENCIAS_PADRAO));
+        let pessoas = ['AFONSO', 'ALGACIR', 'CÉLIO', 'EDI', 'EDIVAN', 'ELIZEU', 'JONAS', 'JOSÉ CARDOSO', 'JOSÉ CARLOS', 'MARCOS', 'ODEMIR', 'RODINEI', 'SAMUEL', 'SAULO', 'VANDERLEI', 'ZANIN'];
         let indices = { rjm: 0, rSetor: 0, rLocal: 0, ensaio: 0, terca: 0, quinta: 0, sabado: 0, domingoOficial: 0 };
         let escalaAtual = [];
-        let escalasSalvas = {};
-        let todosMembrosAtuais = ['AFONSO', 'ALGACIR', 'CÉLIO', 'EDI', 'EDIVAN', 'ELIZEU', 'JONAS', 'JOSÉ CARDOSO', 'JOSÉ CARLOS', 'MARCOS', 'ODEMIR', 'RODINEI', 'SAMUEL', 'SAULO', 'VANDERLEI', 'ZANIN'];
+        let escalas = {};
 
         // ========== INICIALIZAÇÃO ==========
         window.onload = function() {
-            console.log('🚀 Sistema iniciando...');
-            
-            carregarConfiguracoes();
-            
+            carregarDados();
             const hoje = new Date();
             const mesAtual = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
             document.getElementById('mesAno').value = mesAtual;
-            atualizarExibicaoMes();
             
-            document.getElementById('mesAno').addEventListener('change', atualizarExibicaoMes);
-            
-            // Event listener para Enter no campo de nova pessoa
+            // Event listeners
             document.getElementById('novaPessoa').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    adicionarPessoa();
-                }
-            });
-
-            // Event listener para fechar modal clicando fora
-            document.getElementById('modalPessoas').addEventListener('click', function(e) {
-                if (e.target.id === 'modalPessoas') {
-                    fecharModalPessoas();
-                }
-            });
-
-            // Event listener para ESC
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    fecharModalPessoas();
-                }
+                if (e.key === 'Enter') adicionarPessoa();
             });
             
-            atualizarStatus('Sistema carregado com sucesso', 'success');
-            
-            setTimeout(function() {
-                gerarEscala();
-            }, 500);
+            setTimeout(gerarEscala, 100);
         };
 
-        // ========== FUNÇÕES DE CONFIGURAÇÃO ==========
-        function carregarConfiguracoes() {
-            try {
-                const escalasSalvasStorage = localStorage.getItem('escalas_salvas');
-                if (escalasSalvasStorage) {
-                    escalasSalvas = JSON.parse(escalasSalvasStorage);
-                }
-                
-                const indicesSalvos = localStorage.getItem('escalas_indices');
-                if (indicesSalvos) {
-                    indices = JSON.parse(indicesSalvos);
-                }
+        // ========== PERSISTÊNCIA ==========
+        function salvarDados() {
+            localStorage.setItem('ccb_escalas', JSON.stringify({ grupos, sequencias, pessoas, indices, escalas }));
+        }
 
-                const pessoasSalvas = localStorage.getItem('escalas_pessoas');
-                if (pessoasSalvas) {
-                    todosMembrosAtuais = JSON.parse(pessoasSalvas);
-                }
-            } catch (e) {
-                console.log('Erro ao carregar configurações:', e);
+        function carregarDados() {
+            const dados = localStorage.getItem('ccb_escalas');
+            if (dados) {
+                const parsed = JSON.parse(dados);
+                grupos = parsed.grupos || grupos;
+                sequencias = parsed.sequencias || sequencias;
+                pessoas = parsed.pessoas || pessoas;
+                indices = parsed.indices || indices;
+                escalas = parsed.escalas || escalas;
             }
-        }
-
-        function salvarConfiguracoes() {
-            try {
-                localStorage.setItem('escalas_salvas', JSON.stringify(escalasSalvas));
-                localStorage.setItem('escalas_indices', JSON.stringify(indices));
-                localStorage.setItem('escalas_pessoas', JSON.stringify(todosMembrosAtuais));
-            } catch (e) {
-                console.log('Erro ao salvar configurações:', e);
-            }
-        }
-
-        // ========== FUNÇÕES DE INTERFACE ==========
-        function atualizarExibicaoMes() {
-            const mesAnoValue = document.getElementById('mesAno').value;
-            if (mesAnoValue) {
-                const ano = parseInt(mesAnoValue.split('-')[0]);
-                const mes = parseInt(mesAnoValue.split('-')[1]);
-                const mesNome = mesesPortugues[mes - 1];
-                document.getElementById('exibicaoMes').textContent = mesNome + ' de ' + ano;
-            }
-        }
-
-        function atualizarStatus(mensagem, tipo) {
-            const statusElement = document.getElementById('statusGeral');
-            const iconMap = { 'success': '✅', 'warning': '⚠️', 'error': '🚫' };
-            
-            statusElement.innerHTML = iconMap[tipo] + ' ' + mensagem;
-            statusElement.className = 'status-' + tipo;
-            
-            if (tipo === 'success') {
-                setTimeout(function() {
-                    statusElement.innerHTML = '✅ Sistema Pronto';
-                    statusElement.className = 'status-success';
-                }, 3000);
-            }
-        }
-
-        // ========== GERENCIADOR DE PESSOAS ==========
-        function abrirModalPessoas() {
-            console.log('📝 Abrindo modal de pessoas...');
-            carregarListaPessoas();
-            document.getElementById('modalPessoas').style.display = 'block';
-        }
-
-        function fecharModalPessoas() {
-            console.log('📝 Fechando modal de pessoas...');
-            document.getElementById('modalPessoas').style.display = 'none';
-            document.getElementById('novaPessoa').value = '';
-        }
-
-        function carregarListaPessoas() {
-            const lista = document.getElementById('listaPessoas');
-            const total = document.getElementById('totalPessoas');
-            
-            lista.innerHTML = '';
-            total.textContent = todosMembrosAtuais.length;
-            
-            todosMembrosAtuais.sort().forEach(function(pessoa, index) {
-                const card = document.createElement('div');
-                card.className = 'pessoa-card';
-                
-                const infoDiv = document.createElement('div');
-                const nomeDiv = document.createElement('div');
-                nomeDiv.className = 'pessoa-nome';
-                nomeDiv.textContent = pessoa;
-                
-                const infoText = document.createElement('div');
-                infoText.className = 'pessoa-info';
-                infoText.textContent = verificarUsosPessoa(pessoa);
-                
-                infoDiv.appendChild(nomeDiv);
-                infoDiv.appendChild(infoText);
-                
-                const btnRemover = document.createElement('button');
-                btnRemover.className = 'btn-remove-pessoa';
-                btnRemover.innerHTML = '✕';
-                btnRemover.title = 'Remover ' + pessoa;
-                btnRemover.onclick = function() {
-                    removerPessoa(index);
-                };
-                
-                card.appendChild(infoDiv);
-                card.appendChild(btnRemover);
-                lista.appendChild(card);
-            });
-        }
-
-        function verificarUsosPessoa(pessoa) {
-            const usos = [];
-            
-            Object.entries(gruposAtuais).forEach(function([grupo, membros]) {
-                if (membros.includes(pessoa)) {
-                    usos.push(grupo.toUpperCase());
-                }
-            });
-            
-            Object.entries(sequenciasAtuais).forEach(function([sequencia, membros]) {
-                if (membros.includes(pessoa)) {
-                    usos.push(sequencia.toUpperCase());
-                }
-            });
-            
-            return usos.length > 0 ? 'Usado em: ' + usos.join(', ') : 'Não usado em grupos';
-        }
-
-        function adicionarPessoa() {
-            console.log('➕ Adicionando nova pessoa...');
-            const input = document.getElementById('novaPessoa');
-            const nome = input.value.trim().toUpperCase();
-            
-            if (!nome) {
-                alert('Digite um nome!');
-                input.focus();
-                return;
-            }
-            
-            if (todosMembrosAtuais.includes(nome)) {
-                alert('Esta pessoa já está cadastrada!');
-                input.focus();
-                return;
-            }
-            
-            todosMembrosAtuais.push(nome);
-            todosMembrosAtuais.sort();
-            carregarListaPessoas();
-            input.value = '';
-            input.focus();
-            
-            atualizarStatus(nome + ' adicionado com sucesso!', 'success');
-        }
-
-        function removerPessoa(index) {
-            const pessoa = todosMembrosAtuais[index];
-            const usos = verificarUsosPessoa(pessoa);
-            
-            if (usos !== 'Não usado em grupos') {
-                if (!confirm(pessoa + ' está sendo usado em grupos/sequências.\n\n' + usos + '\n\nRemover mesmo assim?')) {
-                    return;
-                }
-            }
-            
-            if (confirm('Tem certeza que deseja remover ' + pessoa + '?')) {
-                todosMembrosAtuais.splice(index, 1);
-                carregarListaPessoas();
-                atualizarStatus(pessoa + ' removido com sucesso!', 'success');
-            }
-        }
-
-        function salvarPessoas() {
-            salvarConfiguracoes();
-            fecharModalPessoas();
-            atualizarStatus('Lista de pessoas salva com sucesso!', 'success');
         }
 
         // ========== UTILITÁRIOS DE DATA ==========
-        function getDiasNoMes(ano, mes) {
-            return new Date(ano, mes, 0).getDate();
-        }
-
-        function getDiaSemana(ano, mes, dia) {
-            return new Date(ano, mes - 1, dia).getDay();
-        }
-
-        function encontrarNesimoDay(ano, mes, diaSemana, nesimo) {
-            let contador = 0;
-            const diasNoMes = getDiasNoMes(ano, mes);
-            
-            for (let dia = 1; dia <= diasNoMes; dia++) {
+        function getDiasNoMes(ano, mes) { return new Date(ano, mes, 0).getDate(); }
+        function getDiaSemana(ano, mes, dia) { return new Date(ano, mes - 1, dia).getDay(); }
+        function encontrarDia(ano, mes, diaSemana, n) {
+            let count = 0;
+            for (let dia = 1; dia <= getDiasNoMes(ano, mes); dia++) {
                 if (getDiaSemana(ano, mes, dia) === diaSemana) {
-                    contador++;
-                    if (contador === nesimo) {
-                        return dia;
-                    }
+                    count++;
+                    if (count === n) return dia;
                 }
             }
             return null;
         }
 
-        function temRLocal(mes) {
-            return [1, 4, 7, 10].includes(mes);
-        }
-
         // ========== ALGORITMOS DE DISTRIBUIÇÃO ==========
-        function distribuirGrupoComFolga(grupo, totalOcorrencias, indiceInicial) {
-            if (indiceInicial === undefined) indiceInicial = 0;
-            const escalacao = [];
-            let indiceAtual = indiceInicial;
+        function distribuirGrupo(grupo, total, indice, comFolga = true) {
+            const result = [];
+            let idx = indice;
             
-            for (let i = 0; i < totalOcorrencias; i++) {
-                const posicoes = [];
-                const indiceFolga = (indiceAtual + 3) % grupo.length;
-                
-                for (let j = 0; j < grupo.length; j++) {
-                    const indiceAtualPessoa = (indiceAtual + j) % grupo.length;
-                    if (indiceAtualPessoa !== indiceFolga) {
-                        posicoes.push(grupo[indiceAtualPessoa]);
-                        if (posicoes.length === 3) break;
+            for (let i = 0; i < total; i++) {
+                if (comFolga) {
+                    const folga = (idx + 3) % grupo.length;
+                    const pos = [];
+                    for (let j = 0; j < grupo.length; j++) {
+                        const p = (idx + j) % grupo.length;
+                        if (p !== folga) pos.push(grupo[p]);
+                        if (pos.length === 3) break;
                     }
+                    result.push({ pedOracao: pos[0], principal: pos[1], lateral: pos[2] });
+                    idx = folga;
+                } else {
+                    const base = idx % grupo.length;
+                    result.push({
+                        pedOracao: grupo[base],
+                        principal: grupo[(base + 1) % grupo.length],
+                        lateral: grupo[(base + 2) % grupo.length]
+                    });
+                    idx++;
                 }
-                
-                escalacao.push({
-                    pedOracao: posicoes[0],
-                    principal: posicoes[1],
-                    lateral: posicoes[2]
-                });
-                
-                indiceAtual = indiceFolga;
             }
             
-            return { escalacao: escalacao, proximoIndice: indiceAtual };
+            return { escalacao: result, proximoIndice: idx };
         }
 
-        function distribuirGrupoSemFolga(grupo, totalOcorrencias, indiceInicial) {
-            if (indiceInicial === undefined) indiceInicial = 0;
-            const escalacao = [];
-            let indiceAtual = indiceInicial;
-            
-            for (let i = 0; i < totalOcorrencias; i++) {
-                const posicaoBase = indiceAtual % grupo.length;
-                
-                escalacao.push({
-                    pedOracao: grupo[posicaoBase],
-                    principal: grupo[(posicaoBase + 1) % grupo.length],
-                    lateral: grupo[(posicaoBase + 2) % grupo.length]
-                });
-                
-                indiceAtual = (indiceAtual + 1) % grupo.length;
+        function distribuirSequencia(seq, qtd, indice) {
+            const result = [];
+            for (let i = 0; i < qtd; i++) {
+                result.push(seq[(indice + i) % seq.length]);
             }
-            
-            return { escalacao: escalacao, proximoIndice: indiceAtual };
-        }
-
-        function distribuirSequencia(sequencia, quantidade, indiceInicial) {
-            if (indiceInicial === undefined) indiceInicial = 0;
-            const membros = [];
-            let indiceAtual = indiceInicial;
-            
-            for (let i = 0; i < quantidade; i++) {
-                membros.push(sequencia[indiceAtual % sequencia.length]);
-                indiceAtual++;
-            }
-            
-            return { membros: membros, proximoIndice: indiceAtual % sequencia.length };
+            return { membros: result, proximoIndice: (indice + qtd) % seq.length };
         }
 
         // ========== GERAÇÃO DE ESCALA ==========
         function gerarEscala() {
-            const mesAnoValue = document.getElementById('mesAno').value;
-            if (!mesAnoValue) {
-                atualizarStatus('Selecione um mês primeiro!', 'error');
-                return;
-            }
+            const mesAno = document.getElementById('mesAno').value;
+            if (!mesAno) return;
 
-            const chaveEscala = mesAnoValue;
-
-            if (escalasSalvas[chaveEscala]) {
-                escalaAtual = escalasSalvas[chaveEscala];
+            if (escalas[mesAno]) {
+                escalaAtual = escalas[mesAno];
                 exibirEscala();
-                detectarConflitos();
-                
-                const ano = mesAnoValue.split('-')[0];
-                const mes = parseInt(mesAnoValue.split('-')[1]);
-                const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-                atualizarStatus('Escala de ' + meses[mes-1] + ' ' + ano + ' carregada (já existia)', 'success');
-                document.getElementById('statusEscala').textContent = escalaAtual.length + ' serviços programados (salva)';
                 return;
             }
 
-            gerarNovaEscala(mesAnoValue, chaveEscala);
-        }
-
-        function gerarNovaEscala(mesAnoValue, chaveEscala) {
-            const ano = parseInt(mesAnoValue.split('-')[0]);
-            const mes = parseInt(mesAnoValue.split('-')[1]);
+            const ano = parseInt(mesAno.split('-')[0]);
+            const mes = parseInt(mesAno.split('-')[1]);
             const diasNoMes = getDiasNoMes(ano, mes);
             
-            atualizarStatus('Gerando nova escala...', 'warning');
-
-            const contadores = { terca: 0, quinta: 0, sabado: 0, domingo: 0 };
-            const diasPorTipo = { terca: [], quinta: [], sabado: [], domingo: [] };
+            const dias = { terca: [], quinta: [], sabado: [], domingo: [] };
             
             for (let dia = 1; dia <= diasNoMes; dia++) {
                 const diaSemana = getDiaSemana(ano, mes, dia);
-                
-                if (diaSemana === 2) {
-                    contadores.terca++;
-                    diasPorTipo.terca.push(dia);
-                } else if (diaSemana === 4) {
-                    contadores.quinta++;
-                    diasPorTipo.quinta.push(dia);
-                } else if (diaSemana === 6) {
-                    contadores.sabado++;
-                    diasPorTipo.sabado.push(dia);
-                } else if (diaSemana === 0) {
-                    contadores.domingo++;
-                    diasPorTipo.domingo.push(dia);
-                }
+                if (diaSemana === 2) dias.terca.push(dia);
+                else if (diaSemana === 4) dias.quinta.push(dia);
+                else if (diaSemana === 6) dias.sabado.push(dia);
+                else if (diaSemana === 0) dias.domingo.push(dia);
             }
 
-            const resultTerca = distribuirGrupoComFolga(gruposAtuais.terca, contadores.terca, indices.terca);
-            const resultQuinta = distribuirGrupoSemFolga(gruposAtuais.quinta, contadores.quinta, indices.quinta);
-            const resultSabado = distribuirGrupoComFolga(gruposAtuais.sabado, contadores.sabado, indices.sabado);
-            const resultDomingo = distribuirGrupoComFolga(gruposAtuais.domingoOficial, contadores.domingo, indices.domingoOficial);
+            const resultTerca = distribuirGrupo(grupos.terca, dias.terca.length, indices.terca, true);
+            const resultQuinta = distribuirGrupo(grupos.quinta, dias.quinta.length, indices.quinta, false);
+            const resultSabado = distribuirGrupo(grupos.sabado, dias.sabado.length, indices.sabado, true);
+            const resultDomingo = distribuirGrupo(grupos.domingoOficial, dias.domingo.length, indices.domingoOficial, true);
 
-            const resultRJM = distribuirSequencia(sequenciasAtuais.rjm, contadores.domingo * 2, indices.rjm);
-            const resultRSetor = distribuirSequencia(sequenciasAtuais.rSetor, 1, indices.rSetor);
-            const resultRLocal = distribuirSequencia(sequenciasAtuais.rLocal, temRLocal(mes) ? 1 : 0, indices.rLocal);
-            const resultEnsaio = distribuirSequencia(sequenciasAtuais.ensaio, 2, indices.ensaio);
+            const resultRJM = distribuirSequencia(sequencias.rjm, dias.domingo.length * 2, indices.rjm);
+            const resultRSetor = distribuirSequencia(sequencias.rSetor, 1, indices.rSetor);
+            const resultRLocal = distribuirSequencia(sequencias.rLocal, [1,4,7,10].includes(mes) ? 1 : 0, indices.rLocal);
+            const resultEnsaio = distribuirSequencia(sequencias.ensaio, 2, indices.ensaio);
 
             escalaAtual = [];
-            let indiceRJM = 0;
+            let idxRJM = 0;
 
             // 3ª feiras
-            for (let i = 0; i < diasPorTipo.terca.length; i++) {
-                const dia = diasPorTipo.terca[i];
-                const escalacaoDia = resultTerca.escalacao[i];
+            dias.terca.forEach((dia, i) => {
+                const esc = resultTerca.escalacao[i];
                 escalaAtual.push({
-                    dia: dia,
-                    diaSemana: '3ª FEIRA',
-                    servico: 'OFICIAL',
-                    pedOracao: escalacaoDia.pedOracao,
-                    principal: escalacaoDia.principal,
-                    lateral: escalacaoDia.lateral,
-                    classe: 'oficial'
+                    dia, diaSemana: '3ª FEIRA', servico: 'OFICIAL', classe: 'oficial',
+                    pedOracao: esc.pedOracao, principal: esc.principal, lateral: esc.lateral
                 });
-            }
+            });
 
             // 5ª feiras
-            for (let i = 0; i < diasPorTipo.quinta.length; i++) {
-                const dia = diasPorTipo.quinta[i];
-                const escalacaoDia = resultQuinta.escalacao[i];
+            dias.quinta.forEach((dia, i) => {
+                const esc = resultQuinta.escalacao[i];
                 escalaAtual.push({
-                    dia: dia,
-                    diaSemana: '5ª FEIRA',
-                    servico: 'OFICIAL',
-                    pedOracao: escalacaoDia.pedOracao,
-                    principal: escalacaoDia.principal,
-                    lateral: escalacaoDia.lateral,
-                    classe: 'oficial'
+                    dia, diaSemana: '5ª FEIRA', servico: 'OFICIAL', classe: 'oficial',
+                    pedOracao: esc.pedOracao, principal: esc.principal, lateral: esc.lateral
                 });
-            }
+            });
 
             // Sábados
-            for (let i = 0; i < diasPorTipo.sabado.length; i++) {
-                const dia = diasPorTipo.sabado[i];
-                const escalacaoDia = resultSabado.escalacao[i];
+            dias.sabado.forEach((dia, i) => {
+                const esc = resultSabado.escalacao[i];
                 escalaAtual.push({
-                    dia: dia,
-                    diaSemana: 'SÁBADO',
-                    servico: 'OFICIAL',
-                    pedOracao: escalacaoDia.pedOracao,
-                    principal: escalacaoDia.principal,
-                    lateral: escalacaoDia.lateral,
-                    classe: 'oficial'
+                    dia, diaSemana: 'SÁBADO', servico: 'OFICIAL', classe: 'oficial',
+                    pedOracao: esc.pedOracao, principal: esc.principal, lateral: esc.lateral
                 });
-            }
+            });
 
             // Domingos
-            for (let i = 0; i < diasPorTipo.domingo.length; i++) {
-                const dia = diasPorTipo.domingo[i];
-                
-                const membroRJM1 = resultRJM.membros[indiceRJM];
-                const membroRJM2 = resultRJM.membros[indiceRJM + 1];
-                indiceRJM += 2;
-
+            dias.domingo.forEach((dia, i) => {
                 escalaAtual.push({
-                    dia: dia,
-                    diaSemana: 'DOMINGO',
-                    servico: 'RJM',
-                    pedOracao: membroRJM1,
-                    principal: '-',
-                    lateral: membroRJM2,
-                    classe: 'rjm'
+                    dia, diaSemana: 'DOMINGO', servico: 'RJM', classe: 'rjm',
+                    pedOracao: resultRJM.membros[idxRJM], principal: '-', lateral: resultRJM.membros[idxRJM + 1]
                 });
+                idxRJM += 2;
 
-                const escalacaoDia = resultDomingo.escalacao[i];
+                const esc = resultDomingo.escalacao[i];
                 escalaAtual.push({
-                    dia: dia,
-                    diaSemana: 'DOMINGO',
-                    servico: 'OFICIAL',
-                    pedOracao: escalacaoDia.pedOracao,
-                    principal: escalacaoDia.principal,
-                    lateral: escalacaoDia.lateral,
-                    classe: 'oficial'
+                    dia, diaSemana: 'DOMINGO', servico: 'OFICIAL', classe: 'oficial',
+                    pedOracao: esc.pedOracao, principal: esc.principal, lateral: esc.lateral
                 });
-            }
+            });
 
             // R. SETOR
-            const terceiraSegunda = encontrarNesimoDay(ano, mes, 1, 3);
-            if (terceiraSegunda && resultRSetor.membros.length > 0) {
+            const seg3 = encontrarDia(ano, mes, 1, 3);
+            if (seg3) {
                 escalaAtual.push({
-                    dia: terceiraSegunda,
-                    diaSemana: '2ª FEIRA',
-                    servico: 'R. SETOR',
-                    pedOracao: resultRSetor.membros[0],
-                    principal: 'MESCLAR',
-                    lateral: 'MESCLAR',
-                    classe: 'rsetor',
-                    mesclar: true
+                    dia: seg3, diaSemana: '2ª FEIRA', servico: 'R. SETOR', classe: 'rsetor',
+                    pedOracao: resultRSetor.membros[0], principal: 'MESCLAR', lateral: 'MESCLAR', mesclar: true
                 });
             }
 
             // R. LOCAL
-            if (temRLocal(mes)) {
-                const quartaSegunda = encontrarNesimoDay(ano, mes, 1, 4);
-                if (quartaSegunda && resultRLocal.membros.length > 0) {
+            if ([1,4,7,10].includes(mes)) {
+                const seg4 = encontrarDia(ano, mes, 1, 4);
+                if (seg4) {
                     escalaAtual.push({
-                        dia: quartaSegunda,
-                        diaSemana: '2ª FEIRA',
-                        servico: 'R. LOCAL',
-                        pedOracao: resultRLocal.membros[0],
-                        principal: 'MESCLAR',
-                        lateral: 'MESCLAR',
-                        classe: 'rlocal',
-                        mesclar: true
+                        dia: seg4, diaSemana: '2ª FEIRA', servico: 'R. LOCAL', classe: 'rlocal',
+                        pedOracao: resultRLocal.membros[0], principal: 'MESCLAR', lateral: 'MESCLAR', mesclar: true
                     });
                 }
             }
 
             // ENSAIO
-            const quartaSexta = encontrarNesimoDay(ano, mes, 5, 4);
-            if (quartaSexta && resultEnsaio.membros.length >= 2) {
+            const sex4 = encontrarDia(ano, mes, 5, 4);
+            if (sex4) {
                 escalaAtual.push({
-                    dia: quartaSexta,
-                    diaSemana: '6ª FEIRA',
-                    servico: 'ENSAIO',
-                    pedOracao: resultEnsaio.membros[0],
-                    principal: '-',
-                    lateral: resultEnsaio.membros[1],
-                    classe: 'ensaio'
+                    dia: sex4, diaSemana: '6ª FEIRA', servico: 'ENSAIO', classe: 'ensaio',
+                    pedOracao: resultEnsaio.membros[0], principal: '-', lateral: resultEnsaio.membros[1]
                 });
             }
 
-            escalaAtual.sort(function(a, b) { return a.dia - b.dia; });
+            escalaAtual.sort((a, b) => a.dia - b.dia);
 
-            escalasSalvas[chaveEscala] = JSON.parse(JSON.stringify(escalaAtual));
-
+            // Atualizar índices
             indices.terca = resultTerca.proximoIndice;
             indices.quinta = resultQuinta.proximoIndice;
             indices.sabado = resultSabado.proximoIndice;
             indices.domingoOficial = resultDomingo.proximoIndice;
             indices.rjm = resultRJM.proximoIndice;
             indices.rSetor = resultRSetor.proximoIndice;
-            if (temRLocal(mes)) {
-                indices.rLocal = resultRLocal.proximoIndice;
-            }
+            if ([1,4,7,10].includes(mes)) indices.rLocal = resultRLocal.proximoIndice;
             indices.ensaio = resultEnsaio.proximoIndice;
 
-            salvarConfiguracoes();
+            escalas[mesAno] = [...escalaAtual];
+            salvarDados();
             exibirEscala();
-            detectarConflitos();
-            
-            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-            atualizarStatus('Escala de ' + meses[mes-1] + ' ' + ano + ' gerada e salva!', 'success');
-            document.getElementById('statusEscala').textContent = escalaAtual.length + ' serviços programados (nova)';
         }
 
-        // ========== EXIBIÇÃO DA TABELA ==========
+        // ========== EXIBIÇÃO ==========
         function exibirEscala() {
             const tbody = document.getElementById('corpoTabela');
             tbody.innerHTML = '';
 
-            escalaAtual.forEach(function(item, index) {
+            escalaAtual.forEach((item, i) => {
                 const row = document.createElement('tr');
                 
                 if (item.mesclar) {
-                    row.innerHTML = 
-                        '<td>' + item.dia + '</td>' +
-                        '<td>' + item.diaSemana + '</td>' +
-                        '<td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td>' +
-                        '<td colspan="3" class="mesclar">' + item.pedOracao + '</td>';
+                    row.innerHTML = `
+                        <td>${item.dia}</td>
+                        <td>${item.diaSemana}</td>
+                        <td><span class="servico-badge ${item.classe}">${item.servico}</span></td>
+                        <td colspan="3" style="background: #f0f0f0;">${item.pedOracao}</td>
+                    `;
                 } else {
-                    row.innerHTML = 
-                        '<td>' + item.dia + '</td>' +
-                        '<td>' + item.diaSemana + '</td>' +
-                        '<td><span class="servico-badge ' + item.classe + '">' + item.servico + '</span></td>' +
-                        '<td><span class="nome-editavel" data-index="' + index + '" data-campo="pedOracao">' + item.pedOracao + '</span></td>' +
-                        '<td><span class="nome-editavel" data-index="' + index + '" data-campo="principal">' + item.principal + '</span></td>' +
-                        '<td><span class="nome-editavel" data-index="' + index + '" data-campo="lateral">' + item.lateral + '</span></td>';
+                    row.innerHTML = `
+                        <td>${item.dia}</td>
+                        <td>${item.diaSemana}</td>
+                        <td><span class="servico-badge ${item.classe}">${item.servico}</span></td>
+                        <td><span class="nome-editavel" data-index="${i}" data-campo="pedOracao">${item.pedOracao}</span></td>
+                        <td><span class="nome-editavel" data-index="${i}" data-campo="principal">${item.principal}</span></td>
+                        <td><span class="nome-editavel" data-index="${i}" data-campo="lateral">${item.lateral}</span></td>
+                    `;
                 }
                 
                 tbody.appendChild(row);
             });
 
-            document.querySelectorAll('.nome-editavel').forEach(function(span) {
-                span.addEventListener('dblclick', function(e) {
-                    e.stopPropagation();
-                    iniciarEdicao(this);
-                });
-            });
-        }
-
-        // ========== SISTEMA DE EDIÇÃO ==========
-        function iniciarEdicao(elemento) {
-            if (elemento.querySelector('select')) return;
-
-            const nomeAtual = elemento.textContent;
-            const index = parseInt(elemento.dataset.index);
-            const campo = elemento.dataset.campo;
-
-            const select = document.createElement('select');
-            select.style.cssText = 'padding: 4px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;';
-            
-            todosMembrosAtuais.forEach(function(membro) {
-                const option = document.createElement('option');
-                option.value = membro;
-                option.textContent = membro;
-                if (membro === nomeAtual) option.selected = true;
-                select.appendChild(option);
-            });
-
-            const btnConfirm = document.createElement('button');
-            btnConfirm.textContent = '✓';
-            btnConfirm.style.cssText = 'margin-left: 5px; padding: 4px 8px; background: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;';
-            btnConfirm.onclick = function() {
-                confirmarEdicao(elemento, select.value, index, campo);
-            };
-
-            const btnCancel = document.createElement('button');
-            btnCancel.textContent = '✕';
-            btnCancel.style.cssText = 'margin-left: 2px; padding: 4px 8px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;';
-            btnCancel.onclick = function() {
-                cancelarEdicao(elemento, nomeAtual);
-            };
-
-            elemento.innerHTML = '';
-            elemento.appendChild(select);
-            elemento.appendChild(btnConfirm);
-            elemento.appendChild(btnCancel);
-            select.focus();
-        }
-
-        function confirmarEdicao(elemento, novoNome, index, campo) {
-            escalaAtual[index][campo] = novoNome;
-            
-            const mesAnoValue = document.getElementById('mesAno').value;
-            if (mesAnoValue) {
-                escalasSalvas[mesAnoValue] = JSON.parse(JSON.stringify(escalaAtual));
-                salvarConfiguracoes();
-            }
-            
-            elemento.innerHTML = novoNome;
-            detectarConflitos();
-            atualizarStatus('Edição realizada e salva com sucesso', 'success');
-        }
-
-        function cancelarEdicao(elemento, nomeOriginal) {
-            elemento.innerHTML = nomeOriginal;
-        }
-
-        // ========== DETECÇÃO DE CONFLITOS ==========
-        function detectarConflitos() {
-            const conflitos = [];
-            const servicosPorDia = {};
-
-            escalaAtual.forEach(function(item, index) {
-                if (!servicosPorDia[item.dia]) {
-                    servicosPorDia[item.dia] = [];
-                }
-                servicosPorDia[item.dia].push({...item, index: index});
-            });
-
-            Object.entries(servicosPorDia).forEach(function([dia, servicos]) {
-                const membrosNoDia = [];
-                
-                servicos.forEach(function(servico) {
-                    [servico.pedOracao, servico.principal, servico.lateral].forEach(function(membro) {
-                        if (membro && membro !== '-' && membro !== 'MESCLAR') {
-                            if (membrosNoDia.includes(membro)) {
-                                conflitos.push('Dia ' + dia + ': ' + membro + ' está em múltiplos serviços');
-                            } else {
-                                membrosNoDia.push(membro);
-                            }
-                        }
+            // Event listeners para edição
+            document.querySelectorAll('.nome-editavel').forEach(span => {
+                span.addEventListener('dblclick', function() {
+                    const atual = this.textContent;
+                    const select = document.createElement('select');
+                    pessoas.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = opt.textContent = p;
+                        if (p === atual) opt.selected = true;
+                        select.appendChild(opt);
                     });
+                    
+                    const confirmar = document.createElement('button');
+                    confirmar.textContent = '✓';
+                    confirmar.style.cssText = 'margin-left: 5px; padding: 2px 6px; background: #4caf50; color: white; border: none; border-radius: 3px; cursor: pointer;';
+                    confirmar.onclick = () => {
+                        const i = parseInt(this.dataset.index);
+                        const campo = this.dataset.campo;
+                        escalaAtual[i][campo] = select.value;
+                        this.textContent = select.value;
+                        
+                        const mesAno = document.getElementById('mesAno').value;
+                        escalas[mesAno] = [...escalaAtual];
+                        salvarDados();
+                    };
+                    
+                    this.innerHTML = '';
+                    this.appendChild(select);
+                    this.appendChild(confirmar);
+                    select.focus();
                 });
             });
+        }
 
-            const alertDiv = document.getElementById('conflictsAlert');
-            const listDiv = document.getElementById('conflictsList');
+        // ========== GERENCIAMENTO DE PESSOAS ==========
+        function abrirModalPessoas() {
+            carregarListaPessoas();
+            document.getElementById('modalPessoas').style.display = 'block';
+        }
+
+        function fecharModalPessoas() {
+            document.getElementById('modalPessoas').style.display = 'none';
+            document.getElementById('novaPessoa').value = '';
+        }
+
+        function carregarListaPessoas() {
+            const lista = document.getElementById('listaPessoas');
+            lista.innerHTML = '';
             
-            if (conflitos.length > 0) {
-                listDiv.innerHTML = conflitos.map(function(c) { return '• ' + c; }).join('<br>');
-                alertDiv.style.display = 'block';
-                atualizarStatus(conflitos.length + ' conflito(s) detectado(s)', 'error');
-            } else {
-                alertDiv.style.display = 'none';
-                atualizarStatus('Nenhum conflito detectado', 'success');
+            pessoas.sort().forEach((pessoa, i) => {
+                const card = document.createElement('div');
+                card.className = 'pessoa-card';
+                card.innerHTML = `
+                    <span>${pessoa}</span>
+                    <button class="btn-remove" onclick="removerPessoa(${i})">✕</button>
+                `;
+                lista.appendChild(card);
+            });
+        }
+
+        function adicionarPessoa() {
+            const input = document.getElementById('novaPessoa');
+            const nome = input.value.trim().toUpperCase();
+            
+            if (!nome) return alert('Digite um nome!');
+            if (pessoas.includes(nome)) return alert('Pessoa já cadastrada!');
+            
+            pessoas.push(nome);
+            pessoas.sort();
+            carregarListaPessoas();
+            input.value = '';
+        }
+
+        function removerPessoa(i) {
+            if (confirm(`Remover ${pessoas[i]}?`)) {
+                pessoas.splice(i, 1);
+                carregarListaPessoas();
             }
+        }
+
+        function salvarPessoas() {
+            salvarDados();
+            fecharModalPessoas();
+        }
+
+        // ========== GERENCIAMENTO DE GRUPOS ==========
+        function abrirModalGrupos() {
+            carregarGrupos();
+            document.getElementById('modalGrupos').style.display = 'block';
+        }
+
+        function fecharModalGrupos() {
+            document.getElementById('modalGrupos').style.display = 'none';
+        }
+
+        function carregarGrupos() {
+            const container = document.getElementById('gruposContainer');
+            container.innerHTML = '';
+
+            Object.keys(grupos).forEach(grupoId => {
+                container.appendChild(criarCardGrupo(grupoId, grupos[grupoId], true));
+            });
+
+            Object.keys(sequencias).forEach(seqId => {
+                container.appendChild(criarCardGrupo(seqId, sequencias[seqId], false));
+            });
+        }
+
+        function criarCardGrupo(id, membros, isGrupo) {
+            const info = GRUPOS_INFO[id];
+            const card = document.createElement('div');
+            card.className = 'grupo-card';
+            
+            card.innerHTML = `
+                <div class="grupo-titulo ${info.classe}">${info.nome}</div>
+                <div class="membros-lista" data-grupo="${id}">
+                    ${membros.map(m => `<span class="membro-item" onclick="removerMembro('${id}', '${m}', ${isGrupo})">${m}</span>`).join('')}
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <strong>Disponíveis:</strong><br>
+                    ${obterPessoasLivres(id, isGrupo).map(p => `<span class="pessoa-disponivel" onclick="adicionarMembro('${id}', '${p}', ${isGrupo})">${p}</span>`).join('')}
+                </div>
+                <button onclick="resetarGrupo('${id}', ${isGrupo})" style="width: 100%; padding: 8px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer;">🔄 Resetar</button>
+            `;
+            
+            return card;
+        }
+
+        function obterPessoasLivres(grupoAtual, isGrupoAtual) {
+            const usadas = new Set();
+            
+            Object.values(grupos).forEach(membros => {
+                membros.forEach(m => usadas.add(m));
+            });
+            
+            Object.values(sequencias).forEach(membros => {
+                membros.forEach(m => usadas.add(m));
+            });
+
+            // Remove pessoas do grupo atual
+            const atual = isGrupoAtual ? grupos[grupoAtual] : sequencias[grupoAtual];
+            atual.forEach(m => usadas.delete(m));
+            
+            return pessoas.filter(p => !usadas.has(p)).sort();
+        }
+
+        function adicionarMembro(grupoId, pessoa, isGrupo) {
+            if (isGrupo) {
+                if (!grupos[grupoId].includes(pessoa)) {
+                    grupos[grupoId].push(pessoa);
+                    grupos[grupoId].sort();
+                }
+            } else {
+                if (!sequencias[grupoId].includes(pessoa)) {
+                    sequencias[grupoId].push(pessoa);
+                    sequencias[grupoId].sort();
+                }
+            }
+            carregarGrupos();
+        }
+
+        function removerMembro(grupoId, pessoa, isGrupo) {
+            if (confirm(`Remover ${pessoa} do grupo ${GRUPOS_INFO[grupoId].nome}?`)) {
+                if (isGrupo) {
+                    const idx = grupos[grupoId].indexOf(pessoa);
+                    if (idx > -1) grupos[grupoId].splice(idx, 1);
+                } else {
+                    const idx = sequencias[grupoId].indexOf(pessoa);
+                    if (idx > -1) sequencias[grupoId].splice(idx, 1);
+                }
+                carregarGrupos();
+            }
+        }
+
+        function resetarGrupo(grupoId, isGrupo) {
+            if (confirm(`Resetar ${GRUPOS_INFO[grupoId].nome} ao padrão?`)) {
+                if (isGrupo) {
+                    grupos[grupoId] = [...GRUPOS_PADRAO[grupoId]];
+                } else {
+                    sequencias[grupoId] = [...SEQUENCIAS_PADRAO[grupoId]];
+                }
+                carregarGrupos();
+            }
+        }
+
+        function resetarGrupos() {
+            if (confirm('Resetar TODOS os grupos ao padrão?')) {
+                grupos = JSON.parse(JSON.stringify(GRUPOS_PADRAO));
+                sequencias = JSON.parse(JSON.stringify(SEQUENCIAS_PADRAO));
+                carregarGrupos();
+            }
+        }
+
+        function salvarGrupos() {
+            salvarDados();
+            fecharModalGrupos();
         }
 
         // ========== GERAÇÃO DE PDF ==========
         function gerarPDF() {
-            if (!escalaAtual || escalaAtual.length === 0) {
-                alert('Gere uma escala primeiro!');
-                return;
-            }
+            if (!escalaAtual.length) return alert('Gere uma escala primeiro!');
 
-            const mesAnoValue = document.getElementById('mesAno').value;
-            const ano = mesAnoValue.split('-')[0];
-            const mes = mesAnoValue.split('-')[1];
+            const mesAno = document.getElementById('mesAno').value;
+            const [ano, mes] = mesAno.split('-');
             const meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
             const mesNome = meses[parseInt(mes) - 1];
             
-            let linhasHTML = '';
-            escalaAtual.forEach(function(item) {
-                const classeCorPDF = 'cor-' + item.classe;
-                
+            let linhas = '';
+            escalaAtual.forEach(item => {
                 if (item.mesclar) {
-                    linhasHTML += '<tr><td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td class="' + classeCorPDF + '">' + item.servico + '</td><td colspan="3" class="mesclar-pdf">' + item.pedOracao + '</td></tr>';
+                    linhas += `<tr><td>${item.dia}</td><td>${item.diaSemana}</td><td class="cor-${item.classe}">${item.servico}</td><td colspan="3" class="mesclar">${item.pedOracao}</td></tr>`;
                 } else {
-                    linhasHTML += '<tr><td>' + item.dia + '</td><td>' + item.diaSemana + '</td><td class="' + classeCorPDF + '">' + item.servico + '</td><td>' + item.pedOracao + '</td><td>' + item.principal + '</td><td>' + item.lateral + '</td></tr>';
+                    linhas += `<tr><td>${item.dia}</td><td>${item.diaSemana}</td><td class="cor-${item.classe}">${item.servico}</td><td>${item.pedOracao}</td><td>${item.principal}</td><td>${item.lateral}</td></tr>`;
                 }
             });
             
-            const htmlContent = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Escala de Porteiros - ' + mesNome + ' ' + ano + '</title><style>@page { margin: 2cm; size: A4; }body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; background: white; }.cabecalho { text-align: center; margin-bottom: 30px; }.cabecalho h1 { font-size: 18px; font-weight: bold; margin: 5px 0; color: #1976d2; }.cabecalho h2 { font-size: 16px; font-weight: bold; margin: 5px 0; color: #333; }.cabecalho h3 { font-size: 16px; font-weight: bold; margin: 5px 0; color: #1976d2; }.print-info { font-size: 12px; color: #666; margin: 20px 0; text-align: center; border: 1px solid #ddd; padding: 10px; background: #f9f9f9; }table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }th { background: #f0f0f0 !important; font-weight: bold; text-align: center; padding: 12px 8px; border: 2px solid #333 !important; font-size: 12px; text-transform: uppercase; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }td { text-align: center; padding: 10px 8px; border: 1px solid #333 !important; }tr:nth-child(even) { background-color: #f9f9f9 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }.cor-oficial { background-color: #e3f2fd !important; color: #0d47a1 !important; font-weight: bold; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }.cor-rjm { background-color: #e8f5e8 !important; color: #1b5e20 !important; font-weight: bold; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }.cor-rsetor { background-color: #fff3e0 !important; color: #e65100 !important; font-weight: bold; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }.cor-rlocal { background-color: #f3e5f5 !important; color: #4a148c !important; font-weight: bold; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }.cor-ensaio { background-color: #e8eaf6 !important; color: #1a237e !important; font-weight: bold; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }.mesclar-pdf { background-color: #f5f5f5 !important; font-weight: bold; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }</style></head><body><div class="cabecalho"><h1>CONGREGAÇÃO CRISTÃ NO BRASIL – SANTA AMÉLIA – CURITIBA PR</h1><h2>ESCALA DE PORTEIROS</h2><h3>' + mesNome + ' DE ' + ano + '</h3></div><div class="print-info"><strong>💡 DICA PARA IMPRIMIR COM CORES:</strong><br>No Chrome: Ctrl+P → Mais configurações → Marcar "Elementos gráficos de fundo"<br>No Firefox: Ctrl+P → Mais configurações → Marcar "Imprimir fundos"<br>No Edge: Ctrl+P → Mais configurações → Marcar "Gráficos de fundo"</div><table><thead><tr><th>DIA</th><th>DIA DA SEMANA</th><th>SERVIÇO</th><th>PED ORAÇÃO</th><th>PRINCIPAL</th><th>LATERAL</th></tr></thead><tbody>' + linhasHTML + '</tbody></table><div style="margin-top: 30px; font-size: 11px; color: #666; text-align: center; border-top: 1px solid #ddd; padding-top: 15px;"><p><strong>Sistema de Escalas CCB Santa Amélia v3.0</strong></p><p>Distribuição automática com continuidade • Gerado em ' + new Date().toLocaleDateString('pt-BR') + '</p></div></body></html>';
+            const html = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Escala ${mesNome} ${ano}</title>
+<style>
+@page { margin: 2cm; }
+body { font-family: Arial, sans-serif; color: #333; }
+.cabecalho { text-align: center; margin-bottom: 30px; }
+.cabecalho h1 { font-size: 18px; color: #1976d2; margin: 5px 0; }
+.cabecalho h2 { font-size: 16px; margin: 5px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+th { background: #f0f0f0; font-weight: bold; }
+tr:nth-child(even) { background: #f9f9f9; }
+.cor-oficial { background: #e3f2fd !important; color: #0d47a1 !important; font-weight: bold; }
+.cor-rjm { background: #e8f5e8 !important; color: #1b5e20 !important; font-weight: bold; }
+.cor-rsetor { background: #fff3e0 !important; color: #e65100 !important; font-weight: bold; }
+.cor-rlocal { background: #f3e5f5 !important; color: #4a148c !important; font-weight: bold; }
+.cor-ensaio { background: #e8eaf6 !important; color: #1a237e !important; font-weight: bold; }
+.mesclar { background: #f5f5f5 !important; font-weight: bold; }
+</style></head>
+<body>
+<div class="cabecalho">
+<h1>CONGREGAÇÃO CRISTÃ NO BRASIL – SANTA AMÉLIA – CURITIBA PR</h1>
+<h2>ESCALA DE PORTEIROS</h2>
+<h2>${mesNome} DE ${ano}</h2>
+</div>
+<table>
+<thead><tr><th>DIA</th><th>DIA DA SEMANA</th><th>SERVIÇO</th><th>PED ORAÇÃO</th><th>PRINCIPAL</th><th>LATERAL</th></tr></thead>
+<tbody>${linhas}</tbody>
+</table>
+<div style="margin-top: 20px; text-align: center; font-size: 11px; color: #666;">
+<p>Sistema de Escalas CCB Santa Amélia • Gerado em ${new Date().toLocaleDateString('pt-BR')}</p>
+</div>
+</body></html>`;
             
-            const novaJanela = window.open('', '_blank');
-            novaJanela.document.write(htmlContent);
-            novaJanela.document.close();
-            
-            setTimeout(function() {
-                alert('📄 PDF GERADO COM SUCESSO!\n\n🎨 PARA IMPRIMIR COM CORES:\n\n✅ Chrome: Ctrl+P → Mais configurações → Marcar "Elementos gráficos de fundo"\n✅ Firefox: Ctrl+P → Mais configurações → Marcar "Imprimir fundos"\n✅ Edge: Ctrl+P → Mais configurações → Marcar "Gráficos de fundo"\n\n💡 As cores aparecerão tanto na visualização quanto na impressão!');
-                novaJanela.print(); 
-            }, 1000);
-            
-            atualizarStatus('PDF gerado com sucesso! Veja instruções para imprimir com cores.', 'success');
+            const janela = window.open('', '_blank');
+            janela.document.write(html);
+            janela.document.close();
+            setTimeout(() => janela.print(), 500);
         }
 
-        // ========== CONSOLE INFO ==========
-        console.log('🎉 Sistema de Escalas CCB Santa Amélia v3.0 carregado!');
-        console.log('💡 Funcionalidades: Continuidade, Persistência, Edição manual, PDF colorido, Gerenciamento de pessoas');
-        console.log('⚙️ Funções: listarEscalasSalvas(), apagarEscalaMes("2025-08"), apagarTodasEscalas()');
+        // ========== EVENT LISTENERS GLOBAIS ==========
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                fecharModalPessoas();
+                fecharModalGrupos();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                fecharModalPessoas();
+                fecharModalGrupos();
+            }
+        });
     </script>
 </body>
 </html>
