@@ -651,7 +651,7 @@
             }
         }
 
-        // Funções para persistir índices das sequências
+        // Funções para persistir índices das sequências E grupos semanais
         function salvarIndices(indices) {
             try {
                 localStorage.setItem('escalas_indices', JSON.stringify(indices));
@@ -667,7 +667,12 @@
                     rjm: 0,
                     rSetor: 0,
                     rLocal: 0,
-                    ensaio: 0
+                    ensaio: 0,
+                    // Índices para grupos semanais (continuidade entre meses)
+                    terca: 0,
+                    quinta: 0,
+                    sabado: 0,
+                    domingoOficial: 0
                 };
             } catch (e) {
                 console.log('Não foi possível carregar índices');
@@ -675,7 +680,11 @@
                     rjm: 0,
                     rSetor: 0,
                     rLocal: 0,
-                    ensaio: 0
+                    ensaio: 0,
+                    terca: 0,
+                    quinta: 0,
+                    sabado: 0,
+                    domingoOficial: 0
                 };
             }
         }
@@ -947,12 +956,18 @@
             const diasNoMes = getDiasNoMes(ano, mes);
             const escala = [];
             
-            // Carregar índices salvos das sequências (continuidade entre meses)
+            // Carregar índices salvos (continuidade entre meses)
             const indices = carregarIndices();
             let indiceRJM = indices.rjm;
             let indiceRSetor = indices.rSetor;
             let indiceRLocal = indices.rLocal;
             let indiceEnsaio = indices.ensaio;
+            
+            // Índices para grupos semanais (NOVA FUNCIONALIDADE)
+            let indiceTerca = indices.terca || 0;
+            let indiceQuinta = indices.quinta || 0;
+            let indiceSabado = indices.sabado || 0;
+            let indiceDomingoOficial = indices.domingoOficial || 0;
             
             // Contar ocorrências
             const contadores = { terca: 0, quinta: 0, sabado: 0, domingo: 0 };
@@ -976,11 +991,11 @@
                 }
             }
 
-            // Gerar escalações
-            const escalacaoTerca = distribuirGrupoComFolga(gruposPorDia.terca, contadores.terca, 0);
-            const escalacaoQuinta = distribuirGrupoSemFolga(gruposPorDia.quinta, contadores.quinta, 0);
-            const escalacaoSabado = distribuirGrupoComFolga(gruposPorDia.sabado, contadores.sabado, 0);
-            const escalacaoDomingo = distribuirGrupoComFolga(gruposPorDia.domingoOficial, contadores.domingo, 0);
+            // Gerar escalações COM CONTINUIDADE
+            const escalacaoTerca = distribuirGrupoComFolga(gruposPorDia.terca, contadores.terca, indiceTerca);
+            const escalacaoQuinta = distribuirGrupoSemFolga(gruposPorDia.quinta, contadores.quinta, indiceQuinta);
+            const escalacaoSabado = distribuirGrupoComFolga(gruposPorDia.sabado, contadores.sabado, indiceSabado);
+            const escalacaoDomingo = distribuirGrupoComFolga(gruposPorDia.domingoOficial, contadores.domingo, indiceDomingoOficial);
 
             // 3ª feiras
             for (let i = 0; i < diasPorTipo.terca.length; i++) {
@@ -1072,7 +1087,7 @@
                     classe: 'rsetor',
                     mesclar: true
                 });
-                indiceRSetor++; // Avança para o próximo membro
+                indiceRSetor++;
             }
 
             // R. LOCAL - usando índice contínuo
@@ -1089,7 +1104,7 @@
                         classe: 'rlocal',
                         mesclar: true
                     });
-                    indiceRLocal++; // Avança para o próximo membro
+                    indiceRLocal++;
                 }
             }
 
@@ -1108,7 +1123,25 @@
                     lateral: membroEnsaio2,
                     classe: 'ensaio'
                 });
-                indiceEnsaio += 2; // Avança 2 posições
+                indiceEnsaio += 2;
+            }
+
+            // CALCULAR E SALVAR NOVOS ÍNDICES para próximo mês
+            
+            // Para grupos com folga (4 pessoas): calcular próximo índice baseado no último que folgou
+            if (contadores.terca > 0) {
+                indiceTerca = calcularProximoIndiceComFolga(gruposPorDia.terca, contadores.terca, indiceTerca);
+            }
+            if (contadores.sabado > 0) {
+                indiceSabado = calcularProximoIndiceComFolga(gruposPorDia.sabado, contadores.sabado, indiceSabado);
+            }
+            if (contadores.domingo > 0) {
+                indiceDomingoOficial = calcularProximoIndiceComFolga(gruposPorDia.domingoOficial, contadores.domingo, indiceDomingoOficial);
+            }
+            
+            // Para grupo sem folga (3 pessoas): apenas avançar
+            if (contadores.quinta > 0) {
+                indiceQuinta = (indiceQuinta + contadores.quinta) % gruposPorDia.quinta.length;
             }
 
             // Salvar os novos índices para continuidade
@@ -1116,7 +1149,11 @@
                 rjm: indiceRJM,
                 rSetor: indiceRSetor,
                 rLocal: indiceRLocal,
-                ensaio: indiceEnsaio
+                ensaio: indiceEnsaio,
+                terca: indiceTerca,
+                quinta: indiceQuinta,
+                sabado: indiceSabado,
+                domingoOficial: indiceDomingoOficial
             });
 
             // Ordenar e exibir
@@ -1124,6 +1161,19 @@
             escalaAtual = escala;
             exibirEscala(escala);
             detectarConflitos(escala);
+        }
+
+        // Função para calcular próximo índice em grupos com folga
+        function calcularProximoIndiceComFolga(grupo, totalOcorrencias, indiceInicial) {
+            let indiceAtual = indiceInicial;
+            
+            // Simular a distribuição para encontrar o último que folgou
+            for (let i = 0; i < totalOcorrencias; i++) {
+                const indiceFolga = (indiceAtual + 3) % grupo.length;
+                indiceAtual = indiceFolga; // Próximo começa com quem folgou
+            }
+            
+            return indiceAtual;
         }
 
         function detectarConflitos(escala) {
