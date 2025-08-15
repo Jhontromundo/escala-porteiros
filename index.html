@@ -572,17 +572,26 @@
         }
 
         // ========== UTILITÁRIOS DE DATA ==========
+        function getDiaSemana(ano, mes, dia) { 
+            const data = new Date(ano, mes - 1, dia);
+            const diasSemana = ['DOMINGO', '2ª FEIRA', '3ª FEIRA', '4ª FEIRA', '5ª FEIRA', '6ª FEIRA', 'SÁBADO'];
+            return { numero: data.getDay(), nome: diasSemana[data.getDay()] };
+        }
         function getDiasNoMes(ano, mes) { return new Date(ano, mes, 0).getDate(); }
-        function getDiaSemana(ano, mes, dia) { return new Date(ano, mes - 1, dia).getDay(); }
+        
         function encontrarDia(ano, mes, diaSemana, n) {
             let count = 0;
             for (let dia = 1; dia <= getDiasNoMes(ano, mes); dia++) {
-                if (getDiaSemana(ano, mes, dia) === diaSemana) {
+                if (getDiaSemana(ano, mes, dia).numero === diaSemana) {
                     count++;
                     if (count === n) return dia;
                 }
             }
             return null;
+        }
+
+        function temRLocal(mes) {
+            return [1, 4, 7, 10].includes(mes);
         }
 
         // ========== ALGORITMOS DE DISTRIBUIÇÃO ==========
@@ -668,10 +677,10 @@
             
             for (let dia = 1; dia <= diasNoMes; dia++) {
                 const diaSemana = getDiaSemana(ano, mes, dia);
-                if (diaSemana === 2) dias.terca.push(dia);
-                else if (diaSemana === 4) dias.quinta.push(dia);
-                else if (diaSemana === 6) dias.sabado.push(dia);
-                else if (diaSemana === 0) dias.domingo.push(dia);
+                if (diaSemana.numero === 2) dias.terca.push(dia);
+                else if (diaSemana.numero === 4) dias.quinta.push(dia);
+                else if (diaSemana.numero === 6) dias.sabado.push(dia);
+                else if (diaSemana.numero === 0) dias.domingo.push(dia);
             }
 
             const resultTerca = distribuirGrupo(grupos.terca, dias.terca.length, indices.terca, true);
@@ -690,8 +699,9 @@
             // 3ª feiras
             dias.terca.forEach((dia, i) => {
                 const esc = resultTerca.escalacao[i];
+                const diaSemana = getDiaSemana(ano, mes, dia);
                 escalaAtual.push({
-                    dia, diaSemana: '3ª FEIRA', servico: 'OFICIAL', classe: 'oficial',
+                    dia, diaSemana: diaSemana.nome, servico: 'OFICIAL', classe: 'oficial',
                     pedOracao: esc.pedOracao, principal: esc.principal, lateral: esc.lateral
                 });
             });
@@ -699,8 +709,9 @@
             // 5ª feiras
             dias.quinta.forEach((dia, i) => {
                 const esc = resultQuinta.escalacao[i];
+                const diaSemana = getDiaSemana(ano, mes, dia);
                 escalaAtual.push({
-                    dia, diaSemana: '5ª FEIRA', servico: 'OFICIAL', classe: 'oficial',
+                    dia, diaSemana: diaSemana.nome, servico: 'OFICIAL', classe: 'oficial',
                     pedOracao: esc.pedOracao, principal: esc.principal, lateral: esc.lateral
                 });
             });
@@ -708,23 +719,25 @@
             // Sábados
             dias.sabado.forEach((dia, i) => {
                 const esc = resultSabado.escalacao[i];
+                const diaSemana = getDiaSemana(ano, mes, dia);
                 escalaAtual.push({
-                    dia, diaSemana: 'SÁBADO', servico: 'OFICIAL', classe: 'oficial',
+                    dia, diaSemana: diaSemana.nome, servico: 'OFICIAL', classe: 'oficial',
                     pedOracao: esc.pedOracao, principal: esc.principal, lateral: esc.lateral
                 });
             });
 
             // Domingos
             dias.domingo.forEach((dia, i) => {
+                const diaSemana = getDiaSemana(ano, mes, dia);
                 escalaAtual.push({
-                    dia, diaSemana: 'DOMINGO', servico: 'RJM', classe: 'rjm',
+                    dia, diaSemana: diaSemana.nome, servico: 'RJM', classe: 'rjm',
                     pedOracao: resultRJM.membros[idxRJM], principal: '-', lateral: resultRJM.membros[idxRJM + 1]
                 });
                 idxRJM += 2;
 
                 const esc = resultDomingo.escalacao[i];
                 escalaAtual.push({
-                    dia, diaSemana: 'DOMINGO', servico: 'OFICIAL', classe: 'oficial',
+                    dia, diaSemana: diaSemana.nome, servico: 'OFICIAL', classe: 'oficial',
                     pedOracao: esc.pedOracao, principal: esc.principal, lateral: esc.lateral
                 });
             });
@@ -738,12 +751,12 @@
                 });
             }
 
-            // R. LOCAL
-            if ([1,4,7,10].includes(mes)) {
-                const seg4 = encontrarDia(ano, mes, 1, 4);
-                if (seg4) {
+            // R. LOCAL - Apenas em Jan/Abr/Jul/Out
+            if (temRLocal(mes)) {
+                const quartaSegunda = encontrarDia(ano, mes, 1, 4);
+                if (quartaSegunda && resultRLocal.membros.length > 0) {
                     escalaAtual.push({
-                        dia: seg4, diaSemana: '2ª FEIRA', servico: 'R. LOCAL', classe: 'rlocal',
+                        dia: quartaSegunda, diaSemana: '2ª FEIRA', servico: 'R. LOCAL', classe: 'rlocal',
                         pedOracao: resultRLocal.membros[0], principal: 'MESCLAR', lateral: 'MESCLAR', mesclar: true
                     });
                 }
